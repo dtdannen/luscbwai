@@ -1,0 +1,123 @@
+﻿Build started 4/19/2013 9:04:50 AM.
+     1>Project "C:\Users\dustin\Desktop\Current Projects\starcraft-ai-2013\BWSAL_0.9.12\BasicAIModule\BasicAIModule.vcxproj" on node 2 (Rebuild target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\CL.exe /c /I../include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _USRDLL /D EXAMPLEAIMODULE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc90.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Addons\Assignment.cpp ChokePointAdvisor.cpp PositionAdvisor.cpp SlowPushManager.cpp Source\ComSatManager.cpp Source\DebugPrinter.cpp Source\GoalManager.cpp ArmyManager.cpp GoalManager.cpp MacroManager.cpp Source\StrategyGoal.cpp SpiderMineManager.cpp Squad.cpp SquadManager.cpp StrategyManager.cpp Source\BasicAIModule.cpp Source\Dll.cpp ..\Addons\EnhancedUI.cpp ..\Addons\Util.cpp ..\Addons\WorkerManager.cpp ..\Addons\Base.cpp ..\Addons\BaseManager.cpp ..\Addons\BorderManager.cpp ..\Addons\BuildingPlacer.cpp ..\Addons\BuildManager.cpp ..\Addons\BuildOrderManager.cpp ..\Addons\MetaUnit.cpp ..\Addons\UnitItem.cpp ..\Addons\ConstructionManager.cpp ..\Addons\DefenseManager.cpp ..\Addons\InformationManager.cpp ..\Addons\MorphManager.cpp ..\Addons\ProductionManager.cpp ..\Addons\ScoutManager.cpp ..\Addons\SupplyManager.cpp ..\Addons\TechManager.cpp ..\Addons\UnitGroup.cpp ..\Addons\UnitGroupManager.cpp ..\Addons\UpgradeManager.cpp Source\Zeus.cpp VultureSpiderMineManager.cpp
+         VultureSpiderMineManager.cpp
+         Zeus.cpp
+         UpgradeManager.cpp
+         UnitGroupManager.cpp
+         UnitGroup.cpp
+         TechManager.cpp
+         SupplyManager.cpp
+         ScoutManager.cpp
+         ProductionManager.cpp
+         MorphManager.cpp
+         InformationManager.cpp
+         DefenseManager.cpp
+         ConstructionManager.cpp
+         UnitItem.cpp
+         MetaUnit.cpp
+         BuildOrderManager.cpp
+         BuildManager.cpp
+         BuildingPlacer.cpp
+         BorderManager.cpp
+         BaseManager.cpp
+         Generating Code...
+         Compiling...
+         Base.cpp
+         WorkerManager.cpp
+         Util.cpp
+         EnhancedUI.cpp
+         Dll.cpp
+         BasicAIModule.cpp
+         StrategyManager.cpp
+         SquadManager.cpp
+         Squad.cpp
+         SpiderMineManager.cpp
+         StrategyGoal.cpp
+         MacroManager.cpp
+         GoalManager.cpp
+         ArmyManager.cpp
+         GoalManager.cpp
+         DebugPrinter.cpp
+         ComSatManager.cpp
+         SlowPushManager.cpp
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::vector<_Ty,_Alloc> &,const std::vector<_Ty,_Alloc> &)' : could not deduce template argument for 'const std::vector<_Ty,_Alloc> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\vector(1320) : see declaration of 'std::operator <'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(142) : while compiling class template member function 'bool std::less<_Ty>::operator ()(const _Ty &,const _Ty &) const'
+                 with
+                 [
+                     _Ty=ChokePriority
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\set(48) : see reference to class template instantiation 'std::less<_Ty>' being compiled
+                 with
+                 [
+                     _Ty=ChokePriority
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree(22) : see reference to class template instantiation 'std::_Tset_traits<_Kty,_Pr,_Alloc,_Mfl>' being compiled
+                 with
+                 [
+                     _Kty=ChokePriority,
+                     _Pr=std::less<ChokePriority>,
+                     _Alloc=std::allocator<ChokePriority>,
+                     _Mfl=false
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree(63) : see reference to class template instantiation 'std::_Tree_nod<_Traits>' being compiled
+                 with
+                 [
+                     _Traits=std::_Tset_traits<ChokePriority,std::less<ChokePriority>,std::allocator<ChokePriority>,false>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree(89) : see reference to class template instantiation 'std::_Tree_ptr<_Traits>' being compiled
+                 with
+                 [
+                     _Traits=std::_Tset_traits<ChokePriority,std::less<ChokePriority>,std::allocator<ChokePriority>,false>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree(107) : see reference to class template instantiation 'std::_Tree_val<_Traits>' being compiled
+                 with
+                 [
+                     _Traits=std::_Tset_traits<ChokePriority,std::less<ChokePriority>,std::allocator<ChokePriority>,false>
+                 ]
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\set(57) : see reference to class template instantiation 'std::_Tree<_Traits>' being compiled
+                 with
+                 [
+                     _Traits=std::_Tset_traits<ChokePriority,std::less<ChokePriority>,std::allocator<ChokePriority>,false>
+                 ]
+                 c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\slowpushmanager.h(34) : see reference to class template instantiation 'std::set<_Kty>' being compiled
+                 with
+                 [
+                     _Kty=ChokePriority
+                 ]
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::list<_Ty,_Ax> &,const std::list<_Ty,_Ax> &)' : could not deduce template argument for 'const std::list<_Ty,_Ax> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\list(1310) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::_Tree<_Traits> &,const std::_Tree<_Traits> &)' : could not deduce template argument for 'const std::_Tree<_Traits> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xtree(1466) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *)' : could not deduce template argument for 'const std::basic_string<_Elem,_Traits,_Alloc> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\string(150) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const _Elem *,const std::basic_string<_Elem,_Traits,_Alloc> &)' : could not deduce template argument for 'const _Elem *' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\string(140) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)' : could not deduce template argument for 'const std::basic_string<_Elem,_Traits,_Alloc> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\string(130) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::reverse_iterator<_RanIt> &,const std::reverse_iterator<_RanIt2> &)' : could not deduce template argument for 'const std::reverse_iterator<_RanIt> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xutility(2236) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::_Revranit<_RanIt,_Base> &,const std::_Revranit<_RanIt2,_Base2> &)' : could not deduce template argument for 'const std::_Revranit<_RanIt,_Base> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\xutility(2046) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2784: 'bool std::operator <(const std::pair<_Ty1,_Ty2> &,const std::pair<_Ty1,_Ty2> &)' : could not deduce template argument for 'const std::pair<_Ty1,_Ty2> &' from 'const ChokePriority'
+                 c:\program files (x86)\microsoft visual studio 9.0\vc\include\utility(84) : see declaration of 'std::operator <'
+     1>c:\program files (x86)\microsoft visual studio 9.0\vc\include\functional(143): error C2676: binary '<' : 'const ChokePriority' does not define this operator or a conversion to a type acceptable to the predefined operator
+         PositionAdvisor.cpp
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\positionadvisor.cpp : error C2471: cannot update program database 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb'
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\positionadvisor.cpp : fatal error C1083: Cannot open program database file: 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb': No such file or directory
+         ChokePointAdvisor.cpp
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\chokepointadvisor.cpp : error C2471: cannot update program database 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb'
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\chokepointadvisor.cpp : fatal error C1083: Cannot open program database file: 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb': No such file or directory
+         Generating Code...
+         Compiling...
+         Assignment.cpp
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\addons\assignment.cpp : error C2471: cannot update program database 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb'
+     1>c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\addons\assignment.cpp : fatal error C1083: Cannot open program database file: 'c:\users\dustin\desktop\current projects\starcraft-ai-2013\bwsal_0.9.12\basicaimodule\debug\vc90.pdb': No such file or directory
+         Generating Code...
+     1>Done Building Project "C:\Users\dustin\Desktop\Current Projects\starcraft-ai-2013\BWSAL_0.9.12\BasicAIModule\BasicAIModule.vcxproj" (Rebuild target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:16.34

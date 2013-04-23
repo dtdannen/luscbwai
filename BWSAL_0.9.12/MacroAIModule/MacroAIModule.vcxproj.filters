@@ -1,0 +1,297 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Addons">
+      <UniqueIdentifier>{1a0ba0da-fcfb-4515-9009-1088dc5bdca1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroManager">
+      <UniqueIdentifier>{8f1aef1f-fff2-4e4d-bcb4-ebd888966820}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroManager\TaskStreamObservers">
+      <UniqueIdentifier>{c21f70d6-5292-42de-9a9f-71c0c4249bdf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\Arbitrator">
+      <UniqueIdentifier>{ba516349-487a-4df8-81dc-7cc30fab4bc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\ResourceTimeline">
+      <UniqueIdentifier>{f4cf25bf-7d6a-40bd-9b3c-443ef25bfe46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\ResourceRates">
+      <UniqueIdentifier>{a93cb64a-f094-4f68-8e1b-908208c7e03b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\UnitCountTimeline">
+      <UniqueIdentifier>{ecf802fc-8ffe-48af-ae73-de7b7e13f559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\TechTimeline">
+      <UniqueIdentifier>{12fafe2b-a379-459b-8be7-aefdaf35901d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\UpgradeTimeline">
+      <UniqueIdentifier>{a2949ed0-d1b7-4b7d-aa25-ae24b18cde4a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroSupplyManager">
+      <UniqueIdentifier>{ee65b23c-574b-4430-adbe-82785a750b84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\UnitGroupManager">
+      <UniqueIdentifier>{0533b8b2-81b6-4040-a968-956baa190fbe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroBaseManager">
+      <UniqueIdentifier>{efc0d618-02ea-4e3e-ad53-e945ef4f0b7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroDependencyResolver">
+      <UniqueIdentifier>{61bcbe01-35c3-4367-b973-62e3535cc1fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\BorderManager">
+      <UniqueIdentifier>{4416fde5-a841-42b4-93f1-0a27081f4b67}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\InformationManager">
+      <UniqueIdentifier>{a55fe998-0ac1-40b0-a136-54d6fcada4a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\MacroWorkerManager">
+      <UniqueIdentifier>{0288f2bc-6489-4385-ac56-1916c591aeb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Addons\ReservedMap">
+      <UniqueIdentifier>{cf443b11-9b0a-4882-b97c-61d058ddb6bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Addons\BWSAL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Dll.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\MacroAIModule.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\Util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\Assignment.cpp">
+      <Filter>Addons</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\LarvaTimeline.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroManager.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\Task.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\TaskStream.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitReadyTimeCalculator.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\WorkerTaskTimeline.cpp">
+      <Filter>Addons\MacroManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\BasicTaskExecutor.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\BasicWorkerFinder.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\BFSBuildingPlacer.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\PylonBuildingPlacer.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\SpiralBuildingPlacer.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\TerminateIfEmpty.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\TerminateIfWorkerLost.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitCompositionProducer.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitPump.cpp">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\Resources.cpp">
+      <Filter>Addons\ResourceTimeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\ResourceTimeline.cpp">
+      <Filter>Addons\ResourceTimeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\ResourceRates.cpp">
+      <Filter>Addons\ResourceRates</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitCountTimeline.cpp">
+      <Filter>Addons\UnitCountTimeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\TechTimeline.cpp">
+      <Filter>Addons\TechTimeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UpgradeTimeline.cpp">
+      <Filter>Addons\UpgradeTimeline</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroSupplyManager.cpp">
+      <Filter>Addons\MacroSupplyManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitGroup.cpp">
+      <Filter>Addons\UnitGroupManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\UnitGroupManager.cpp">
+      <Filter>Addons\UnitGroupManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroBase.cpp">
+      <Filter>Addons\MacroBaseManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroBaseManager.cpp">
+      <Filter>Addons\MacroBaseManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroDependencyResolver.cpp">
+      <Filter>Addons\MacroDependencyResolver</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\BorderManager.cpp">
+      <Filter>Addons\BorderManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\InformationManager.cpp">
+      <Filter>Addons\InformationManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\MacroWorkerManager.cpp">
+      <Filter>Addons\MacroWorkerManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Addons\ReservedMap.cpp">
+      <Filter>Addons\ReservedMap</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\BWSAL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\MacroAIModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Addons\Util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager.h">
+      <Filter>Addons</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\LarvaTimeline.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\MacroManager.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Task.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\TaskStream.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\TaskStreamObserver.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\UnitReadyTimeCalculator.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroManager\WorkerTaskTimeline.h">
+      <Filter>Addons\MacroManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BasicTaskExecutor.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BasicWorkerFinder.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BFSBuildingPlacer.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\PylonBuildingPlacer.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\SpiralBuildingPlacer.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TerminateIfEmpty.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TerminateIfWorkerLost.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UnitCompositionProducer.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UnitPump.h">
+      <Filter>Addons\MacroManager\TaskStreamObservers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Arbitrator\Arbitrator.h">
+      <Filter>Addons\Arbitrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Arbitrator\Controller.h">
+      <Filter>Addons\Arbitrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Heap.h">
+      <Filter>Addons\Arbitrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Addons\ResourceTimeline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ResourceTimeline.h">
+      <Filter>Addons\ResourceTimeline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ResourceRates.h">
+      <Filter>Addons\ResourceRates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UnitCountTimeline.h">
+      <Filter>Addons\UnitCountTimeline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\TechTimeline.h">
+      <Filter>Addons\TechTimeline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UpgradeTimeline.h">
+      <Filter>Addons\UpgradeTimeline</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroSupplyManager.h">
+      <Filter>Addons\MacroSupplyManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UnitGroup.h">
+      <Filter>Addons\UnitGroupManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\UnitGroupManager.h">
+      <Filter>Addons\UnitGroupManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroBaseManager\MacroBase.h">
+      <Filter>Addons\MacroBaseManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroBaseManager\MacroBaseManager.h">
+      <Filter>Addons\MacroBaseManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroDependencyResolver.h">
+      <Filter>Addons\MacroDependencyResolver</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\BorderManager.h">
+      <Filter>Addons\BorderManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\InformationManager.h">
+      <Filter>Addons\InformationManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\MacroWorkerManager.h">
+      <Filter>Addons\MacroWorkerManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ReservedMap.h">
+      <Filter>Addons\ReservedMap</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
