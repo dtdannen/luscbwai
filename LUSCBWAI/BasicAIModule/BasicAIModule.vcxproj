@@ -155,6 +155,7 @@
     <ClCompile Include="ArmyManager.cpp" />
     <ClCompile Include="GoalManager.cpp" />
     <ClCompile Include="MacroManager.cpp" />
+    <ClCompile Include="Source\SafetyAdvisor.cpp" />
     <ClCompile Include="Source\StrategyGoal.cpp" />
     <ClCompile Include="SpiderMineManager.cpp" />
     <ClCompile Include="Squad.cpp" />
@@ -228,6 +229,7 @@
     <ClInclude Include="..\include\UnitGroup.h" />
     <ClInclude Include="..\include\UnitGroupManager.h" />
     <ClInclude Include="..\include\UpgradeManager.h" />
+    <ClInclude Include="Source\SafetyAdvisor.h" />
     <ClInclude Include="Source\StrategyGoal.h" />
     <ClInclude Include="Source\Zeus.h" />
     <ClInclude Include="Squad.h" />

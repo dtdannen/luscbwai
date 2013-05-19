@@ -210,6 +210,9 @@
     <ClCompile Include="Source\LUSCBWAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\SafetyAdvisor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\EnhancedUI.h">
@@ -342,6 +345,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LUSCBWAI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SafetyAdvisor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

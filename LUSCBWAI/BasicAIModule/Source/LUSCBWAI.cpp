@@ -6,12 +6,18 @@ using namespace BWAPI;
 
 void BasicAIModule::onStart()
 {
+	// warcry
+	std::string letsGO = "Lehigh University is about to rock your socks";
+	Broodwar->sendText("%s",letsGO.c_str());
 
 	this->showManagerAssignments=false;
 	if (Broodwar->isReplay()) return;
 	// Enable some cheat flags
 	Broodwar->enableFlag(Flag::UserInput);
 	//Broodwar->enableFlag(Flag::CompleteMapInformation);
+
+	// set speed to fastest
+	Broodwar->setLocalSpeed(5);
 
 	// Run BWTA
 	BWTA::readMap();
@@ -45,7 +51,7 @@ void BasicAIModule::onStart()
 	this->baseManager->setBorderManager(this->borderManager);
 	this->defenseManager->setBorderManager(this->borderManager);
 
-	// Zues controls the high level goal that guides the bot's actions
+	// Zeus controls the high level goal that guides the bot's actions
 	Zeus::Instance().setMacroManager(goalManager);
 
 	// get information about our bot
@@ -73,41 +79,6 @@ void BasicAIModule::onStart()
 	if (race == Races::Terran)
 	{
 		this->buildOrderManager->build(20,workerType,80);
-		/*if (enemyRace == Races::Zerg)
-		{
-			this->buildOrderManager->buildAdditional(1,UnitTypes::Terran_Barracks,60);
-			this->buildOrderManager->buildAdditional(9,UnitTypes::Terran_Marine,45);
-			this->buildOrderManager->buildAdditional(1,UnitTypes::Terran_Refinery,42);
-			this->buildOrderManager->buildAdditional(1,UnitTypes::Terran_Barracks,40);
-			this->buildOrderManager->buildAdditional(1,UnitTypes::Terran_Academy,39);
-			this->buildOrderManager->buildAdditional(9,UnitTypes::Terran_Medic,38);
-			this->buildOrderManager->research(TechTypes::Stim_Packs,35);
-			this->buildOrderManager->research(TechTypes::Tank_Siege_Mode,35);
-			this->buildOrderManager->buildAdditional(3,UnitTypes::Terran_Siege_Tank_Tank_Mode,34);
-			this->buildOrderManager->buildAdditional(2,UnitTypes::Terran_Science_Vessel,30);
-			this->buildOrderManager->research(TechTypes::Irradiate,30);
-			this->buildOrderManager->upgrade(1,UpgradeTypes::Terran_Infantry_Weapons,20);
-			this->buildOrderManager->build(3,UnitTypes::Terran_Missile_Turret,13);
-			this->buildOrderManager->upgrade(3,UpgradeTypes::Terran_Infantry_Weapons,12);
-			this->buildOrderManager->upgrade(3,UpgradeTypes::Terran_Infantry_Armor,12);
-			this->buildOrderManager->build(1,UnitTypes::Terran_Engineering_Bay,11);
-			this->buildOrderManager->buildAdditional(40,UnitTypes::Terran_Marine,10);
-			this->buildOrderManager->build(6,UnitTypes::Terran_Barracks,8);
-			this->buildOrderManager->build(2,UnitTypes::Terran_Engineering_Bay,7);
-			this->buildOrderManager->buildAdditional(10,UnitTypes::Terran_Siege_Tank_Tank_Mode,5);
-		}
-		else
-		{
-
-			this->buildOrderManager->buildAdditional(2,BWAPI::UnitTypes::Terran_Machine_Shop,70);
-			this->buildOrderManager->buildAdditional(3,BWAPI::UnitTypes::Terran_Factory,60);
-			this->buildOrderManager->research(TechTypes::Spider_Mines,55);
-			this->buildOrderManager->research(TechTypes::Tank_Siege_Mode,55);
-			this->buildOrderManager->buildAdditional(20,BWAPI::UnitTypes::Terran_Vulture,40);
-			this->buildOrderManager->buildAdditional(20,
-												BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,40);
-			this->buildOrderManager->upgrade(3,UpgradeTypes::Terran_Vehicle_Weapons,20);
-		}*/
 	}
 	else // we are not Terran, alert user
 	{
@@ -124,7 +95,7 @@ void BasicAIModule::onStart()
 	// 1. Start producing the right units:
 	// Slow Push Goal to produce siege tanks, vultures, and marines
 	std::map<BWAPI::UnitType, int> slowPushBuildGoal;
-	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode] = 3;
+	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode] = 3;
 	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Vulture] = 1;
 	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Marine] = 4;
 	this->goalManager->newGoal(slowPushBuildGoal);
@@ -166,6 +137,7 @@ void BasicAIModule::onFrame()
 	this->borderManager->update();
 	this->defenseManager->update();
 	this->arbitrator.update();
+	this->goalManager->update();
 
 	Zeus::Instance().update();
 
