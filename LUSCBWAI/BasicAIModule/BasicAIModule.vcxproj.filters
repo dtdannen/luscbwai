@@ -76,9 +76,6 @@
     <Filter Include="Addons\StrategyManager">
       <UniqueIdentifier>{f7ee05e0-6e80-435b-a185-7a88d6f5f2fe}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NewFilter1">
-      <UniqueIdentifier>{aa1a1e20-5083-4698-b330-7ad47bee5675}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Addons\MacroManager">
       <UniqueIdentifier>{058f7f51-dca7-4e55-be65-b63529722536}</UniqueIdentifier>
     </Filter>
@@ -88,9 +85,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Addons\Assignment.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\BasicAIModule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Dll.cpp">
@@ -213,11 +207,11 @@
     <ClCompile Include="ChokePriority.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\LUSCBWAI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\BasicAIModule.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\EnhancedUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -345,6 +339,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ChokePriority.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\LUSCBWAI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

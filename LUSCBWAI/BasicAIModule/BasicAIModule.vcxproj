@@ -18,6 +18,7 @@
     <ProjectGuid>{2E63AE74-758A-4607-9DE4-D28E814A6E13}</ProjectGuid>
     <RootNamespace>ExampleAIModule</RootNamespace>
     <Keyword>Win32Proj</Keyword>
+    <ProjectName>LUSCBWAI</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
@@ -159,7 +160,7 @@
     <ClCompile Include="Squad.cpp" />
     <ClCompile Include="SquadManager.cpp" />
     <ClCompile Include="StrategyManager.cpp" />
-    <ClCompile Include="Source\BasicAIModule.cpp" />
+    <ClCompile Include="Source\LUSCBWAI.cpp" />
     <ClCompile Include="Source\Dll.cpp" />
     <ClCompile Include="..\Addons\EnhancedUI.cpp" />
     <ClCompile Include="..\Addons\Util.cpp" />
@@ -195,7 +196,7 @@
     <ClInclude Include="Source\Common.h" />
     <ClInclude Include="Source\DebugPrinter.h" />
     <ClInclude Include="Source\GoalManager.h" />
-    <ClInclude Include="Source\BasicAIModule.h" />
+    <ClInclude Include="Source\LUSCBWAI.h" />
     <ClInclude Include="..\include\EnhancedUI.h" />
     <ClInclude Include="..\include\RectangleArray.h" />
     <ClInclude Include="..\Addons\Util.h" />
