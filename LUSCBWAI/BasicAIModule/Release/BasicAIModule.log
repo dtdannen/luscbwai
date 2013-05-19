@@ -1,4 +1,4 @@
-﻿Build started 5/18/2013 10:37:35 PM.
+﻿Build started 5/18/2013 11:03:05 PM.
      1>Project "C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\BasicAIModule\BasicAIModule.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\CL.exe /c /I../include /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D EXAMPLEAIMODULE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc90.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Addons\Assignment.cpp ChokePointAdvisor.cpp ChokePriority.cpp PositionAdvisor.cpp SlowPushManager.cpp Source\ComSatManager.cpp Source\DebugPrinter.cpp Source\GoalManager.cpp ArmyManager.cpp GoalManager.cpp MacroManager.cpp Source\SafetyAdvisor.cpp Source\StrategyGoal.cpp SpiderMineManager.cpp Squad.cpp SquadManager.cpp StrategyManager.cpp Source\LUSCBWAI.cpp Source\Dll.cpp ..\Addons\EnhancedUI.cpp ..\Addons\Util.cpp ..\Addons\WorkerManager.cpp ..\Addons\Base.cpp ..\Addons\BaseManager.cpp ..\Addons\BorderManager.cpp ..\Addons\BuildingPlacer.cpp ..\Addons\BuildManager.cpp ..\Addons\BuildOrderManager.cpp ..\Addons\MetaUnit.cpp ..\Addons\UnitItem.cpp ..\Addons\ConstructionManager.cpp ..\Addons\DefenseManager.cpp ..\Addons\InformationManager.cpp ..\Addons\MorphManager.cpp ..\Addons\ProductionManager.cpp ..\Addons\ScoutManager.cpp ..\Addons\SupplyManager.cpp ..\Addons\TechManager.cpp ..\Addons\UnitGroup.cpp ..\Addons\UnitGroupManager.cpp ..\Addons\UpgradeManager.cpp Source\Zeus.cpp VultureSpiderMineManager.cpp
@@ -111,4 +111,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:18.48
+Time Elapsed 00:00:18.58

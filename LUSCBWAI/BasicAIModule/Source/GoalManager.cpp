@@ -43,7 +43,7 @@ bool GoalManager::readyToRefresh() {
 	for (std::map<BWAPI::UnitType, int>::const_iterator i = composition.begin(); 
 		i != composition.end(); i++)
 	{
-		BWAPI::Broodwar->sendText("BOM gPC at %d while ePC at %d", this->buildOrderManager->getPlannedCount(i->first),this->expectedCounts[i->first]);
+		//BWAPI::Broodwar->sendText("BOM gPC at %d while ePC at %d", this->buildOrderManager->getPlannedCount(i->first),this->expectedCounts[i->first]);
 		if (this->buildOrderManager->getPlannedCount(i->first) != this->expectedCounts[i->first]) {
 			// if we are still waiting on some units, return false
 			return false;

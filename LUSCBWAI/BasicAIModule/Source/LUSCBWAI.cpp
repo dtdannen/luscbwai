@@ -197,6 +197,7 @@ void BasicAIModule::onUnitDestroy(BWAPI::Unit* unit)
 
 void BasicAIModule::onUnitDiscover(BWAPI::Unit* unit)
 {
+	Broodwar->sendText("Just discovered Unit %s", unit->getType().c_str());
 	if (Broodwar->isReplay()) return;
 	this->informationManager->onUnitDiscover(unit);
 	this->unitGroupManager->onUnitDiscover(unit);
