@@ -6,9 +6,7 @@ Lehigh University - Starcraft Broodwar (patch 1.16.1) - Artificial Intelligence 
 Contributing Authors
 ====================
 Dustin Dannenhauer
-
 Hector Munoz-Avila
-
 Steven 
 Nicholas
 Matthew Kilgore
