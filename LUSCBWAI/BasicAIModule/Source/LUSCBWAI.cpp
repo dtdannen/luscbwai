@@ -4,7 +4,7 @@ using namespace BWAPI;
 
 
 
-void BasicAIModule::onStart()
+void LUSCBWAIModule::onStart()
 {
 	// warcry
 	std::string letsGO = "Lehigh University is about to rock your socks";
@@ -101,7 +101,7 @@ void BasicAIModule::onStart()
 	this->goalManager->newGoal(slowPushBuildGoal);
 }
 
-BasicAIModule::~BasicAIModule()
+LUSCBWAIModule::~LUSCBWAIModule()
 {
 	delete this->buildManager;
 	delete this->techManager;
@@ -117,11 +117,11 @@ BasicAIModule::~BasicAIModule()
 	UnitGroupManager::destroy();
 	delete this->enhancedUI;
 }
-void BasicAIModule::onEnd(bool isWinner)
+void LUSCBWAIModule::onEnd(bool isWinner)
 {
 	log("onEnd(%d)\n",isWinner);
 }
-void BasicAIModule::onFrame()
+void LUSCBWAIModule::onFrame()
 {
 	if (Broodwar->isReplay()) return;
 	if (!this->analyzed) return;
@@ -181,7 +181,7 @@ void BasicAIModule::onFrame()
 
 	}
 
-void BasicAIModule::onUnitDestroy(BWAPI::Unit* unit)
+void LUSCBWAIModule::onUnitDestroy(BWAPI::Unit* unit)
 {
 	if (Broodwar->isReplay()) return;
 	this->arbitrator.onRemoveObject(unit);
@@ -195,32 +195,41 @@ void BasicAIModule::onUnitDestroy(BWAPI::Unit* unit)
 	this->baseManager->onRemoveUnit(unit);
 }
 
-void BasicAIModule::onUnitDiscover(BWAPI::Unit* unit)
+void LUSCBWAIModule::onUnitDiscover(BWAPI::Unit* unit)
 {
-	Broodwar->sendText("Just discovered Unit %s", unit->getType().c_str());
+	//Broodwar->sendText("Just discovered Unit %s", unit->getType().c_str());
 	if (Broodwar->isReplay()) return;
 	this->informationManager->onUnitDiscover(unit);
 	this->unitGroupManager->onUnitDiscover(unit);
 }
-void BasicAIModule::onUnitEvade(BWAPI::Unit* unit)
+
+void LUSCBWAIModule::onUnitComplete(BWAPI::Unit* unit) {
+	if (!unit->getType().isWorker() && !unit->getType().isBuilding()) {
+		// if the completed unit is not a worker or building, tell goal manager
+		this->goalManager->onUnitComplete(unit);
+	}
+	
+}
+
+void LUSCBWAIModule::onUnitEvade(BWAPI::Unit* unit)
 {
 	if (Broodwar->isReplay()) return;
 	this->informationManager->onUnitEvade(unit);
 	this->unitGroupManager->onUnitEvade(unit);
 }
 
-void BasicAIModule::onUnitMorph(BWAPI::Unit* unit)
+void LUSCBWAIModule::onUnitMorph(BWAPI::Unit* unit)
 {
 	if (Broodwar->isReplay()) return;
 	this->unitGroupManager->onUnitMorph(unit);
 }
-void BasicAIModule::onUnitRenegade(BWAPI::Unit* unit)
+void LUSCBWAIModule::onUnitRenegade(BWAPI::Unit* unit)
 {
 	if (Broodwar->isReplay()) return;
 	this->unitGroupManager->onUnitRenegade(unit);
 }
 
-void BasicAIModule::onSendText(std::string text)
+void LUSCBWAIModule::onSendText(std::string text)
 {
 	if (Broodwar->isReplay())
 	{

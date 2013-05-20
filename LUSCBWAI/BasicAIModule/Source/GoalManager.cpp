@@ -27,13 +27,15 @@ void GoalManager::newGoal(std::map<BWAPI::UnitType, int> composition)
 {
 	this->composition = composition;
 	this->buildOrderManager->clear();
+	this->unitsCompleted.clear();
 	//int count = 0;
 	for (std::map<BWAPI::UnitType, int>::const_iterator i = composition.begin(); 
 		i != composition.end(); i++)
 	{
 		DebugPrinter::printDebug("Adding units to BOM");
 		this->buildOrderManager->buildAdditional(i->second, i->first, 50);
-		this->expectedCounts[i->first] += i->second; 
+		this->expectedCounts[i->first] += i->second;
+		this->unitsCompleted[i->first] = 0;
 		//count++;
 		//BWAPI::Broodwar->sendText("Just decremented count");
 	}
@@ -44,7 +46,7 @@ bool GoalManager::readyToRefresh() {
 		i != composition.end(); i++)
 	{
 		//BWAPI::Broodwar->sendText("BOM gPC at %d while ePC at %d", this->buildOrderManager->getPlannedCount(i->first),this->expectedCounts[i->first]);
-		if (this->buildOrderManager->getPlannedCount(i->first) != this->expectedCounts[i->first]) {
+		if (this->unitsCompleted[i->first] != this->expectedCounts[i->first]) {
 			// if we are still waiting on some units, return false
 			return false;
 		}
@@ -52,16 +54,22 @@ bool GoalManager::readyToRefresh() {
 	return true;
 }
 
+void GoalManager::onUnitComplete(BWAPI::Unit* unit) {
+	this->unitsCompleted[unit->getType()] += 1;
+}
+
 // refresh goal is just like new goal except it doesn't clear the buildOrderManager,
 // this is important because other build orders (i.e. for buildings or workers) will be
 // deleted. This is just to build more of the same ratio
 void GoalManager::refresh() {
-		for (std::map<BWAPI::UnitType, int>::const_iterator i = composition.begin(); 
-			i != composition.end(); i++)
-		{
-			DebugPrinter::printDebug("Adding units to BOM");
-			this->buildOrderManager->buildAdditional(i->second, i->first, 50);
-		}
+	for (std::map<BWAPI::UnitType, int>::const_iterator i = composition.begin(); 
+		i != composition.end(); i++)
+	{
+		DebugPrinter::printDebug("Adding units to BOM");
+		this->buildOrderManager->buildAdditional(i->second, i->first, 50);
+		this->expectedCounts[i->first] = i->second;
+		this->unitsCompleted[i->first] = 0;
+	}
 }
 
 

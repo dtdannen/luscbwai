@@ -19,7 +19,7 @@
 #include "DebugPrinter.h"
 #include "Zeus.h"
 
-class BasicAIModule : public BWAPI::AIModule
+class LUSCBWAIModule : public BWAPI::AIModule
 {
 public:
   virtual void onStart();
@@ -31,7 +31,8 @@ public:
   virtual void onUnitRenegade(BWAPI::Unit* unit);
   virtual void onUnitDestroy(BWAPI::Unit* unit);
   virtual void onSendText(std::string text);
-  ~BasicAIModule(); //not part of BWAPI::AIModule
+  virtual void onUnitComplete(BWAPI::Unit* unit);
+  ~LUSCBWAIModule(); //not part of BWAPI::AIModule
   void showStats(); //not part of BWAPI::AIModule
   void showPlayers();
   void showForces();

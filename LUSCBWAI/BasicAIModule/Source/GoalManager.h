@@ -14,6 +14,7 @@ public:
 	void update();
 	void refresh(); 
 	bool readyToRefresh();
+	void onUnitComplete(BWAPI::Unit* unit);
 
 
 private:
@@ -22,5 +23,7 @@ private:
 
 	// this keeps track of how many units we are expecting so that we know when we need to refresh
 	std::map<BWAPI::UnitType, int> expectedCounts;
+
+	std::map<BWAPI::UnitType, int> unitsCompleted;
 };
 
