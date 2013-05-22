@@ -6,7 +6,7 @@
 
 
 
-SlowPushManager::SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *arbitrator, ChokePointAdvisor chokePointAdvisor)
+SlowPushManager::SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *arbitrator, ChokePointAdvisor *chokePointAdvisor)
 {
 	this->arbitrator = arbitrator;
 	this->chokePointAdvisor = chokePointAdvisor;
@@ -43,7 +43,7 @@ void SlowPushManager::distributeUnits(std::set<BWTA::Chokepoint*> chokepoints) {
 	
 	// Getting priority of each chokepoint.
 	for (std::set<BWTA::Chokepoint*>::iterator i = chokepoints.begin(); i != chokepoints.end(); i++) {
-		ChokePriority choke = ChokePriority(*i, chokePointAdvisor.pollChoke(*i), chokePointAdvisor);
+		ChokePriority choke = ChokePriority(*i, chokePointAdvisor->pollChoke(*i), chokePointAdvisor);
 
 		// this is where its failing
 		chokePrioritySet.push_back(choke);
@@ -105,8 +105,8 @@ void SlowPushManager::advanceSlowPush(std::set<BWTA::Chokepoint*> nextChokepoint
 
 std::set<BWTA::Chokepoint*> SlowPushManager::getNextChokepoints() {
 	std::set<BWTA::Chokepoint*> chokepoints;
-	std::set<BWTA::Chokepoint*> contested = chokePointAdvisor.contestedChokes();
-	std::set<BWTA::Chokepoint*> held = chokePointAdvisor.heldChokes();
+	std::set<BWTA::Chokepoint*> contested = chokePointAdvisor->contestedChokes();
+	std::set<BWTA::Chokepoint*> held = chokePointAdvisor->heldChokes();
 
 	// Adding all of the contested chokepoints.
 	for (std::set<BWTA::Chokepoint*>::iterator i = contested.begin(); i != contested.end(); i++) {

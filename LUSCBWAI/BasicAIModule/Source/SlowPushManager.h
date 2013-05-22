@@ -17,7 +17,7 @@ class SlowPushManager : Arbitrator::Controller<BWAPI::Unit*,double>
 	enum Goals { SLOWPUSH, DEFEND };
 	enum SquadBehavior { DEFENSIVE, AGGRESSIVE, STAY, FLEE };
 	
-    SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *arbitrator, ChokePointAdvisor chokePointAdvisor);
+    SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *arbitrator, ChokePointAdvisor *chokePointAdvisor);
 	void giveGoal(int g);
 	virtual void update();
 	virtual std::string getName() const;
@@ -29,7 +29,7 @@ class SlowPushManager : Arbitrator::Controller<BWAPI::Unit*,double>
   private:
 	int goal;
 	Arbitrator::Arbitrator<BWAPI::Unit*,double>* arbitrator;
-	ChokePointAdvisor chokePointAdvisor;
+	ChokePointAdvisor* chokePointAdvisor;
 	std::set<BWAPI::Unit*> armyUnits;
 	std::vector<ChokePriority> squads;
 

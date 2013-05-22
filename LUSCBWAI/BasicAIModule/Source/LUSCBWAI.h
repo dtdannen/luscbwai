@@ -18,6 +18,8 @@
 #include "GoalManager.h"
 #include "DebugPrinter.h"
 #include "Zeus.h"
+#include "ChokePointAdvisor.h"
+#include "SlowPushManager.h"
 
 class LUSCBWAIModule : public BWAPI::AIModule
 {
@@ -53,5 +55,7 @@ public:
   UnitGroupManager* unitGroupManager;
   EnhancedUI* enhancedUI;
   GoalManager * goalManager;
+  SlowPushManager * slowPushManager;
+  ChokePointAdvisor * chokePointAdvisor;
   bool showManagerAssignments;
 };

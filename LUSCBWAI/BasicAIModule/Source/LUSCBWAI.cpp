@@ -34,7 +34,7 @@ void LUSCBWAIModule::onStart()
 	this->baseManager        = new BaseManager();
 	this->buildOrderManager  = new BuildOrderManager(this->buildManager,this->techManager,
 									this->upgradeManager,this->workerManager,this->supplyManager);
-	this->defenseManager     = new DefenseManager(&this->arbitrator);
+	//this->defenseManager     = new DefenseManager(&this->arbitrator);
 	this->informationManager = InformationManager::create();
 	this->borderManager      = BorderManager::create();
 	this->unitGroupManager   = UnitGroupManager::create();
@@ -49,7 +49,10 @@ void LUSCBWAIModule::onStart()
 	this->workerManager->setBuildOrderManager(this->buildOrderManager);
 	this->baseManager->setBuildOrderManager(this->buildOrderManager);
 	this->baseManager->setBorderManager(this->borderManager);
-	this->defenseManager->setBorderManager(this->borderManager);
+	//this->defenseManager->setBorderManager(this->borderManager);
+
+	this->chokePointAdvisor = new ChokePointAdvisor();
+	this->slowPushManager = new SlowPushManager(&this->arbitrator, this->chokePointAdvisor);
 
 	// Zeus controls the high level goal that guides the bot's actions
 	Zeus::Instance().setMacroManager(goalManager);
@@ -111,7 +114,7 @@ LUSCBWAIModule::~LUSCBWAIModule()
 	delete this->supplyManager;
 	delete this->buildOrderManager;
 	delete this->baseManager;
-	delete this->defenseManager;
+	//delete this->defenseManager;
 	InformationManager::destroy();
 	BorderManager::destroy();
 	UnitGroupManager::destroy();
@@ -135,7 +138,7 @@ void LUSCBWAIModule::onFrame()
 	//this->scoutManager->update();
 	this->enhancedUI->update();
 	this->borderManager->update();
-	this->defenseManager->update();
+	//this->defenseManager->update();
 	this->arbitrator.update();
 	this->goalManager->update();
 
@@ -172,13 +175,6 @@ void LUSCBWAIModule::onFrame()
 		}
 	}
 
-	// keep producing units
-	/*std::map<BWAPI::UnitType, int> slowPushBuildGoal;
-	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode] = 3;
-	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Vulture] = 1;
-	slowPushBuildGoal[BWAPI::UnitTypes::Terran_Marine] = 4;
-	this->goalManager->newGoal(slowPushBuildGoal);*/
-
 	}
 
 void LUSCBWAIModule::onUnitDestroy(BWAPI::Unit* unit)
@@ -190,7 +186,7 @@ void LUSCBWAIModule::onUnitDestroy(BWAPI::Unit* unit)
 	this->upgradeManager->onRemoveUnit(unit);
 	this->workerManager->onRemoveUnit(unit);
 	this->scoutManager->onRemoveUnit(unit);
-	this->defenseManager->onRemoveUnit(unit);
+	//this->defenseManager->onRemoveUnit(unit);
 	this->informationManager->onUnitDestroy(unit);
 	this->baseManager->onRemoveUnit(unit);
 }

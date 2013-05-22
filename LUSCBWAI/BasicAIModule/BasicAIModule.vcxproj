@@ -145,10 +145,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Addons\Assignment.cpp" />
-    <ClCompile Include="ChokePointAdvisor.cpp" />
-    <ClCompile Include="ChokePriority.cpp" />
     <ClCompile Include="PositionAdvisor.cpp" />
-    <ClCompile Include="SlowPushManager.cpp" />
+    <ClCompile Include="Source\ChokePointAdvisor.cpp" />
+    <ClCompile Include="Source\ChokePriority.cpp" />
     <ClCompile Include="Source\ComSatManager.cpp" />
     <ClCompile Include="Source\DebugPrinter.cpp" />
     <ClCompile Include="Source\GoalManager.cpp" />
@@ -156,9 +155,11 @@
     <ClCompile Include="GoalManager.cpp" />
     <ClCompile Include="MacroManager.cpp" />
     <ClCompile Include="Source\SafetyAdvisor.cpp" />
+    <ClCompile Include="Source\SlowPushManager.cpp" />
+    <ClCompile Include="Source\Squad.cpp" />
     <ClCompile Include="Source\StrategyGoal.cpp" />
+    <ClCompile Include="Source\VultureSpiderMineManager.cpp" />
     <ClCompile Include="SpiderMineManager.cpp" />
-    <ClCompile Include="Squad.cpp" />
     <ClCompile Include="SquadManager.cpp" />
     <ClCompile Include="StrategyManager.cpp" />
     <ClCompile Include="Source\LUSCBWAI.cpp" />
@@ -186,13 +187,11 @@
     <ClCompile Include="..\Addons\UnitGroupManager.cpp" />
     <ClCompile Include="..\Addons\UpgradeManager.cpp" />
     <ClCompile Include="Source\Zeus.cpp" />
-    <ClCompile Include="VultureSpiderMineManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ChokePointAdvisor.h" />
-    <ClInclude Include="ChokePriority.h" />
     <ClInclude Include="PositionAdvisor.h" />
-    <ClInclude Include="SlowPushManager.h" />
+    <ClInclude Include="Source\ChokePointAdvisor.h" />
+    <ClInclude Include="Source\ChokePriority.h" />
     <ClInclude Include="Source\ComSatManager.h" />
     <ClInclude Include="Source\Common.h" />
     <ClInclude Include="Source\DebugPrinter.h" />
@@ -230,10 +229,11 @@
     <ClInclude Include="..\include\UnitGroupManager.h" />
     <ClInclude Include="..\include\UpgradeManager.h" />
     <ClInclude Include="Source\SafetyAdvisor.h" />
+    <ClInclude Include="Source\SlowPushManager.h" />
+    <ClInclude Include="Source\Squad.h" />
     <ClInclude Include="Source\StrategyGoal.h" />
+    <ClInclude Include="Source\VultureSpiderMineManager.h" />
     <ClInclude Include="Source\Zeus.h" />
-    <ClInclude Include="Squad.h" />
-    <ClInclude Include="VultureSpiderMineManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

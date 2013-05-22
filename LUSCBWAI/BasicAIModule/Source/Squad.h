@@ -22,7 +22,7 @@ public:
 		\param unitsPerSquad The unit composition of this squad.
 		\param advisor The choke point advisor that this squad will use.
 	*/
-	Squad(std::map<BWAPI::UnitType*, int> unitsPerSquad, ChokePointAdvisor advisor);
+	Squad(std::map<BWAPI::UnitType*, int> unitsPerSquad, ChokePointAdvisor* advisor);
 
 	//! Moves the squad to the given position.
 	/*!
@@ -79,7 +79,7 @@ public:
 	void update();
 private:
 	std::map<BWAPI::UnitType*, BWAPI::Unit*> units;
-	ChokePointAdvisor chokePointAdvisor;
+	ChokePointAdvisor* chokePointAdvisor;
 	SquadBehavior behavior;
 	BWAPI::Position* position;
 	BWAPI::Unit* attack;

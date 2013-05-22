@@ -1,16 +1,15 @@
-﻿Build started 5/19/2013 11:10:24 PM.
+﻿Build started 5/22/2013 3:17:03 PM.
      1>Project "C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\BasicAIModule\BasicAIModule.vcxproj" on node 2 (Rebuild target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\CL.exe /c /I../include /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D EXAMPLEAIMODULE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc90.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Addons\Assignment.cpp ChokePointAdvisor.cpp ChokePriority.cpp PositionAdvisor.cpp SlowPushManager.cpp Source\ComSatManager.cpp Source\DebugPrinter.cpp Source\GoalManager.cpp ArmyManager.cpp GoalManager.cpp MacroManager.cpp Source\SafetyAdvisor.cpp Source\StrategyGoal.cpp SpiderMineManager.cpp Squad.cpp SquadManager.cpp StrategyManager.cpp Source\LUSCBWAI.cpp Source\Dll.cpp ..\Addons\EnhancedUI.cpp ..\Addons\Util.cpp ..\Addons\WorkerManager.cpp ..\Addons\Base.cpp ..\Addons\BaseManager.cpp ..\Addons\BorderManager.cpp ..\Addons\BuildingPlacer.cpp ..\Addons\BuildManager.cpp ..\Addons\BuildOrderManager.cpp ..\Addons\MetaUnit.cpp ..\Addons\UnitItem.cpp ..\Addons\ConstructionManager.cpp ..\Addons\DefenseManager.cpp ..\Addons\InformationManager.cpp ..\Addons\MorphManager.cpp ..\Addons\ProductionManager.cpp ..\Addons\ScoutManager.cpp ..\Addons\SupplyManager.cpp ..\Addons\TechManager.cpp ..\Addons\UnitGroup.cpp ..\Addons\UnitGroupManager.cpp ..\Addons\UpgradeManager.cpp Source\Zeus.cpp VultureSpiderMineManager.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\CL.exe /c /I../include /Zi /nologo /W3 /WX- /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _USRDLL /D EXAMPLEAIMODULE_EXPORTS /D _WINDLL /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Release\\" /Fd"Release\vc90.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Addons\Assignment.cpp PositionAdvisor.cpp Source\ChokePointAdvisor.cpp Source\ChokePriority.cpp Source\ComSatManager.cpp Source\DebugPrinter.cpp Source\GoalManager.cpp ArmyManager.cpp GoalManager.cpp MacroManager.cpp Source\SafetyAdvisor.cpp Source\SlowPushManager.cpp Source\Squad.cpp Source\StrategyGoal.cpp Source\VultureSpiderMineManager.cpp SpiderMineManager.cpp SquadManager.cpp StrategyManager.cpp Source\LUSCBWAI.cpp Source\Dll.cpp ..\Addons\EnhancedUI.cpp ..\Addons\Util.cpp ..\Addons\WorkerManager.cpp ..\Addons\Base.cpp ..\Addons\BaseManager.cpp ..\Addons\BorderManager.cpp ..\Addons\BuildingPlacer.cpp ..\Addons\BuildManager.cpp ..\Addons\BuildOrderManager.cpp ..\Addons\MetaUnit.cpp ..\Addons\UnitItem.cpp ..\Addons\ConstructionManager.cpp ..\Addons\DefenseManager.cpp ..\Addons\InformationManager.cpp ..\Addons\MorphManager.cpp ..\Addons\ProductionManager.cpp ..\Addons\ScoutManager.cpp ..\Addons\SupplyManager.cpp ..\Addons\TechManager.cpp ..\Addons\UnitGroup.cpp ..\Addons\UnitGroupManager.cpp ..\Addons\UpgradeManager.cpp Source\Zeus.cpp
          Assignment.cpp
-         ChokePointAdvisor.cpp
-         ChokePriority.cpp
          PositionAdvisor.cpp
      1>PositionAdvisor.cpp(10): warning C4018: '<' : signed/unsigned mismatch
      1>PositionAdvisor.cpp(17): warning C4018: '<' : signed/unsigned mismatch
      1>PositionAdvisor.cpp(104): warning C4244: 'initializing' : conversion from 'double' to 'int', possible loss of data
      1>PositionAdvisor.cpp(114): warning C4244: 'return' : conversion from 'double' to 'int', possible loss of data
-         SlowPushManager.cpp
+         ChokePointAdvisor.cpp
+         ChokePriority.cpp
          ComSatManager.cpp
          DebugPrinter.cpp
          GoalManager.cpp
@@ -18,15 +17,17 @@
          GoalManager.cpp
          MacroManager.cpp
          SafetyAdvisor.cpp
-         StrategyGoal.cpp
-         SpiderMineManager.cpp
+         SlowPushManager.cpp
          Squad.cpp
+         StrategyGoal.cpp
+         VultureSpiderMineManager.cpp
+         SpiderMineManager.cpp
          SquadManager.cpp
          StrategyManager.cpp
          LUSCBWAI.cpp
          Dll.cpp
-         EnhancedUI.cpp
          Compiling...
+         EnhancedUI.cpp
          Util.cpp
          WorkerManager.cpp
          Base.cpp
@@ -46,17 +47,15 @@
          SupplyManager.cpp
          TechManager.cpp
          UnitGroup.cpp
-         UnitGroupManager.cpp
          Compiling...
+         UnitGroupManager.cpp
          UpgradeManager.cpp
          Zeus.cpp
-         VultureSpiderMineManager.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 9.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\Release\LUSCBWAI.dll" /INCREMENTAL:NO /NOLOGO ../lib/BWAPI.lib ../lib/BWTA.lib ../lib/tinyxml.lib "../lib/CGAL-vc90-mt.lib" "../lib/libboost_thread-vc90-mt-1_40.lib" "../lib/gmp-vc90-mt.lib" "../lib/mpfr-vc90-mt.lib" kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Release\LUSCBWAI.dll.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\Release\LUSCBWAI.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\Release\LUSCBWAI.lib" /MACHINE:X86 /DLL Release\Assignment.obj
+         Release\PositionAdvisor.obj
          Release\ChokePointAdvisor.obj
          Release\ChokePriority.obj
-         Release\PositionAdvisor.obj
-         Release\SlowPushManager.obj
          Release\ComSatManager.obj
          Release\DebugPrinter.obj
          Release\GoalManager.obj
@@ -64,9 +63,11 @@
          Release\GoalManager.obj
          Release\MacroManager.obj
          Release\SafetyAdvisor.obj
-         Release\StrategyGoal.obj
-         Release\SpiderMineManager.obj
+         Release\SlowPushManager.obj
          Release\Squad.obj
+         Release\StrategyGoal.obj
+         Release\VultureSpiderMineManager.obj
+         Release\SpiderMineManager.obj
          Release\SquadManager.obj
          Release\StrategyManager.obj
          Release\LUSCBWAI.obj
@@ -94,7 +95,6 @@
          Release\UnitGroupManager.obj
          Release\UpgradeManager.obj
          Release\Zeus.obj
-         Release\VultureSpiderMineManager.obj
      1>Release\GoalManager.obj : warning LNK4042: object specified more than once; extras ignored
             Creating library C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\Release\LUSCBWAI.lib and object C:\Users\dustin\Documents\GitHub\luscbwai\LUSCBWAI\Release\LUSCBWAI.exp
      1>LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
@@ -111,4 +111,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:18.34
+Time Elapsed 00:00:18.23

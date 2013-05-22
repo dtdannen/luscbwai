@@ -10,16 +10,16 @@
 */
 class ChokePriority {
 public:
-	ChokePriority(BWTA::Chokepoint*, int, ChokePointAdvisor);
+	ChokePriority(BWTA::Chokepoint*, int, ChokePointAdvisor*);
 	BWTA::Chokepoint* getChokepoint();
 	int getPriority();
 	Squad* getSquad();
 	void setSquad(Squad* squad);
-	ChokePointAdvisor getAdvisor();
+	ChokePointAdvisor* getAdvisor();
 
 private:
 	BWTA::Chokepoint* chokepoint;
 	int priority;
 	Squad* squad;
-	ChokePointAdvisor advisor;
+	ChokePointAdvisor* advisor;
 };

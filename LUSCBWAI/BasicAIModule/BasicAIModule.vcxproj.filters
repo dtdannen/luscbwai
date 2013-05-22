@@ -189,28 +189,28 @@
     <ClCompile Include="Source\ComSatManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="VultureSpiderMineManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PositionAdvisor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Squad.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChokePointAdvisor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SlowPushManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ChokePriority.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\LUSCBWAI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\SafetyAdvisor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ChokePointAdvisor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\SlowPushManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Squad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ChokePriority.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\VultureSpiderMineManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -326,28 +326,28 @@
     <ClInclude Include="Source\ComSatManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="VultureSpiderMineManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="PositionAdvisor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Squad.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChokePointAdvisor.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SlowPushManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ChokePriority.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\LUSCBWAI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Source\SafetyAdvisor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ChokePointAdvisor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\SlowPushManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Squad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ChokePriority.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\VultureSpiderMineManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

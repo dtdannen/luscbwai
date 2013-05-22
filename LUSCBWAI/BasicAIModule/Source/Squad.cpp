@@ -1,7 +1,7 @@
 #include "Squad.h"
 
 
-Squad::Squad(std::map<BWAPI::UnitType*, int> unitsPerSquad, ChokePointAdvisor advisor)
+Squad::Squad(std::map<BWAPI::UnitType*, int> unitsPerSquad, ChokePointAdvisor* advisor)
 {
 	for(std::map<BWAPI::UnitType*, int>::iterator i = unitsPerSquad.begin(); 
 												  i != unitsPerSquad.end(); i++)
@@ -129,7 +129,7 @@ void Squad::flee()
 	for(std::set<BWTA::Chokepoint*>::iterator i = chokes.begin(); i != chokes.end(); i++)
 	{
 		//"3" appears to mean that we have control.
-		if(chokePointAdvisor.pollChoke(*i) == 3 && position->getDistance((*i)->getCenter()) <= position->getDistance((closestSafeChoke->getCenter())))
+		if(chokePointAdvisor->pollChoke(*i) == 3 && position->getDistance((*i)->getCenter()) <= position->getDistance((closestSafeChoke->getCenter())))
 		{
 			existsSafeChoke = true;
 			closestSafeChoke = *i;
