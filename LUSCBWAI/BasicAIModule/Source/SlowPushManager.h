@@ -37,6 +37,7 @@ class SlowPushManager : Arbitrator::Controller<BWAPI::Unit*,double>
 	std::set<BWTA::Chokepoint*> getNextChokepoints(); 
 	bool readyForNewCommand();
 	void advanceSlowPush(std::set<BWTA::Chokepoint*> nextChokepoints); 
+	std::vector<ChokePriority> chokePrioritySet;
 	//void update();
 };
 

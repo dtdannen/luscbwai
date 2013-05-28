@@ -10,6 +10,7 @@ SlowPushManager::SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *ar
 {
 	this->arbitrator = arbitrator;
 	this->chokePointAdvisor = chokePointAdvisor;
+	this->chokePrioritySet = std::vector<ChokePriority>();
 }
 
 void SlowPushManager::giveGoal(int g) {
@@ -33,7 +34,7 @@ void SlowPushManager::update() {
 		}
 	}
 
-	if (readyForNewCommand() && goal == SLOWPUSH) {
+	if (this->armyUnits.size() != 0 && readyForNewCommand() && goal == SLOWPUSH) {
 		//BWAPI::Broodwar->sendText("About to call distribute units in SlowPushManager -----------");
 		std::set<BWTA::Chokepoint*> chokepoints = getNextChokepoints();
 		distributeUnits(chokepoints);
@@ -43,7 +44,27 @@ void SlowPushManager::update() {
 
 // bug is here!!
 void SlowPushManager::distributeUnits(std::set<BWTA::Chokepoint*> chokepoints) {
-	std::vector<ChokePriority> chokePrioritySet = std::vector<ChokePriority>();
+	// merge any new chokepoints into the current set of choke priorities
+	bool isNewChokepoint = true;
+	for (std::set<BWTA::Chokepoint*>::iterator c = chokepoints.begin(); c != chokepoints.end();c++){
+		isNewChokepoint = true;
+		// check to see if any of the current choke prioities represent this chokepoint
+		for (std::vector<ChokePriority>::iterator cp = this->chokePrioritySet.begin(); 
+			cp != this->chokePrioritySet.end(); cp++) {
+				if ((*c)->getCenter().x() == (*cp).getChokepoint()->getCenter().x() &&
+					(*c)->getCenter().y() == (*cp).getChokepoint()->getCenter().y()) {
+					// the center of a chokepoint can be used as a unique identifier
+					// if they match, this is not new
+					isNewChokepoint = false;
+				}
+			}
+		if (isNewChokepoint) {
+			// add to the chokepriorities set
+			BWAPI::Broodwar->sendText("Added a new choke point to the choke priority set!!!!!");
+			this->chokePrioritySet.push_back(ChokePriority((*c),this->chokePointAdvisor->pollChoke((*c)), this->chokePointAdvisor));
+		}
+	}
+
 	std::set<BWAPI::Unit*> tanks;
 	std::set<BWAPI::Unit*> marines;
 	std::set<BWAPI::Unit*> vultures;
@@ -63,48 +84,59 @@ void SlowPushManager::distributeUnits(std::set<BWTA::Chokepoint*> chokepoints) {
 	}
 
 	// Getting priority of each chokepoint.
-	for (std::set<BWTA::Chokepoint*>::iterator i = chokepoints.begin(); i != chokepoints.end(); i++) {
-		ChokePriority choke = ChokePriority(*i, chokePointAdvisor->pollChoke(*i), chokePointAdvisor);
-
-		// this is where its failing
-		chokePrioritySet.push_back(choke);
-
-
-		totalPriority += choke.getPriority();
+	for (std::vector<ChokePriority>::iterator cp = this->chokePrioritySet.begin(); 
+			cp != this->chokePrioritySet.end(); cp++) {
+		totalPriority += (*cp).getPriority();
 	}
 
-	
+
 
 	// Dividing units by chokepoint priority.
 	// Unit iterators
 	std::set<BWAPI::Unit*>::iterator t = tanks.begin();
-	BWAPI::Broodwar->sendText("SlowPushManager has %d tanks", tanks.size());
+	//BWAPI::Broodwar->sendText("SlowPushManager has %d tanks", tanks.size());
 	std::set<BWAPI::Unit*>::iterator m = marines.begin();
-	BWAPI::Broodwar->sendText("SlowPushManager has %d marines", marines.size());
+	//BWAPI::Broodwar->sendText("SlowPushManager has %d marines", marines.size());
 	std::set<BWAPI::Unit*>::iterator v = vultures.begin();
-	BWAPI::Broodwar->sendText("SlowPushManager has %d vultures", vultures.size());
+	//BWAPI::Broodwar->sendText("SlowPushManager has %d vultures", vultures.size());
 
-	BWAPI::Broodwar->sendText("SlowPushManager has %d chokepriorities", chokePrioritySet.size());
+	//BWAPI::Broodwar->sendText("SlowPushManager has %d chokepriorities", chokePrioritySet.size());
 
 	// Unit counters
 	int tc = 0;
 	int mc = 0;
 	int vc = 0;
+
+	// TO-DO [dtdannen]: may need to check that a unit does not exist in another squad before adding
+	// it to a new squad.
+
 	for (std::vector<ChokePriority>::iterator i = chokePrioritySet.begin(); i != chokePrioritySet.end(); i++) {
+		// whatever the percentage priority the current chokepoint has compared to the total,
+		// assign that percentage of units to that choke point
 		for (int u = tc; u != (((*i).getPriority()/totalPriority) * (tanks.size())); u++) {
-			(*i).getSquad()->addUnit(*t);
-			t++;
-			tc++;
+			if (!(*i).getSquad()->hasUnit(*t)) {
+				//BWAPI::Broodwar->sendText("Adding tank to chokePriority", chokePrioritySet.size());
+				(*i).getSquad()->addUnit(*t);
+				t++;
+				tc++;
+			}
 		}
 		for (int u = mc; u != (((*i).getPriority()/totalPriority) * (marines.size())); u++) {
-			(*i).getSquad()->addUnit(*m);
-			m++;
-			mc++;
+			//BWAPI::Broodwar->sendText("Squad does not have marine with id %d", (*m)->getID());
+			if (!(*i).getSquad()->hasUnit(*m)) {
+				//BWAPI::Broodwar->sendText("Adding marine with id %d to chokePriority", (*m)->getID());
+				(*i).getSquad()->addUnit(*m);
+				m++;
+				mc++;
+			}
 		}
 		for (int u = vc; u != (((*i).getPriority()/totalPriority) * (vultures.size())); u++) {
-			(*i).getSquad()->addUnit(*v);
-			v++;
-			vc++;
+			if (!(*i).getSquad()->hasUnit(*v)) {
+				//BWAPI::Broodwar->sendText("Adding vulture to chokePriority", chokePrioritySet.size());
+				(*i).getSquad()->addUnit(*v);
+				v++;
+				vc++;
+			}
 		}
 	}
 
@@ -119,6 +151,7 @@ bool SlowPushManager::readyForNewCommand() {
 			// this squad does not have all its units in position
 				return false;
 	}
+	//BWAPI::Broodwar->sendText("Ready for new command returns true, which means all %d squads are in position", chokePrioritySet.size());
 	return true;
 }
 
@@ -175,6 +208,7 @@ void SlowPushManager::onOffer(std::set<BWAPI::Unit*> units)
 			//BWAPI::Broodwar->sendText("SlowPushManager received on another unit!");
 		}
 	}
+	this->distributeUnits(getNextChokepoints());
 }
 
 void SlowPushManager::onRevoke(BWAPI::Unit* unit, double bid)

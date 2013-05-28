@@ -157,6 +157,8 @@ void LUSCBWAIModule::onFrame()
 	// update slow push manager
 	this->slowPushManager->update();
 
+	
+
 	// Draw active/not active mode
 	std::set<Unit*> units=Broodwar->self()->getUnits();
 	if (this->showManagerAssignments)

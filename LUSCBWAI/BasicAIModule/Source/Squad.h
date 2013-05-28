@@ -77,6 +77,11 @@ public:
 		Should be called every frame.
 	*/
 	void update();
+
+	/*!
+		\return True iff the given unit is already part of the squad
+	*/
+	bool hasUnit(BWAPI::Unit* u);
 private:
 	std::map<BWAPI::UnitType*, BWAPI::Unit*> units;
 	ChokePointAdvisor* chokePointAdvisor;

@@ -190,6 +190,7 @@ std::set<BWAPI::Unit*> Squad::getTargetableEnemies()
 
 int Squad::getNumInPosition()
 {
+	
 	int count = 0;
 	for(std::map<BWAPI::UnitType*,BWAPI::Unit*>::iterator i = units.begin(); i != units.end(); i++)
 	{
@@ -226,6 +227,7 @@ std::set<BWAPI::Unit*> Squad::getDangerousEnemies()
 
 bool Squad::isInRange(BWAPI::Unit* u)
 {
+	BWAPI::Broodwar->sendText("calling public is in range unit");
 	if(behavior == AGGRESSIVE)
 		return isInRange(u, 2);
 	return isInRange(u, 1);
@@ -234,7 +236,23 @@ bool Squad::isInRange(BWAPI::Unit* u)
 
 bool Squad::isInRange(BWAPI::Unit* u, int positionModifier)
 {
-	double posDistance = u->getPosition().getDistance(*position) * positionModifier;
+	double posDistance = u->getPosition().getApproxDistance(*position) * positionModifier;
+	BWAPI::Broodwar->sendText("-------------------------------------------------------------");
+	BWAPI::Broodwar->sendText("posDistance is %d", posDistance);
 	int seekRange = u->getType().seekRange();
+	BWAPI::Broodwar->sendText("seekRange is %d", seekRange);
+	BWAPI::Broodwar->sendText("-------------------------------------------------------------");
 	return posDistance < seekRange;
+}
+
+
+bool Squad::hasUnit(BWAPI::Unit* u) {
+	for(std::map<BWAPI::UnitType*,BWAPI::Unit*>::iterator i = units.begin(); i != units.end(); i++)
+	{
+		if((*i).second->getID() == u->getID())
+		{
+			return true;
+		}
+	}
+	return false;
 }
