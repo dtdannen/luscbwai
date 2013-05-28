@@ -53,6 +53,11 @@ void LUSCBWAIModule::onStart()
 
 	this->chokePointAdvisor = new ChokePointAdvisor();
 	this->slowPushManager = new SlowPushManager(&this->arbitrator, this->chokePointAdvisor);
+	this->slowPushManager->giveGoal(SlowPushManager::SLOWPUSH);
+
+
+	// add the enemy starting base to the choke advisor
+	this->chokePointAdvisor->addEnemyBase(BWTA::getStartLocation(Broodwar->enemy()));
 
 	// Zeus controls the high level goal that guides the bot's actions
 	Zeus::Instance().setMacroManager(goalManager);
@@ -114,6 +119,8 @@ LUSCBWAIModule::~LUSCBWAIModule()
 	delete this->supplyManager;
 	delete this->buildOrderManager;
 	delete this->baseManager;
+	delete this->slowPushManager;
+	delete this->chokePointAdvisor;
 	//delete this->defenseManager;
 	InformationManager::destroy();
 	BorderManager::destroy();
@@ -146,6 +153,9 @@ void LUSCBWAIModule::onFrame()
 
 	if (Broodwar->getFrameCount()>24*50)
 		scoutManager->setScoutCount(1);
+
+	// update slow push manager
+	this->slowPushManager->update();
 
 	// Draw active/not active mode
 	std::set<Unit*> units=Broodwar->self()->getUnits();

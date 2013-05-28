@@ -14,8 +14,9 @@ void ChokePointAdvisor::update()
 {
 }
 
-void ChokePointAdvisor::addBase(BWTA::BaseLocation* base)
+void ChokePointAdvisor::addEnemyBase(BWTA::BaseLocation* base)
 {
+	// checks to make sure this base is not already in enemyBases
 	for(std::set<BWTA::BaseLocation*>::iterator i=enemyBases.begin();i!=enemyBases.end();i++) {
 		if((*i)->getGroundDistance(base) == 0) return;
 	}
@@ -23,7 +24,7 @@ void ChokePointAdvisor::addBase(BWTA::BaseLocation* base)
 	enemyBases.insert(base);
 }
 
-void ChokePointAdvisor::removeBase(BWTA::BaseLocation* base)
+void ChokePointAdvisor::removeEnemyBase(BWTA::BaseLocation* base)
 {
 	for(std::set<BWTA::BaseLocation*>::iterator i=enemyBases.begin();i!=enemyBases.end();i++) {
 		if((*i)->getGroundDistance(base) == 0)

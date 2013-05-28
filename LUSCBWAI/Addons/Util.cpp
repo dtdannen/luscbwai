@@ -2,6 +2,7 @@
 #include <fstream>
 #include <stdarg.h>
 #include <sys/stat.h>
+
 char buffer[1024];
 void log(const char* text, ...)
 {

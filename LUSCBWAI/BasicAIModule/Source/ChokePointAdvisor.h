@@ -26,11 +26,11 @@ public:
 	/**
 	 * Adds a base location to enemyBases.
 	 */
-	void addBase(BWTA::BaseLocation* base);
+	void addEnemyBase(BWTA::BaseLocation* base);
 	/**
 	 * Removes a base location to enemyBases.
 	 */
-	void removeBase(BWTA::BaseLocation* base);
+	void removeEnemyBase(BWTA::BaseLocation* base);
 	/**
 	 * Main poll method - wrapper method for basic polling.
 	 */

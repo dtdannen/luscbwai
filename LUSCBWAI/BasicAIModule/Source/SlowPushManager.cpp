@@ -3,7 +3,7 @@
 #include <BorderManager.h>
 #include <UnitGroupManager.h>
 #include "ChokePointAdvisor.h"
-
+#include "../Addons/Util.h"
 
 
 SlowPushManager::SlowPushManager(Arbitrator::Arbitrator<BWAPI::Unit*,double> *arbitrator, ChokePointAdvisor *chokePointAdvisor)
@@ -17,7 +17,24 @@ void SlowPushManager::giveGoal(int g) {
 }
 
 void SlowPushManager::update() {
+	// Bid on all completed military units
+	std::set<BWAPI::Unit*> myPlayerUnits=BWAPI::Broodwar->self()->getUnits();
+	for (std::set<BWAPI::Unit*>::iterator u = myPlayerUnits.begin(); u != myPlayerUnits.end(); u++)
+	{
+		if (this->armyUnits.find((*u)) == this->armyUnits.end() && // don't bid if we alreayd have
+			(*u)->isCompleted() && 
+			!(*u)->getType().isWorker() && 
+			!(*u)->getType().isBuilding() &&
+			(*u)->getType() != BWAPI::UnitTypes::Zerg_Egg &&
+			(*u)->getType() != BWAPI::UnitTypes::Zerg_Larva)
+		{
+			arbitrator->setBid(this, *u, 20);
+			//BWAPI::Broodwar->sendText("SlowPushManager bid on another unit!");
+		}
+	}
+
 	if (readyForNewCommand() && goal == SLOWPUSH) {
+		//BWAPI::Broodwar->sendText("About to call distribute units in SlowPushManager -----------");
 		std::set<BWTA::Chokepoint*> chokepoints = getNextChokepoints();
 		distributeUnits(chokepoints);
 		advanceSlowPush(chokepoints);
@@ -32,31 +49,43 @@ void SlowPushManager::distributeUnits(std::set<BWTA::Chokepoint*> chokepoints) {
 	std::set<BWAPI::Unit*> vultures;
 	double bid = 100;
 	int totalPriority = 0;
-	
-	// Getting all attack units.
-	tanks = SelectAll()(Siege_Tank)(isCompleted);
-	marines = SelectAll()(Marine)(isCompleted);
-	vultures = SelectAll()(Vulture)(isCompleted);
-	arbitrator->setBid(this, tanks, bid); // Got this from scoutManger where it works?
-	arbitrator->setBid(this, marines, bid);
-	arbitrator->setBid(this, vultures, bid);
-	
+
+	// break up units into sets for tanks, marines, and vultures
+	for (std::set<BWAPI::Unit*>::iterator i = armyUnits.begin(); i != armyUnits.end(); i++) {
+		if ((*i)->getType().getID() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode.getID() ||
+			(*i)->getType().getID() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode.getID()) {
+				tanks.insert((*i));
+		}else if ((*i)->getType().getID() == BWAPI::UnitTypes::Terran_Marine.getID()) {
+			marines.insert((*i));
+		}else if ((*i)->getType().getID() == BWAPI::UnitTypes::Terran_Vulture.getID()) {
+			vultures.insert((*i));
+		}
+	}
+
 	// Getting priority of each chokepoint.
 	for (std::set<BWTA::Chokepoint*>::iterator i = chokepoints.begin(); i != chokepoints.end(); i++) {
 		ChokePriority choke = ChokePriority(*i, chokePointAdvisor->pollChoke(*i), chokePointAdvisor);
 
 		// this is where its failing
 		chokePrioritySet.push_back(choke);
-			
+
 
 		totalPriority += choke.getPriority();
 	}
+
 	
+
 	// Dividing units by chokepoint priority.
 	// Unit iterators
 	std::set<BWAPI::Unit*>::iterator t = tanks.begin();
+	BWAPI::Broodwar->sendText("SlowPushManager has %d tanks", tanks.size());
 	std::set<BWAPI::Unit*>::iterator m = marines.begin();
+	BWAPI::Broodwar->sendText("SlowPushManager has %d marines", marines.size());
 	std::set<BWAPI::Unit*>::iterator v = vultures.begin();
+	BWAPI::Broodwar->sendText("SlowPushManager has %d vultures", vultures.size());
+
+	BWAPI::Broodwar->sendText("SlowPushManager has %d chokepriorities", chokePrioritySet.size());
+
 	// Unit counters
 	int tc = 0;
 	int mc = 0;
@@ -80,7 +109,7 @@ void SlowPushManager::distributeUnits(std::set<BWTA::Chokepoint*> chokepoints) {
 	}
 
 	squads = chokePrioritySet;
-	
+
 }
 
 bool SlowPushManager::readyForNewCommand() {
@@ -88,7 +117,7 @@ bool SlowPushManager::readyForNewCommand() {
 	for (std::vector<ChokePriority>::iterator i = squads.begin(); i != squads.end(); i++) {
 		if (i->getSquad()->getNumInPosition() != i->getSquad()->getNumUnits()) 
 			// this squad does not have all its units in position
-			return false;
+				return false;
 	}
 	return true;
 }
@@ -97,8 +126,8 @@ void SlowPushManager::advanceSlowPush(std::set<BWTA::Chokepoint*> nextChokepoint
 	for (std::vector<ChokePriority>::iterator i = squads.begin(); i != squads.end(); i++) {
 		BWAPI::Position pos = (i->getChokepoint()->getCenter());
 		BWAPI::Position* newPos = new BWAPI::Position(pos.x(), pos.y());
-			
-			
+
+
 		(*i).getSquad()->moveSquad(newPos);
 	}
 }
@@ -126,25 +155,26 @@ std::set<BWTA::Chokepoint*> SlowPushManager::getNextChokepoints() {
 
 std::string SlowPushManager::getName() const
 {
-  return "Slow Push Manager";
+	return "Slow Push Manager";
 }
 
 std::string SlowPushManager::getShortName() const
 {
-  return "SlwPsh";
+	return "SlwPsh";
 }
 
 // adds new army units from arbitrator to the manager's units
 void SlowPushManager::onOffer(std::set<BWAPI::Unit*> units)
 {
-  for(std::set<BWAPI::Unit*>::iterator u = units.begin(); u != units.end(); u++)
-  {
-	  if (armyUnits.find(*u) == armyUnits.end())
-    {
-      arbitrator->accept(this, *u);
-	  armyUnits.insert(*u);
-    }
-  }
+	for(std::set<BWAPI::Unit*>::iterator u = units.begin(); u != units.end(); u++)
+	{
+		if (armyUnits.find(*u) == armyUnits.end())
+		{
+			arbitrator->accept(this, *u);
+			armyUnits.insert(*u);
+			//BWAPI::Broodwar->sendText("SlowPushManager received on another unit!");
+		}
+	}
 }
 
 void SlowPushManager::onRevoke(BWAPI::Unit* unit, double bid)
