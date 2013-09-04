@@ -1,1 +1,0 @@
-public enum class StrategyGoal { SLOW_PUSH };
