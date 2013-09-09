@@ -20,7 +20,18 @@ ProductionManager::ProductionManager()
 {
 	populateTypeCharMap();
 
-	setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
+
+	std::vector<MetaType> buildOrder;
+
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+
+	setBuildOrder(buildOrder);
+	// setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
 }
 
 void ProductionManager::setBuildOrder(const std::vector<MetaType> & buildOrder)

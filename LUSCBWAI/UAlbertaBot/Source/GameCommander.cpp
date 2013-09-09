@@ -4,7 +4,6 @@
 
 GameCommander::GameCommander() : numWorkerScouts(0), currentScout(NULL)
 {
-
 }
 
 void GameCommander::update()
