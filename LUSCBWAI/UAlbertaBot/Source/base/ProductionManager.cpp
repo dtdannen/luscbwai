@@ -25,10 +25,20 @@ ProductionManager::ProductionManager()
 
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot)); //scout when done
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 
 	setBuildOrder(buildOrder);
 	// setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
