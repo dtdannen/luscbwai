@@ -10,6 +10,7 @@
 #include <cstdlib>
 
 #include "..\..\StarcraftBuildOrderSearch\Source\starcraftsearch\StarcraftData.hpp"
+#include "ColorGraph.h"
 
 typedef std::pair<int, int> IntPair;
 typedef std::pair<MetaType, UnitCountType> MetaPair;
@@ -34,6 +35,8 @@ class StrategyManager
 	BWAPI::Race					enemyRace;
 
 	bool						firstAttackSent;
+
+	ColorGraph					colorGraph;
 
 	void	addStrategies();
 	void	setStrategy();

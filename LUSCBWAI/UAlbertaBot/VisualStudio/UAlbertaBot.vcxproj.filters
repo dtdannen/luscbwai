@@ -156,6 +156,8 @@
     <ClCompile Include="..\Source\ReplayVisualizer.cpp">
       <Filter>extra</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\ColorGraph.cpp" />
+    <ClCompile Include="..\Source\ColorNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -278,5 +280,7 @@
     <ClInclude Include="..\Source\ReplayVisualizer.h">
       <Filter>extra</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\ColorGraph.h" />
+    <ClInclude Include="..\Source\ColorNode.h" />
   </ItemGroup>
 </Project>

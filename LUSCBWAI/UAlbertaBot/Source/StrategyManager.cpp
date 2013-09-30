@@ -10,6 +10,7 @@ StrategyManager::StrategyManager()
 {
 	addStrategies();
 	setStrategy();
+	colorGraph = ColorGraph();
 }
 
 // get an instance of this
