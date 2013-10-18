@@ -1,6 +1,6 @@
 #pragma once
 #include <Common.h>
-enum NodeColor { GREEN, YELLOW, ORANGE, RED, BLACK };
+enum NodeColor { GREEN, ORANGE, RED, BLACK }; // No more yellow!
 
 class ColorNode
 {

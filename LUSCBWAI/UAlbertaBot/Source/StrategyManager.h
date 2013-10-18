@@ -36,8 +36,6 @@ class StrategyManager
 
 	bool						firstAttackSent;
 
-	ColorGraph					colorGraph;
-
 	void	addStrategies();
 	void	setStrategy();
 	void	readResults();

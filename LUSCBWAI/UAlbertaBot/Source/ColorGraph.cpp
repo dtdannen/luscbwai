@@ -18,6 +18,8 @@ ColorGraph::ColorGraph(void)
 		nodeId++;
 	}
 
+	graphSize = nodeId;
+
 	// Map nodes to connected nodes
 	for each (BWTA::Region * region in BWTA::getRegions())
 	{
@@ -54,6 +56,10 @@ std::list<int> ColorGraph::getNodeNeighbors(int id)
 	return nodeMap[id]->getNeighbors();
 }
 
+int ColorGraph::size()
+{
+	return graphSize;
+}
 
 void ColorGraph::updateColors()
 {
@@ -61,4 +67,15 @@ void ColorGraph::updateColors()
 	// Needs to get information about what's in each region and how confident we are
 	// that we control it. Most likely this should be stored in the StrategyManager
 	// or InformationManager
+}
+
+int ColorGraph::getNodeAtPosition(BWAPI::Position position)
+{
+	return locationMap[position];
+}
+
+ColorGraph & ColorGraph::Instance() 
+{
+	static ColorGraph instance;
+	return instance;
 }
