@@ -79,3 +79,7 @@ ColorGraph & ColorGraph::Instance()
 	static ColorGraph instance;
 	return instance;
 }
+
+ColorNode * ColorGraph::getNodeById(int id) {
+	return nodeMap[id];
+}

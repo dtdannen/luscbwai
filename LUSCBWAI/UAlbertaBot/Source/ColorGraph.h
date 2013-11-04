@@ -21,6 +21,7 @@ public:
 	std::list<int> getNodeNeighbors(int id);
 	int size();
 	int getNodeAtPosition(BWAPI::Position position);
+	ColorNode* getNodeById(int);
 
 	void updateColors();
 };
