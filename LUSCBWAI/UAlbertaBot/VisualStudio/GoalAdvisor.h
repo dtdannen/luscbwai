@@ -7,22 +7,19 @@
 #include "ColorGraph.h"
 #include "ColorNode.h"
 
-#ifndef GOAL_ADVISOR
-#define GOAL_ADVISOR
+#pragma once
 
 class ColorNode;
 
 class GoalAdvisor {
 
 private:
-	ColorNode* goalNode;
-	ColorNode* originNode;
+	int goalNode;
+	int originNode;
 
 public:
-	ColorNode* getGoalRegion();
+	int getGoalRegion();
 	void update();
 	GoalAdvisor();
 	~GoalAdvisor();
 }
-
-#endif
