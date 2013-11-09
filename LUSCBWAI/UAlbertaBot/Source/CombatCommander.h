@@ -5,6 +5,7 @@
 #include "SquadData.h"
 #include "InformationManager.h"
 #include "StrategyManager.h"
+#include "GoalAdvisor.h"
 
 class CombatCommander
 {

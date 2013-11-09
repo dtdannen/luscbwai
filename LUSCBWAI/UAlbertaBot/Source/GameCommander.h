@@ -9,6 +9,7 @@
 #include "base/BuildingManager.h"
 #include "ScoutManager.h"
 #include "StrategyManager.h"
+#include "GoalAdvisor.h"
 
 #include "..\..\StarcraftBuildOrderSearch\Source\starcraftsearch\Timer.hpp"
 
@@ -22,7 +23,7 @@ class TimerManager
 
 public:
 
-	enum Type { All, Worker, Production, Building, Combat, Scout, InformationManager, MapGrid, MapTools, Search, NumTypes };
+	enum Type { All, Worker, Production, Building, Combat, Scout, InformationManager, MapGrid, MapTools, Search, GoalCreation, NumTypes };
 
 
 	TimerManager() : timers(std::vector<BuildOrderSearch::Timer>(NumTypes)), barWidth(40)
@@ -36,6 +37,7 @@ public:
 		timerNames.push_back("UnitInfo");
 		timerNames.push_back("MapGrid");
 		timerNames.push_back("MapTools");
+		timerNames.push_back("GoalCreation");
 		timerNames.push_back("Search");
 	}
 
