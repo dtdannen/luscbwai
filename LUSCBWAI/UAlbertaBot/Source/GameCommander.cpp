@@ -9,7 +9,6 @@ GameCommander::GameCommander() : numWorkerScouts(0), numComsats(0), currentScout
 void GameCommander::update()
 {
 	timerManager.startTimer(TimerManager::All);
-	
 
 	// economy and base managers
 	timerManager.startTimer(TimerManager::Worker);
@@ -27,6 +26,10 @@ void GameCommander::update()
 	timerManager.stopTimer(TimerManager::Building);
 
 	// combat and scouting managers
+	timerManager.startTimer(TimerManager::GoalCreation);
+	GoalAdvisor::Instance().update();
+	timerManager.stopTimer(TimerManager::GoalCreation);
+
 	timerManager.startTimer(TimerManager::Combat);
 	combatCommander.update(combatUnits);
 	timerManager.stopTimer(TimerManager::Combat);

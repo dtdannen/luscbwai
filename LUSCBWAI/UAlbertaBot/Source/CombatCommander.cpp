@@ -33,8 +33,8 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		assignIdleSquads(unitsToAssign);*/
 
 		UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
-		int rand = std::rand() % (ColorGraph::Instance().size());
-		squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  ColorGraph::Instance().getNodeCenter(rand), 1000,  "Move Test")));
+		squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
+			ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()), 1000,  "Move Test")));
 	}
 
 	squadData.update();
