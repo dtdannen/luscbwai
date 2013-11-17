@@ -115,6 +115,7 @@
     </Link>
     <PostBuildEvent>
       <Command>copy "$(TargetPath)" "$(BWAPI_DIR)\..\bwapi-data\AI\$(TargetFileName)"</Command>
+      <Message>Copy the compiled DLL into the appropriate directory to be able to run in ChaosLauncher.</Message>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -2,25 +2,36 @@
 #include "ScoutManager.h"
 #include "InformationManager.h"
 
-ScoutManager::ScoutManager() : workerScout(NULL), numWorkerScouts(0), scoutUnderAttack(false)
+ScoutManager::ScoutManager() : workerScout(NULL), numWorkerScouts(0), numComsats(0), scoutUnderAttack(false)
 {
 }
 
 void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 {
-	if (scoutUnits.size() == 1)
+	if (scoutUnits.size() > 0)
 	{
-		BWAPI::Unit * scoutUnit = *scoutUnits.begin();
-
-		if (scoutUnit->getType().isWorker())
+		BOOST_FOREACH(BWAPI::Unit * scoutUnit, scoutUnits)
 		{
-			if (scoutUnit != workerScout)
+
+			if (scoutUnit->getType().isWorker())
 			{
-				numWorkerScouts++;
-				workerScout = scoutUnit;
+				if (scoutUnit != workerScout)
+				{
+					numWorkerScouts++;
+					workerScout = scoutUnit;
+				}
+			}
+			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
+			{
+				//TODO: we need to know where we want to scan based on color graph, then scan
+				//or somehow note that scanner is available?
+				//moveScouts will return 
+				numComsats++;
 			}
 		}
 	}
+
+	//TODO: make a good decision about whether or not we should scan AND what area we should scan
 
 	moveScouts();
 }
@@ -37,6 +48,16 @@ void ScoutManager::moveScouts()
 
 	// determine the region that the enemy is in
 	BWTA::Region * enemyRegion = enemyBaseLocation ? enemyBaseLocation->getRegion() : NULL;
+	if (enemyRegion)
+	{
+		int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(enemyBaseLocation->getPosition());
+		ColorNode enemyBaseNode(enemyBaseNodeNum);
+
+		if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+		{
+			enemyBaseNode.setColor(NodeColor::RED);
+		}
+	}
 
 	// determine the region the scout is in
 	BWAPI::TilePosition scoutTile(workerScout->getPosition());

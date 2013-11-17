@@ -2,7 +2,7 @@
 #include "GameCommander.h"
 
 
-GameCommander::GameCommander() : numWorkerScouts(0), currentScout(NULL)
+GameCommander::GameCommander() : numWorkerScouts(0), numComsats(0), currentScout(NULL)
 {
 }
 
@@ -139,6 +139,20 @@ void GameCommander::setScoutUnits()
 			}
 		}
 	}
+
+	//if we have comsats, add them to scoutUnits
+	
+		BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+		{
+			if(!isAssigned(unit) && unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station && !unit->isBeingConstructed())
+			{
+				 numComsats++;
+				 scoutUnits.insert(unit);
+				 assignedUnits.insert(unit);
+			}
+		}
+
+	
 }
 
 // sets combat units to be passed to CombatCommander

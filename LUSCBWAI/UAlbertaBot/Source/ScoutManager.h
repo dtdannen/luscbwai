@@ -3,10 +3,12 @@
 #include "Common.h"
 #include "micromanagement/MicroManager.h"
 #include "micromanagement/MicroUtil.h"
+#include "ColorGraph.h"
 
 class ScoutManager {
 
 	BWAPI::Unit *	workerScout;
+	int				numComsats;
 	int				numWorkerScouts;
 
 	bool			immediateThreat();
