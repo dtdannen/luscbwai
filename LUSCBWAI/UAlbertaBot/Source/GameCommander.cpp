@@ -145,7 +145,7 @@ void GameCommander::setScoutUnits()
 
 	//if we have comsats, add them to scoutUnits
 	
-		BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
+		BOOST_FOREACH (BWAPI::Unit *unit, BWAPI::Broodwar->self()->getUnits())
 		{
 			if(!isAssigned(unit) && unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station && !unit->isBeingConstructed())
 			{

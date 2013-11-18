@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "ScoutManager.h"
 #include "InformationManager.h"
+#include "base/ProductionManager.h"
 
 ScoutManager::ScoutManager() : workerScout(NULL), numWorkerScouts(0), numComsats(0), scoutUnderAttack(false)
 {
@@ -23,10 +24,26 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 			}
 			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
 			{
-				//TODO: we need to know where we want to scan based on color graph, then scan
-				//or somehow note that scanner is available?
-				//moveScouts will return 
 				numComsats++;
+
+				int goalNode = GoalAdvisor::Instance().getGoalRegion();
+
+				BWAPI::UnitCommand temp = BWAPI::UnitCommand::useTech(scoutUnit,BWAPI::TechTypes::Scanner_Sweep, ColorGraph::Instance().getNodeCenter(goalNode));
+
+				//decide if we want to scan 
+				//	if goalNode information is stale, if we have resources
+				if (numComsats > 0 && ColorGraph::Instance().getLastUpdatedFrame(goalNode) > 500 
+					&& scoutUnit->getEnergy() >= 50 
+					&& scoutUnit->canIssueCommand(temp))
+				{
+					bool scanSuccess = scoutUnit->issueCommand(temp);
+					//print scan successful
+
+					if (scanSuccess)
+					{
+						//evaluate the area and color graph appropriately
+					}
+				}
 			}
 		}
 	}
@@ -487,4 +504,10 @@ void ScoutManager::smartAttack(BWAPI::Unit * attacker, BWAPI::Unit * target)
 
 	// if nothing prevents it, attack the target
 	attacker->attack(target);
+}
+
+ScoutManager& ScoutManager::Instance() 
+{
+	static ScoutManager instance;
+	return instance;
 }

@@ -173,7 +173,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 		else
 		{
 			// set the building padding specifically
-			int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : 1;
+			int distance = b.type == BWAPI::UnitTypes::Protoss_Photon_Cannon ? 0 : 2;
 
 			// whether or not we want the distance to be horizontal only
 			bool horizontalOnly = true;

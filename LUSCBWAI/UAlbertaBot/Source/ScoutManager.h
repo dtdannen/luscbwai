@@ -4,6 +4,8 @@
 #include "micromanagement/MicroManager.h"
 #include "micromanagement/MicroUtil.h"
 #include "ColorGraph.h"
+#include "GoalAdvisor.h"
+#include "base/ProductionManager.h"
 
 class ScoutManager {
 
@@ -32,6 +34,8 @@ public:
 
 	ScoutManager();
 	~ScoutManager() {};
+
+	static ScoutManager& Instance();
 
 	void update(const std::set<BWAPI::Unit *> & scoutUnits);
 	void moveScouts();

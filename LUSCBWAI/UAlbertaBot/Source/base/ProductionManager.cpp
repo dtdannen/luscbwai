@@ -31,14 +31,21 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot)); //scout when done
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
+	/*buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));*/
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	std::map< BWAPI::UnitType, int > comsatRequirements = BWAPI::UnitTypes::Terran_Comsat_Station.requiredUnits();
+	for(std::map<BWAPI::UnitType, int>::iterator it = comsatRequirements.begin(); it != comsatRequirements.end(); ++it)
+	{
+		buildOrder.push_back(MetaType(it->first));
+	}
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Comsat_Station));
 
 	setBuildOrder(buildOrder);
 	// setBuildOrder(StarcraftBuildOrderSearchManager::Instance().getOpeningBuildOrder());
@@ -142,6 +149,11 @@ void ProductionManager::manageBuildOrderQueue()
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
 	{
+		if(currentItem.metaType.isUnit() && currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Comsat_Station)
+		{
+			bool comsat = true;
+		}
+		
 		// this is the unit which can produce the currentItem
 		BWAPI::Unit * producer = selectUnitOfType(currentItem.metaType.whatBuilds());
 
