@@ -32,13 +32,14 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 
 				//decide if we want to scan 
 				//	if goalNode information is stale, if we have resources
-				if (numComsats > 0 && ColorGraph::Instance().getLastUpdatedFrame(goalNode) > 500 
+				if (numComsats > 0 
+					&& BWAPI::Broodwar->getFrameCount() - ColorGraph::Instance().getLastUpdatedFrame(goalNode) > 500
 					&& scoutUnit->getEnergy() >= 50 
 					&& scoutUnit->canIssueCommand(temp))
 				{
 					bool scanSuccess = scoutUnit->issueCommand(temp);
 					//print scan successful
-
+					
 					if (scanSuccess)
 					{
 						//evaluate the area and color graph appropriately
