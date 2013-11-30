@@ -2,7 +2,7 @@
 #include "GameCommander.h"
 
 
-GameCommander::GameCommander() : numWorkerScouts(0), numComsats(0), currentScout(NULL)
+GameCommander::GameCommander() : numWorkerScouts(0), numVultureScouts(0), currentScout(NULL)
 {
 }
 
@@ -84,6 +84,7 @@ void GameCommander::drawDebugInterface()
 // assigns units to various managers
 void GameCommander::populateUnitVectors()
 {
+	numVultureScouts = ScoutManager::Instance().getNumVultureScouts();
 	// filter our units for those which are valid and usable
 	setValidUnits();
 
@@ -120,9 +121,16 @@ void GameCommander::setValidUnits()
 // TODO: take this worker away from worker manager in a clever way
 void GameCommander::setScoutUnits()
 {
+	BWAPI::Unit* workerScout;
+
 	// if we have just built our first suply provider, set the worker to a scout
-	if (numWorkerScouts == 0)
+	if (!ScoutManager::Instance().workerScoutExists())
 	{
+		if (numWorkerScouts != 0)
+		{
+			numWorkerScouts = 0;
+		}
+
 		// get the first supply provider we come across in our units, this should be the first one we make
 		BWAPI::Unit * supplyProvider = getFirstSupplyProvider();
 
@@ -130,7 +138,7 @@ void GameCommander::setScoutUnits()
 		if (supplyProvider)
 		{
 			// grab the closest worker to the supply provider to send to scout
-			BWAPI::Unit * workerScout = getClosestWorkerToTarget(supplyProvider->getPosition());
+			workerScout = getClosestWorkerToTarget(supplyProvider->getPosition());
 
 			// if we find a worker (which we should) add it to the scout vector
 			if (workerScout)
@@ -143,15 +151,14 @@ void GameCommander::setScoutUnits()
 		}
 	}
 
-	//if we have comsats, add them to scoutUnits
-	
-	BOOST_FOREACH (BWAPI::Unit *unit, BWAPI::Broodwar->self()->getUnits())
+	//if we have vultures, add at most two to scout, the rest can go to combat manager
+	BOOST_FOREACH(BWAPI::Unit* unit, validUnits)
 	{
-		if(numComsats == 0 && !isAssigned(unit) && unit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station && !unit->isBeingConstructed())
+		if (numVultureScouts < 2 && unit->getType() == BWAPI::UnitTypes::Terran_Vulture && !isAssigned(unit))
 		{
-				numComsats++;
-				scoutUnits.insert(unit);
-				assignedUnits.insert(unit);
+			scoutUnits.insert(unit);
+			assignedUnits.insert(unit);
+			numVultureScouts++;
 		}
 	}
 

@@ -3,69 +3,82 @@
 #include "InformationManager.h"
 #include "base/ProductionManager.h"
 
-ScoutManager::ScoutManager() : workerScout(NULL), numWorkerScouts(0), numComsats(0), scoutUnderAttack(false)
+ScoutManager::ScoutManager() : workerScout(NULL), numWorkerScouts(0), numVultureScouts(0), scoutUnderAttack(false), vultureScouts(2)
 {
 }
 
 void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 {
-	if (scoutUnits.size() > 0)
+	//we should check to see if our vultures still exist
+	for (std::vector<BWAPI::Unit*>::iterator it = vultureScouts.begin(); it != vultureScouts.end(); ++it)
 	{
-		BOOST_FOREACH(BWAPI::Unit * scoutUnit, scoutUnits)
+		//if our vulture doesn't exist anymore, get rid of it
+		//we check the player ID of the vulture while we're at it to ensure that this is indeed one of our vultures, 
+		//	so that (*it).exists() means something to us
+		if ((*it) != NULL)
 		{
-
-			if (scoutUnit->getType().isWorker())
+			if (!(*it)->exists() && BWAPI::Broodwar->self()->getID() == ((*it)->getPlayer())->getID())
 			{
-				if (scoutUnit != workerScout)
-				{
-					numWorkerScouts++;
-					workerScout = scoutUnit;
-				}
-			}
-			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
-			{
-				numComsats++;
-
-				int goalNode = GoalAdvisor::Instance().getGoalRegion();
-
-				BWAPI::UnitCommand temp = BWAPI::UnitCommand::useTech(scoutUnit,BWAPI::TechTypes::Scanner_Sweep, ColorGraph::Instance().getNodeCenter(goalNode));
-
-				//decide if we want to scan 
-				//	if goalNode information is stale, if we have resources
-				if (numComsats > 0 
-					&& BWAPI::Broodwar->getFrameCount() - ColorGraph::Instance().getLastUpdatedFrame(goalNode) > 500
-					&& scoutUnit->getEnergy() >= 50 
-					&& scoutUnit->canIssueCommand(temp))
-				{
-					bool scanSuccess = scoutUnit->issueCommand(temp);
-					//print scan successful
-					
-					if (scanSuccess)
-					{
-						//evaluate the area and color graph appropriately
-					}
-				}
+				vultureScouts.erase(it);
+				numVultureScouts--;
 			}
 		}
 	}
 
-	//TODO: make a good decision about whether or not we should scan AND what area we should scan
+	//also check to see if workerScout exists
+	if (!workerScoutExists())
+	{
+		workerScout = NULL;
+		numWorkerScouts = 0;
+	}
+
+	if (scoutUnits.size() > 0)
+	{
+		BOOST_FOREACH(BWAPI::Unit * scoutUnit, scoutUnits)
+		{
+			if(!workerScoutExists())
+			{
+				if (scoutUnit->getType().isWorker())
+				{
+					if (scoutUnit != workerScout)
+					{
+						numWorkerScouts++;
+						workerScout = scoutUnit;
+					}
+				}
+			}
+
+			//if vulture, and we dont have 2 vultures already, add it
+			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+			{
+				if (vultureScouts.size() < 2)
+				{
+					numVultureScouts++;
+					vultureScouts.push_back(scoutUnit);
+				}
+			}
+		}
+	}
 
 	moveScouts();
 }
 
 void ScoutManager::moveScouts()
 {
-	if (!workerScout || !workerScout->exists() || !workerScout->getPosition().isValid())
+	if ((!workerScout || !workerScout->exists() || !workerScout->getPosition().isValid()) || vultureScouts.empty())
 	{
 		return;
 	}
+
+	std::vector<BWAPI::Unit *> scoutUnits;
+	
 
 	// get the enemy base location, if we have one
 	BWTA::BaseLocation * enemyBaseLocation = InformationManager::Instance().getMainBaseLocation(BWAPI::Broodwar->enemy());
 
 	// determine the region that the enemy is in
 	BWTA::Region * enemyRegion = enemyBaseLocation ? enemyBaseLocation->getRegion() : NULL;
+	BWTA::Region * goalRegion;
 	if (enemyRegion)
 	{
 		int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(enemyBaseLocation->getPosition());
@@ -75,93 +88,159 @@ void ScoutManager::moveScouts()
 		{
 			enemyBaseNode.setColor(NodeColor::RED);
 		}
-	}
 
-	// determine the region the scout is in
-	BWAPI::TilePosition scoutTile(workerScout->getPosition());
-	BWTA::Region * scoutRegion = scoutTile.isValid() ? BWTA::getRegion(scoutTile) : NULL;
-
-	// we only care if the scout is under attack within the enemy region
-	// this ignores if their scout worker attacks it on the way to their base
-	if (workerScout->isUnderAttack() && (scoutRegion == enemyRegion))
-	{
-		scoutUnderAttack = true;
-	}
-
-	if (!workerScout->isUnderAttack() && !enemyWorkerInRadius())
-	{
-		scoutUnderAttack = false;
-	}
-
-	// if we know where the enemy region is and where our scout is
-	if (enemyRegion && scoutRegion)
-	{
-		// if the scout is in the enemy region
-		if (scoutRegion == enemyRegion)
+		//if we know where the enemy region is, but its been a while since we've scouted it, scout it
+		if (BWAPI::Broodwar->getFrameCount() - enemyBaseNode.getLastFrameUpdated() > 4000)
 		{
-			std::vector<GroundThreat> groundThreats;
-			fillGroundThreats(groundThreats, workerScout->getPosition());
-
-			// get the closest enemy worker
-			BWAPI::Unit * closestWorker = closestEnemyWorker();
-
-			// if the worker scout is not under attack
-			if (!scoutUnderAttack)
-			{
-				// if there is a worker nearby, harass it
-				if (closestWorker && (workerScout->getDistance(closestWorker) < 800))
-				{
-					smartAttack(workerScout, closestWorker);
-				}
-				// otherwise keep moving to the enemy region
-				else
-				{
-					// move to the enemy region
-					smartMove(workerScout, enemyBaseLocation->getPosition());
-					BWAPI::Broodwar->drawLineMap(workerScout->getPosition().x(), workerScout->getPosition().y(), 
-						enemyBaseLocation->getPosition().x(), enemyBaseLocation->getPosition().y(),
-						BWAPI::Colors::Yellow);
-				}
-				
-			}
-			// if the worker scout is under attack
-			else
-			{
-				BWAPI::Position fleeTo = calcFleePosition(groundThreats, NULL);
-				if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(fleeTo.x(), fleeTo.y(), 10, BWAPI::Colors::Red);
-
-				BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->getUnitsInRadius(fleeTo, 10))
-				{
-					if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(unit->getPosition().x(), unit->getPosition().y(), 5, BWAPI::Colors::Cyan, true);
-				}
-
-				smartMove(workerScout, fleeTo);
-			}
-		}
-		// if the scout is not in the enemy region
-		else if (scoutUnderAttack)
-		{
-			smartMove(workerScout, BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
+			goalRegion = enemyRegion;
 		}
 		else
 		{
-			// move to the enemy region
-			smartMove(workerScout, enemyBaseLocation->getPosition());	
+			goalRegion = BWTA::getRegion(ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()));
 		}
-		
+	}
+	else
+	{
+		//otherwise we should scout the goal node
+		goalRegion = BWTA::getRegion(ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()));
 	}
 
-	// for each start location in the level
-	if (!enemyRegion)
+	//if we have a worker scout, add it to the scoutUnits vector
+	if (workerScout || workerScout->exists() || workerScout->getPosition().isValid())
 	{
-		BOOST_FOREACH (BWTA::BaseLocation * startLocation, BWTA::getStartLocations()) 
+		scoutUnits.push_back(workerScout);
+	}
+
+	//if we have vultures, add it to the scoutUnits vector
+	if (!vultureScouts.empty())
+	{
+		for (std::vector<BWAPI::Unit*>::iterator vultIt = vultureScouts.begin(); vultIt != vultureScouts.end(); ++vultIt)
 		{
-			// if we haven't explored it yet
-			if (!BWAPI::Broodwar->isExplored(startLocation->getTilePosition())) 
+			scoutUnits.push_back(*vultIt);
+		}
+	}
+
+	for (std::vector<BWAPI::Unit*>::iterator it = scoutUnits.begin(); (*it) != NULL && it != scoutUnits.end(); ++it)
+	{
+		// determine the region the scout is in
+		BWAPI::TilePosition scoutTile((*it)->getPosition());
+		BWTA::Region * scoutRegion = scoutTile.isValid() ? BWTA::getRegion(scoutTile) : NULL;
+
+		// we only care if the scout is under attack within the enemy region
+		// this ignores if their scout worker attacks it on the way to their base
+		if ((*it)->isUnderAttack() && ((*it)->getType() == BWAPI::UnitTypes::Terran_Vulture || scoutRegion == goalRegion))
+		{
+			scoutUnderAttack = true;
+		}
+
+		if (!(*it)->isUnderAttack() && !enemyWorkerInRadius())
+		{
+			scoutUnderAttack = false;
+		}
+
+		// if we know where the enemy region is and where our scout is
+		if (goalRegion && scoutRegion)
+		{
+			// if the scout is in the enemy region
+			if (scoutRegion == goalRegion)
 			{
-				// assign a zergling to go scout it
-				smartMove(workerScout, BWAPI::Position(startLocation->getTilePosition()));			
-				return;
+				std::vector<GroundThreat> groundThreats;
+				fillGroundThreats(groundThreats, (*it)->getPosition());
+
+				ColorNode goalNode(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()));
+
+				//update this node on the color graph
+
+				//if there are enemies and we are in their base, update colorgraph red node
+				if(!groundThreats.empty() && scoutRegion == enemyRegion)
+				{
+					goalNode.setColor(NodeColor::RED);
+				}
+				//if there are enemies and we are in the goalRegion, and it is not the enemy's base, update node to be orange
+				else if (!groundThreats.empty() && scoutRegion == goalRegion && goalRegion != enemyRegion)
+				{
+					goalNode.setColor(NodeColor::ORANGE);
+				}
+
+				//if we reached the goal node and there are no enemies around, make it orange (but how to differentiate
+				//	this "safe" node from an "unsafe" node?)
+				//TODO: figure out the above conundrum
+				else if (groundThreats.empty() && scoutRegion == goalRegion)
+				{
+					goalNode.setColor(NodeColor::ORANGE);
+				}
+				
+
+				// get the closest enemy worker
+				BWAPI::Unit * closestWorker = closestEnemyWorker();
+
+				// if the worker scout is not under attack
+				if (!scoutUnderAttack)
+				{
+					// if there is a worker nearby, harass it
+					if (closestWorker && ((*it)->getDistance(closestWorker) < 800))
+					{
+						smartAttack((*it), closestWorker);
+					}
+					// otherwise keep moving to the goal region
+					else
+					{
+						// move to the goal region
+						smartMove((*it), goalRegion->getCenter());
+						BWAPI::Broodwar->drawLineMap((*it)->getPosition().x(), (*it)->getPosition().y(), 
+							goalRegion->getCenter().x(), goalRegion->getCenter().y(),
+							BWAPI::Colors::Yellow);
+					}
+				
+				}
+				//if the scout is a vulture and its under attack by workers, MAN UP
+				else if (scoutUnderAttack && (*it)->getType() == BWAPI::UnitTypes::Terran_Vulture)
+				{
+					if (closestWorker && ((*it)->getDistance(closestWorker) < 800))
+					{
+						smartAttack((*it), closestWorker);
+					}
+				}
+
+				// if the worker scout is under attack
+				else
+				{
+					BWAPI::Position fleeTo = calcFleePosition(groundThreats, NULL);
+					if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(fleeTo.x(), fleeTo.y(), 10, BWAPI::Colors::Red);
+
+					BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->getUnitsInRadius(fleeTo, 10))
+					{
+						if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawCircleMap(unit->getPosition().x(), unit->getPosition().y(), 5, BWAPI::Colors::Cyan, true);
+					}
+
+					smartMove((*it), fleeTo);
+				}
+			}
+			// if the scout is not in the goal region
+			else if (scoutUnderAttack)
+			{
+				smartMove((*it), BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()));
+			}
+			else
+			{
+				// move to the goal region
+				smartMove((*it), goalRegion->getCenter());	
+			}
+		
+		}
+
+		// for each start location in the level
+		if (!enemyRegion || !goalRegion)
+		{
+			BOOST_FOREACH (BWTA::BaseLocation * startLocation, BWTA::getStartLocations()) 
+			{
+				// if we haven't explored it yet
+				if (!BWAPI::Broodwar->isExplored(startLocation->getTilePosition())) 
+				{
+					// assign a zergling to go scout it
+					smartMove((*it), BWAPI::Position(startLocation->getTilePosition()));			
+					return;
+				}
 			}
 		}
 	}
@@ -505,6 +584,16 @@ void ScoutManager::smartAttack(BWAPI::Unit * attacker, BWAPI::Unit * target)
 
 	// if nothing prevents it, attack the target
 	attacker->attack(target);
+}
+
+bool ScoutManager::workerScoutExists()
+{
+	return workerScout == NULL ? false : workerScout->exists();
+}
+
+int ScoutManager::getNumVultureScouts()
+{
+	return numVultureScouts;
 }
 
 ScoutManager& ScoutManager::Instance() 

@@ -107,7 +107,7 @@ class GameCommander
 
 	BWAPI::Unit * currentScout;
 	int numWorkerScouts;
-	int numComsats;
+	int numVultureScouts;
 
 	const bool isAssigned(BWAPI::Unit * unit) const;
 

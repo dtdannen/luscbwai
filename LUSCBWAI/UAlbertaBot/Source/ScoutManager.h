@@ -10,7 +10,8 @@
 class ScoutManager {
 
 	BWAPI::Unit *	workerScout;
-	int				numComsats;
+	std::vector<BWAPI::Unit*> vultureScouts; //max 2 at a time
+	int				numVultureScouts;
 	int				numWorkerScouts;
 
 	bool			immediateThreat();
@@ -39,6 +40,9 @@ public:
 
 	void update(const std::set<BWAPI::Unit *> & scoutUnits);
 	void moveScouts();
+
+	bool workerScoutExists();
+	int getNumVultureScouts();
 
 	void onSendText(std::string text);
 	void onUnitShow(BWAPI::Unit * unit);
