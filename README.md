@@ -12,6 +12,7 @@ Nicholas Wuensch <br \>
 Matthew Kilgore <br \>
 Pete Biencourt <br \>
 Seth Denburg <br \>
+Casey Conley <br \>
 
 
 Possible Names of Bot for Competition
