@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Common.h"
+#include "ColorNode.h"
 
 class WorkerMoveData
 {
@@ -39,6 +40,7 @@ private:
 	std::map<BWAPI::Unit *, BWAPI::Unit *>			workerRepairMap;
 	std::map<BWAPI::Unit *, WorkerMoveData>			workerMoveMap;
 	std::map<BWAPI::Unit *, BWAPI::UnitType>		workerBuildingTypeMap;
+	std::map<BWAPI::Unit *, WorkerMoveData>			workerScoutNodeMap;
 
 	std::map<BWAPI::Unit *, int>					depotWorkerCount;
 	std::map<BWAPI::Unit *, int>					refineryWorkerCount;
@@ -62,6 +64,7 @@ public:
 	int						getNumWorkers();
 	int						getNumMineralWorkers();
 	int						getNumGasWorkers();
+	int						getNumScoutWorkers();
 	int						getNumIdleWorkers();
 	char					getJobCode(BWAPI::Unit * unit);
 
@@ -82,6 +85,7 @@ public:
 	BWAPI::Unit *			getWorkerRepairUnit(BWAPI::Unit * unit);
 	BWAPI::UnitType			getWorkerBuildingType(BWAPI::Unit * unit);
 	WorkerMoveData			getWorkerMoveData(BWAPI::Unit * unit);
+	WorkerMoveData			getWorkerScoutData(BWAPI::Unit * unit);
 
 	void					drawDepotDebugInfo();
 

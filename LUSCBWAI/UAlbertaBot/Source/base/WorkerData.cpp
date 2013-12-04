@@ -105,10 +105,6 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, BWAPI::Uni
 		// start repairing it
 		unit->repair(jobUnit);
 	}
-	else if (job == Scout)
-	{
-
-	}
 }
 
 void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, BWAPI::UnitType jobUnitType)
@@ -136,11 +132,18 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, WorkerMove
 		workerMoveMap[unit] = wmd;
 	}
 
+	if (job == Scout)
+	{
+		workerScoutNodeMap[unit] = wmd;
+	}
+
 	if (workerJobMap[unit] != Move)
 	{
 		BWAPI::Broodwar->printf("Something went horribly wrong");
 	}
 }
+
+
 
 
 void WorkerData::clearPreviousJob(BWAPI::Unit * unit)
@@ -370,10 +373,25 @@ BWAPI::UnitType	WorkerData::getWorkerBuildingType(BWAPI::Unit * unit)
 
 WorkerMoveData WorkerData::getWorkerMoveData(BWAPI::Unit * unit)
 {
+	bool scout = false;
+	std::map<BWAPI::Unit *, WorkerMoveData>::iterator it1;
 	std::map<BWAPI::Unit *, WorkerMoveData>::iterator it = workerMoveMap.find(unit);
-
-	assert(it != workerMoveMap.end());
+	if (it == workerMoveMap.end())
+	{
+		it1 = workerScoutNodeMap.find(unit);
+		assert(it1 != workerScoutNodeMap.end());
+		scout = true;
+	}
 	
+	return (scout ? it1->second : it->second);
+}
+
+WorkerMoveData WorkerData::getWorkerScoutData(BWAPI::Unit * unit)
+{
+	std::map<BWAPI::Unit *, WorkerMoveData>::iterator it = workerScoutNodeMap.find(unit);
+
+	assert(it != workerScoutNodeMap.end());
+
 	return (it->second);
 }
 
@@ -412,6 +430,19 @@ int WorkerData::getNumAssignedWorkers(BWAPI::Unit * unit)
 
 	// when all else fails, return 0
 	return 0;
+}
+
+int WorkerData::getNumScoutWorkers()
+{
+	int count = 0;
+	for (std::set<BWAPI::Unit*>::iterator it = workers.begin(); it != workers.end(); ++it)
+	{
+		if (getWorkerJob(*it) == WorkerData::Scout)
+		{
+			count++;
+		}
+	}
+	return count;
 }
 
 char WorkerData::getJobCode(BWAPI::Unit * unit)

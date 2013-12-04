@@ -30,6 +30,7 @@ class ScoutManager {
 	double2				getFleeVector(const std::vector<GroundThreat> & threats);
 	BWAPI::Unit *		getEnemyGeyser();
 
+	void drawDebugInfo();
 
 public:
 
@@ -51,4 +52,6 @@ public:
 	void onUnitRenegade(BWAPI::Unit * unit);
 	void onUnitDestroy(BWAPI::Unit * unit);
 	void onUnitMorph(BWAPI::Unit * unit);
+
+	
 };

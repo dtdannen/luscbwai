@@ -3,6 +3,8 @@
 #include <Common.h>
 #include "BuildingManager.h"
 #include "WorkerData.h"
+#include "ColorGraph.h"
+#include "GoalAdvisor.h"
 
 class Building;
 
@@ -40,6 +42,7 @@ public:
 	int							getNumMineralWorkers();
 	int							getNumGasWorkers();
 	int							getNumIdleWorkers();
+	int							getNumScoutWorkers();
 	void						setScoutWorker(BWAPI::Unit * worker);
 
 	bool						isWorkerScout(BWAPI::Unit * worker);

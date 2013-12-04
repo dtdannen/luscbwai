@@ -38,13 +38,40 @@ void WorkerManager::updateWorkerStatus()
 
 		// if it's idle
 		if (worker->isIdle() && 
-			(workerData.getWorkerJob(worker) != WorkerData::Build) && 
+			!isBuilder(worker) && 
 			(workerData.getWorkerJob(worker) != WorkerData::Move) &&
-			(workerData.getWorkerJob(worker) != WorkerData::Scout)) 
+			!isWorkerScout(worker)) 
 		{
 			//printf("Worker %d set to idle", worker->getID());
 			// set its job to idle
 			workerData.setWorkerJob(worker, WorkerData::Idle, NULL);
+		}
+
+		//if its idle and a scout
+		if (worker->isIdle() &&
+			isWorkerScout(worker))
+		{
+
+			int scoutPosition = ColorGraph::Instance().getNodeAtPosition(worker->getPosition());
+
+			//if its where the worker needs to be (goalNode or base)
+			if (worker->getPosition() == workerData.getWorkerMoveData(worker).position)
+			{
+
+				//if its at the goal node, send it home (assuming that because its idle, there are no enemies around)
+				if (scoutPosition == GoalAdvisor::Instance().getGoalRegion())
+				{
+					ColorNode goalNode(scoutPosition);
+					goalNode.setColor(NodeColor::GREEN);
+					finishedWithWorker(worker);
+				}
+			}
+
+			//else move to its job position
+			else 
+			{
+				worker->move(workerData.getWorkerMoveData(worker).position);
+			}
 		}
 
 		// if its job is gas
@@ -100,6 +127,7 @@ void WorkerManager::handleIdleWorkers()
 		}
 	}
 }
+
 
 // bad micro for combat workers
 void WorkerManager::handleCombatWorkers()
@@ -228,6 +256,11 @@ void WorkerManager::finishedWithWorker(BWAPI::Unit * unit)
 	{
 		workerData.setWorkerJob(unit, WorkerData::Idle, NULL);
 	}
+
+	else 
+	{
+		setMineralWorker(unit);
+	}
 }
 
 BWAPI::Unit * WorkerManager::getGasWorker(BWAPI::Unit * refinery)
@@ -316,7 +349,8 @@ void WorkerManager::setScoutWorker(BWAPI::Unit * worker)
 		assert(false);
 	}
 
-	workerData.setWorkerJob(worker, WorkerData::Scout, NULL);
+	BWAPI::Position goalRegion = ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion());
+	workerData.setWorkerJob(worker, WorkerData::Scout, WorkerMoveData(0, 0, goalRegion));
 }
 
 // gets a worker which will move to a current location
@@ -602,6 +636,11 @@ int WorkerManager::getNumMineralWorkers()
 int WorkerManager::getNumIdleWorkers() 
 {
 	return workerData.getNumIdleWorkers();	
+}
+
+int WorkerManager::getNumScoutWorkers()
+{
+	return workerData.getNumScoutWorkers();
 }
 
 int WorkerManager::getNumGasWorkers() 

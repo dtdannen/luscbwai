@@ -124,7 +124,7 @@ void GameCommander::setScoutUnits()
 	BWAPI::Unit* workerScout;
 
 	// if we have just built our first suply provider, set the worker to a scout
-	if (!ScoutManager::Instance().workerScoutExists())
+	if (WorkerManager::Instance().getNumScoutWorkers() < 1)
 	{
 		if (numWorkerScouts != 0)
 		{
@@ -154,15 +154,13 @@ void GameCommander::setScoutUnits()
 	//if we have vultures, add at most two to scout, the rest can go to combat manager
 	BOOST_FOREACH(BWAPI::Unit* unit, validUnits)
 	{
-		if (numVultureScouts < 2 && unit->getType() == BWAPI::UnitTypes::Terran_Vulture && !isAssigned(unit))
+		if (numVultureScouts < 2 && unit->getType() == BWAPI::UnitTypes::Terran_Vulture && !isAssigned(unit) && unit->isCompleted() && unit)
 		{
 			scoutUnits.insert(unit);
 			assignedUnits.insert(unit);
 			numVultureScouts++;
 		}
 	}
-
-	
 }
 
 // sets combat units to be passed to CombatCommander

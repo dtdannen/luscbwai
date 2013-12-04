@@ -25,22 +25,16 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 		}
 	}
 
-	//also check to see if workerScout exists
-	if (!workerScoutExists())
-	{
-		workerScout = NULL;
-		numWorkerScouts = 0;
-	}
-
 	if (scoutUnits.size() > 0)
 	{
 		BOOST_FOREACH(BWAPI::Unit * scoutUnit, scoutUnits)
 		{
 			if(!workerScoutExists())
 			{
+				numWorkerScouts = 0;
 				if (scoutUnit->getType().isWorker())
 				{
-					if (scoutUnit != workerScout)
+					if (WorkerManager::Instance().isWorkerScout(scoutUnit))
 					{
 						numWorkerScouts++;
 						workerScout = scoutUnit;
@@ -49,7 +43,7 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 			}
 
 			//if vulture, and we dont have 2 vultures already, add it
-			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+			else if (scoutUnit->getType() == BWAPI::UnitTypes::Terran_Vulture && scoutUnit->isCompleted())
 			{
 				if (vultureScouts.size() < 2)
 				{
@@ -61,11 +55,13 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 	}
 
 	moveScouts();
+
+	drawDebugInfo();
 }
 
 void ScoutManager::moveScouts()
 {
-	if ((!workerScout || !workerScout->exists() || !workerScout->getPosition().isValid()) || vultureScouts.empty())
+	if (!workerScoutExists() || vultureScouts.empty())
 	{
 		return;
 	}
@@ -106,7 +102,7 @@ void ScoutManager::moveScouts()
 	}
 
 	//if we have a worker scout, add it to the scoutUnits vector
-	if (workerScout || workerScout->exists() || workerScout->getPosition().isValid())
+	if (workerScoutExists())
 	{
 		scoutUnits.push_back(workerScout);
 	}
@@ -116,11 +112,12 @@ void ScoutManager::moveScouts()
 	{
 		for (std::vector<BWAPI::Unit*>::iterator vultIt = vultureScouts.begin(); vultIt != vultureScouts.end(); ++vultIt)
 		{
-			scoutUnits.push_back(*vultIt);
+			if ((*vultIt) != NULL)
+				scoutUnits.push_back(*vultIt);
 		}
 	}
 
-	for (std::vector<BWAPI::Unit*>::iterator it = scoutUnits.begin(); (*it) != NULL && it != scoutUnits.end(); ++it)
+	for (std::vector<BWAPI::Unit*>::iterator it = scoutUnits.begin(); it != scoutUnits.end(); ++it)
 	{
 		// determine the region the scout is in
 		BWAPI::TilePosition scoutTile((*it)->getPosition());
@@ -588,12 +585,41 @@ void ScoutManager::smartAttack(BWAPI::Unit * attacker, BWAPI::Unit * target)
 
 bool ScoutManager::workerScoutExists()
 {
-	return workerScout == NULL ? false : workerScout->exists();
+	bool ret((workerScout && workerScout->exists() && workerScout->getPosition().isValid()));
+	
+	if (!ret)
+	{
+		workerScout = NULL;
+	}
+	return ret;
 }
 
 int ScoutManager::getNumVultureScouts()
 {
 	return numVultureScouts;
+}
+
+void ScoutManager::drawDebugInfo()
+{
+	BWAPI::Position pos;
+	if (getNumVultureScouts() > 0)
+	{
+		BOOST_FOREACH (BWAPI::Unit * vultureScout, vultureScouts) 
+		{
+			pos = vultureScout->getTargetPosition();
+
+			if (Options::Debug::DRAW_UALBERTABOT_DEBUG) 
+			{
+				BWAPI::Broodwar->drawLineMap(vultureScout->getPosition().x(), vultureScout->getPosition().y(), pos.x(), pos.y(), BWAPI::Colors::Cyan);
+			}
+		}
+	}
+
+	if (workerScoutExists())
+	{
+		pos = workerScout->getTargetPosition();
+		BWAPI::Broodwar->drawLineMap(workerScout->getPosition().x(), workerScout->getPosition().y(), pos.x(), pos.y(), BWAPI::Colors::Cyan);
+	}
 }
 
 ScoutManager& ScoutManager::Instance() 
