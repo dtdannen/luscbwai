@@ -78,15 +78,14 @@ void ScoutManager::moveScouts()
 	if (enemyRegion)
 	{
 		int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(enemyBaseLocation->getPosition());
-		ColorNode enemyBaseNode(enemyBaseNodeNum);
 
 		if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
 		{
-			enemyBaseNode.setColor(NodeColor::RED);
+			ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
 		}
 
 		//if we know where the enemy region is, but its been a while since we've scouted it, scout it
-		if (BWAPI::Broodwar->getFrameCount() - enemyBaseNode.getLastFrameUpdated() > 4000)
+		if (BWAPI::Broodwar->getFrameCount() - ColorGraph::Instance().getLastUpdatedFrame(enemyBaseNodeNum) > 4000)
 		{
 			goalRegion = enemyRegion;
 		}
@@ -144,19 +143,19 @@ void ScoutManager::moveScouts()
 				std::vector<GroundThreat> groundThreats;
 				fillGroundThreats(groundThreats, (*it)->getPosition());
 
-				ColorNode goalNode(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()));
+				//ColorNode goalNode(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()));
 
 				//update this node on the color graph
 
 				//if there are enemies and we are in their base, update colorgraph red node
 				if(!groundThreats.empty() && scoutRegion == enemyRegion)
 				{
-					goalNode.setColor(NodeColor::RED);
+					ColorGraph::Instance().setNodeColor(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()), NodeColor::RED);
 				}
 				//if there are enemies and we are in the goalRegion, and it is not the enemy's base, update node to be orange
 				else if (!groundThreats.empty() && scoutRegion == goalRegion && goalRegion != enemyRegion)
 				{
-					goalNode.setColor(NodeColor::ORANGE);
+					ColorGraph::Instance().setNodeColor(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()), NodeColor::ORANGE);
 				}
 
 				//if we reached the goal node and there are no enemies around, make it orange (but how to differentiate
@@ -164,7 +163,7 @@ void ScoutManager::moveScouts()
 				//TODO: figure out the above conundrum
 				else if (groundThreats.empty() && scoutRegion == goalRegion)
 				{
-					goalNode.setColor(NodeColor::ORANGE);
+					ColorGraph::Instance().setNodeColor(ColorGraph::Instance().getNodeAtPosition(scoutRegion->getCenter()), NodeColor::ORANGE);
 				}
 				
 

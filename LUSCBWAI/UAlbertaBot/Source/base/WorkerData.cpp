@@ -137,7 +137,7 @@ void WorkerData::setWorkerJob(BWAPI::Unit * unit, enum WorkerJob job, WorkerMove
 		workerScoutNodeMap[unit] = wmd;
 	}
 
-	if (workerJobMap[unit] != Move)
+	if (workerJobMap[unit] != Move && workerJobMap[unit] != Scout)
 	{
 		BWAPI::Broodwar->printf("Something went horribly wrong");
 	}

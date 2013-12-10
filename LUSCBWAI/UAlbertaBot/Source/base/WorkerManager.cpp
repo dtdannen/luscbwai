@@ -61,8 +61,7 @@ void WorkerManager::updateWorkerStatus()
 				//if its at the goal node, send it home (assuming that because its idle, there are no enemies around)
 				if (scoutPosition == GoalAdvisor::Instance().getGoalRegion())
 				{
-					ColorNode goalNode(scoutPosition);
-					goalNode.setColor(NodeColor::GREEN);
+					ColorGraph::Instance().setNodeColor(scoutPosition, NodeColor::GREEN);
 					finishedWithWorker(worker);
 				}
 			}
