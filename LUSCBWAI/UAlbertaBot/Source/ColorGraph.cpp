@@ -41,6 +41,11 @@ NodeColor ColorGraph::getNodeColor(int id)
 	return nodeMap[id]->getColor();
 }
 
+void ColorGraph::setNodeColor(int id, NodeColor color)
+{
+	nodeMap[id]->setColor(color);
+}
+
 BWAPI::Position ColorGraph::getNodeCenter(int id)
 {
 	return nodeMap[id]->getCenter();
