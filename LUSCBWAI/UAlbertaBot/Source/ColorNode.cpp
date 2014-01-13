@@ -22,7 +22,7 @@ NodeColor ColorNode::getColor()
 
 std::list<int> ColorNode::getNeighbors()
 {
-	std::list<int> temp = std::list<int>(neighbors);
+	std::list<int> temp = std::list<int>(neighbors); // WOOOOOO
 	return temp;
 }
 	
