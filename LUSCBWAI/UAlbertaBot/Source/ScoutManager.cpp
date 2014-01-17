@@ -53,7 +53,6 @@ void ScoutManager::update(const std::set<BWAPI::Unit *> & scoutUnits)
 			}
 		}
 	}
-
 	moveScouts();
 
 	drawDebugInfo();

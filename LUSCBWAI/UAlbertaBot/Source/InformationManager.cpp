@@ -36,7 +36,7 @@ void InformationManager::updateUnitInfo()
 		updateUnit(unit);
 	}
 
-	// update enemy unit information
+	// update our unit information
 	BOOST_FOREACH (BWAPI::Unit * unit, BWAPI::Broodwar->self()->getUnits())
 	{
 		updateUnit(unit);
@@ -45,6 +45,51 @@ void InformationManager::updateUnitInfo()
 	// remove bad enemy units
 	enemyUnitData.removeBadUnits();
 	selfUnitData.removeBadUnits();
+
+	// update the color graph once every 10 seconds
+	if (BWAPI::Broodwar->getFrameCount() % 300 == 0)
+	{
+		std::map<BWAPI::Unit *, UnitInfo> data = enemyUnitData.getUnits();
+		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
+		{
+			// if there is an enemy base, color it red
+			if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center
+				|| it->first->getType() == BWAPI::UnitTypes::Protoss_Nexus
+				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hatchery
+				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Lair
+				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hive)
+			{
+				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+
+				ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+			}
+			else // if there is an enemy in the cell and it is not red, color it orange
+			{
+				int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+
+				if (ColorGraph::Instance().getNodeColor(enemyLocation) != NodeColor::RED)
+				{
+					ColorGraph::Instance().setNodeColor(enemyLocation, NodeColor::ORANGE);
+				}
+			}
+		}
+		
+		// if we have a base, color it green (if that doesn't conflict with red/orange)
+		data = selfUnitData.getUnits();
+		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
+		{
+			if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
+			{
+				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+
+				if (ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED
+					|| ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED)
+				{
+					ColorGraph::Instance().setNodeColor(ourBaseLocation, NodeColor::GREEN);
+				}
+			}
+		}
+	}
 }
 
 void InformationManager::initializeRegionInformation() 
@@ -81,6 +126,14 @@ void InformationManager::updateBaseLocationInfo()
 				BWAPI::Broodwar->printf("Enemy base found by seeing it");
 				mainBaseLocations[ENEMY_INDEX] = startLocation;
 				updateOccupiedRegions(BWTA::getRegion(startLocation->getTilePosition()), BWAPI::Broodwar->enemy());
+
+				// Color node red
+				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(startLocation->getPosition());
+		
+				if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+				{
+					ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+				}
 			}
 
 			// if it's explored, increment
@@ -102,6 +155,14 @@ void InformationManager::updateBaseLocationInfo()
 			BWAPI::Broodwar->printf("Enemy base found by process of elimination");
 			mainBaseLocations[ENEMY_INDEX] = unexplored;
 			updateOccupiedRegions(BWTA::getRegion(unexplored->getTilePosition()), BWAPI::Broodwar->enemy());
+
+			// Color node red
+			int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(unexplored->getPosition());
+		
+			if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+			{
+				ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+			}
 		}
 
 	// otherwise we do know it, so push it back

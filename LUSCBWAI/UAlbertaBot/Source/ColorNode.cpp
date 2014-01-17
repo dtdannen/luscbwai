@@ -45,7 +45,7 @@ void ColorNode::addNeighbor(int neighborId)
 
 void ColorNode::setCenter(BWAPI::Position regionCenter)
 {
-	center = regionCenter;
+	center = BWAPI::Position(regionCenter.x(), regionCenter.y());
 	updateAge();
 }
 

@@ -66,17 +66,33 @@ int ColorGraph::size()
 	return graphSize;
 }
 
-void ColorGraph::updateColors()
-{
-	// TODO implement
-	// Needs to get information about what's in each region and how confident we are
-	// that we control it. Most likely this should be stored in the StrategyManager
-	// or InformationManager
-}
-
 int ColorGraph::getNodeAtPosition(BWAPI::Position position)
 {
-	return locationMap[position];
+	BWAPI::Position p = BWTA::getRegion(position)->getCenter();
+	return locationMap[p];
+}
+
+void ColorGraph::drawGraphColors()
+{
+	for (std::map<int, ColorNode *>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it)
+	{
+		if (it->second->getColor() == GREEN)
+		{
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Green, true);
+		}
+		else if (it->second->getColor() == ORANGE)
+		{
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Orange, true);
+		}
+		else if (it->second->getColor() == RED)
+		{
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Red, true);
+		}
+		else
+		{
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::White, true); //otherwise the fog of war makes them invis
+		}
+	}
 }
 
 ColorGraph & ColorGraph::Instance() 

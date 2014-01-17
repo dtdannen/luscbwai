@@ -23,6 +23,6 @@ public:
 	int size();
 	int getNodeAtPosition(BWAPI::Position position);
 
-	void updateColors();
+	void ColorGraph::drawGraphColors();
 };
 

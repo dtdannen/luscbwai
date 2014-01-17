@@ -4,6 +4,7 @@
 #include "BWTA.h"
 
 #include "UnitData.h"
+#include "ColorGraph.h"
 
 #include "..\..\AdversarialSearch\source\Map.hpp"
 

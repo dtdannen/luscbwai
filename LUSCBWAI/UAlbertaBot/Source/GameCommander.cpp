@@ -79,6 +79,8 @@ void GameCommander::drawDebugInterface()
 		int mouseY = BWAPI::Broodwar->getMousePosition().y() + BWAPI::Broodwar->getScreenPosition().y();
 		BWAPI::Broodwar->drawTextMap(mouseX + 20, mouseY, " %d %d", mouseX, mouseY);
 	}
+
+	ColorGraph::Instance().drawGraphColors(); 
 }
 
 // assigns units to various managers
