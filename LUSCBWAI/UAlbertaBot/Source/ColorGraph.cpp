@@ -95,6 +95,21 @@ void ColorGraph::drawGraphColors()
 	}
 }
 
+
+void ColorGraph::processInformationExpiration()
+{
+	// leave red and green alone
+	// kill orange after 300 frames
+	for (std::map<int, ColorNode *>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it)
+	{
+		if (it->second->getColor() == ORANGE && BWAPI::Broodwar->getFrameCount() - it->second->getLastFrameUpdated() > 150)
+		{
+			it->second->setColor(BLACK);
+		}
+	}
+}
+
+
 ColorGraph & ColorGraph::Instance() 
 {
 	static ColorGraph instance;

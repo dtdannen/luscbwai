@@ -26,6 +26,7 @@ void InformationManager::update()
 	updateBaseLocationInfo();
 	map.setUnitData(BWAPI::Broodwar);
 	map.setBuildingData(BWAPI::Broodwar);
+	ColorGraph::Instance().processColorExpiration();
 }
 
 void InformationManager::updateUnitInfo() 
@@ -368,6 +369,16 @@ void InformationManager::onUnitDestroy(BWAPI::Unit * unit)
 	if (unit->getPlayer() == BWAPI::Broodwar->enemy())
 	{
 		enemyUnitData.removeUnit(unit);
+		if (unit->getType() == BWAPI::UnitTypes::Terran_Command_Center
+				|| unit->getType() == BWAPI::UnitTypes::Protoss_Nexus
+				|| unit->getType() == BWAPI::UnitTypes::Zerg_Hatchery
+				|| unit->getType() == BWAPI::UnitTypes::Zerg_Lair
+				|| unit->getType() == BWAPI::UnitTypes::Zerg_Hive)
+			{
+				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(unit->getPosition());
+
+				ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::ORANGE);
+			}
 	}
 	else if (unit->getPlayer() == BWAPI::Broodwar->self())
 	{
