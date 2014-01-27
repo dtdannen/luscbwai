@@ -96,7 +96,7 @@ void ColorGraph::drawGraphColors()
 }
 
 
-void ColorGraph::processInformationExpiration()
+void ColorGraph::processColorExpiration()
 {
 	// leave red and green alone
 	// kill orange after 300 frames

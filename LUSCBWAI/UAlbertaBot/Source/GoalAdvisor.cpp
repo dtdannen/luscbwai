@@ -25,7 +25,6 @@ void GoalAdvisor::update() {
 	//calculate distance w/ dijkstra
 	int size = ColorGraph::Instance().size();
 	std::map<int,double> distance_map;
-	std::map<int,bool> visited_map;
 
 	std::list<int> q;
 
@@ -35,14 +34,17 @@ void GoalAdvisor::update() {
 	while(!q.empty()) {
 		int current = getSmallest(q, distance_map);
 		q.remove(current);
-		visited_map[current]=true;
 
 		std::list<int> neighbors = ColorGraph::Instance().getNodeNeighbors(current);
 		for each (int neighbor in neighbors)
 		{
+			if (distance_map.find(neighbor)==distance_map.end())
+			{
+				distance_map[neighbor] = DBL_MAX;
+			}
 			double alt = distance_map[current] + distanceBetweenCenters(current, neighbor);
 			
-			if (distance_map.find(neighbor) != distance_map.end() && alt < distance_map[neighbor] && !visited_map[neighbor])
+			if (alt < distance_map[neighbor])
 			{
 				distance_map[neighbor] = alt;
 				q.push_back(neighbor);
