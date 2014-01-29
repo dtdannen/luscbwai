@@ -23,7 +23,7 @@ ProductionManager::ProductionManager()
 
 	std::vector<MetaType> buildOrder;
 
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	/*buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
@@ -42,7 +42,21 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Factory));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Vulture));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Vulture));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));*/
+
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot)); //scout when done
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Factory));
 	
 
 	setBuildOrder(buildOrder);
@@ -144,6 +158,8 @@ void ProductionManager::manageBuildOrderQueue()
 	// the current item to be used
 	BuildOrderItem<PRIORITY_TYPE> & currentItem = queue.getHighestPriorityItem();
 
+	bool machineShop = currentItem.metaType.getName().compare("Terran Machine Shop") == 0;
+
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
 	{
@@ -177,6 +193,9 @@ void ProductionManager::manageBuildOrderQueue()
 		// if we can make the current item
 		if (producer && canMake) 
 		{
+			if(machineShop)
+				BWAPI::Broodwar->printf("Can build machine shop!");
+
 			// create it
 			createMetaType(producer, currentItem.metaType);
 			assignedWorkerForThisBuilding = false;
@@ -362,8 +381,13 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Hive
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Greater_Spire)
 	{
-		// send the building task to the building manager
-		BuildingManager::Instance().addBuildingTask(t.unitType, BWAPI::Broodwar->self()->getStartLocation());
+		// if the building is not an addon, just send it to the building manager to build
+		if(t.unitType != BWAPI::UnitTypes::Terran_Machine_Shop)
+			// && t.unitType != other things that are addons
+			BuildingManager::Instance().addBuildingTask(t.unitType, BWAPI::Broodwar->self()->getStartLocation());
+		// otherwise do the add on
+		else
+			producer->buildAddon(t.unitType);
 	}
 	// if we're dealing with a non-building unit
 	else if (t.isUnit()) 

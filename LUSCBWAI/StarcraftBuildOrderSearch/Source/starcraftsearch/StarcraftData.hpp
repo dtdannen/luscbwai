@@ -97,6 +97,9 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Factory, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Starport, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Wraith, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Vulture, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Machine_Shop, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, actions.size()));
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{
