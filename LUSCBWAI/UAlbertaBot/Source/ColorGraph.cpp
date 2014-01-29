@@ -21,14 +21,14 @@ ColorGraph::ColorGraph(void)
 	graphSize = nodeId;
 
 	// Map nodes to connected nodes
-	for each (BWTA::Region * region in BWTA::getRegions())
+	for each (BWTA::Chokepoint const * c in BWTA::getChokepoints())
 	{
-		int node = locationMap[region->getCenter()];
-		
-		for each (BWTA::Region * r in region->getReachableRegions())
-		{
-			nodeMap[node]->addNeighbor(locationMap[r->getCenter()]);
-		}
+		// const std::pair<const BWAPI::Region *, const BWAPI::Region *> p = c->getRegions();
+
+		// Map first to second, then vice versa
+		// This looks really gross, but when I tried to make it work like above, it just kept yelling, so I quit.
+		nodeMap[locationMap[c->getRegions().first->getCenter()]]->addNeighbor(locationMap[c->getRegions().second->getCenter()]);
+		nodeMap[locationMap[c->getRegions().second->getCenter()]]->addNeighbor(locationMap[c->getRegions().first->getCenter()]);
 	}
 }
 
@@ -78,19 +78,26 @@ void ColorGraph::drawGraphColors()
 	{
 		if (it->second->getColor() == GREEN)
 		{
-			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Green, true);
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 10, BWAPI::Colors::Green, true);
 		}
 		else if (it->second->getColor() == ORANGE)
 		{
-			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Orange, true);
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 10, BWAPI::Colors::Orange, true);
 		}
 		else if (it->second->getColor() == RED)
 		{
-			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::Red, true);
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 10, BWAPI::Colors::Red, true);
 		}
 		else
 		{
-			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 50, BWAPI::Colors::White, true); //otherwise the fog of war makes them invis
+			BWAPI::Broodwar->drawCircleMap(it->second->getCenter().x(), it->second->getCenter().y(), 10, BWAPI::Colors::White, true); //otherwise the fog of war makes them invis
+		}
+
+		for each (int i in it->second->getNeighbors())
+		{
+			BWAPI::Position pos = getNodeCenter(i);
+			BWAPI::Position pos2 = it->second->getCenter();
+			BWAPI::Broodwar->drawLineMap(pos.x(), pos.y(), pos2.x(), pos2.y(), BWAPI::Colors::White);
 		}
 	}
 }
@@ -102,7 +109,7 @@ void ColorGraph::processColorExpiration()
 	// kill orange after 300 frames
 	for (std::map<int, ColorNode *>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it)
 	{
-		if (it->second->getColor() == ORANGE && BWAPI::Broodwar->getFrameCount() - it->second->getLastFrameUpdated() > 150)
+		if (it->second->getColor() == ORANGE && BWAPI::Broodwar->getFrameCount() - it->second->getLastFrameUpdated() > 300)
 		{
 			it->second->setColor(BLACK);
 		}

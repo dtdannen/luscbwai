@@ -32,9 +32,12 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);*/
 
-		UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
-		squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
-			ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()), 1000,  "Move Test")));
+		if (BWAPI::Broodwar->getFrameCount() % 300 == 0)
+		{
+			UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
+			squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
+				ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()), 1000,  "Move Test")));
+		}
 	}
 
 	squadData.update();
