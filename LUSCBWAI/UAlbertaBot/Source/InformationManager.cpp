@@ -66,11 +66,14 @@ void InformationManager::updateUnitInfo()
 			}
 			else // if there is an enemy in the cell and it is not red, color it orange
 			{
-				int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
-
-				if (ColorGraph::Instance().getNodeColor(enemyLocation) != NodeColor::RED)
+				if (it->first->isVisible())
 				{
-					ColorGraph::Instance().setNodeColor(enemyLocation, NodeColor::ORANGE);
+					int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+
+					if (ColorGraph::Instance().getNodeColor(enemyLocation) != NodeColor::RED)
+					{
+						ColorGraph::Instance().setNodeColor(enemyLocation, NodeColor::ORANGE);
+					}
 				}
 			}
 		}

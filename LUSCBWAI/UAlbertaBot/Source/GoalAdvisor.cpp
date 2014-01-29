@@ -78,7 +78,7 @@ double GoalAdvisor::distanceBetweenCenters(int one, int two) {
 	BWAPI::Position oneCenter = ColorGraph::Instance().getNodeCenter(one);
 	BWAPI::Position twoCenter = ColorGraph::Instance().getNodeCenter(two);
 
-	rt(pow((double)(twoCenter.y() - oneCenter.x()), 2) + pow((double)(twoCenter.y() - oneCenter.y()), 2));
+	return (pow((double)(twoCenter.y() - oneCenter.x()), 2) + pow((double)(twoCenter.y() - oneCenter.y()), 2));
 }
 
 int GoalAdvisor::smallestNonGreenNode(std::map<int,double> map) {
