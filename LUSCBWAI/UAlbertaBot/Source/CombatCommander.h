@@ -17,6 +17,8 @@ class CombatCommander
 	
 	int					selfTotalDeadUnits;
 	int					numUnitsNeededForAttack;
+	
+	int					goalRegion;
 
 	// Functions
 

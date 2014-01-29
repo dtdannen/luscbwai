@@ -6,7 +6,7 @@ CombatCommander::CombatCommander()
 	, foundEnemy(false)
 	, attackSent(false) 
 {
-	
+	goalRegion = -1;
 }
 
 bool CombatCommander::squadUpdateFrame()
@@ -32,11 +32,12 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		assignAttackSquads(unitsToAssign);
 		assignIdleSquads(unitsToAssign);*/
 
-		if (BWAPI::Broodwar->getFrameCount() % 300 == 0)
+		int goal = GoalAdvisor::Instance().getGoalRegion();
+		if (goal != goalRegion)
 		{
 			UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
 			squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
-				ColorGraph::Instance().getNodeCenter(GoalAdvisor::Instance().getGoalRegion()), 1000,  "Move Test")));
+				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
 		}
 	}
 
