@@ -621,8 +621,9 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int wraithsWanted = numWraith + 4;
 	int vulturesWanted = numVultures + 2;
 
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, 3));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }
