@@ -80,6 +80,10 @@ void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<Met
 {	
 	std::vector<MetaType> buildOrder = StarcraftBuildOrderSearchManager::Instance().findBuildOrder(goal);
 
+	bool nonZeroBuildOrder = buildOrder.size() != 0;
+	if(nonZeroBuildOrder)
+		buildOrder = buildOrder;
+
 	// set the build order
 	setBuildOrder(buildOrder);
 }
@@ -105,7 +109,8 @@ void ProductionManager::update()
 	}
 
 	// if they have cloaked units get a new goal asap
-	if (!enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
+	// TODO: may want to do something related to cloaked units here
+	if (false && !enemyCloakedDetected && InformationManager::Instance().enemyHasCloakedUnits())
 	{
 		if (BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Protoss_Photon_Cannon) < 2)
 		{
@@ -165,7 +170,12 @@ void ProductionManager::manageBuildOrderQueue()
 	{
 		
 		// this is the unit which can produce the currentItem
-		BWAPI::Unit * producer = selectUnitOfType(currentItem.metaType.whatBuilds());
+		BWAPI::Unit * producer;
+		// special case for units that are created by buildings with add ons, so the correct building (with the add on) can be specified
+		if(currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others
+			producer = selectUnitOfType(currentItem.metaType.whatBuilds(), false, BWAPI::Position(0,0), currentItem.metaType.unitType);
+		else
+			producer = selectUnitOfType(currentItem.metaType.whatBuilds());
 
 		// check to see if we can make it right now
 		bool canMake = canMakeNow(producer, currentItem.metaType);
@@ -422,7 +432,7 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 }
 
 // selects a unit of a given type
-BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool leastTrainingTimeRemaining, BWAPI::Position closestTo) {
+BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool leastTrainingTimeRemaining, BWAPI::Position closestTo, BWAPI::UnitType produced) {
 
 	// if we have none of the unit type, return NULL right away
 	if (BWAPI::Broodwar->self()->completedUnitCount(type) == 0) 
@@ -467,6 +477,12 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 		{
 			if (u->getType() == type && u->isCompleted() && u->getHitPoints() > 0 && !u->isLifted() &&!u->isUnpowered()) 
 			{
+				// special case for tanks and other units that require add ons to buildings. we will make sure we choose
+				// a building with the add on that is required
+				if((produced == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others that require add ons)
+					&& u->getAddon() == NULL) 
+					continue;
+
 				return u;
 			}
 		}
