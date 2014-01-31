@@ -162,6 +162,21 @@ public:
 	    return a;
 	}
 
+	std::vector<int> getAllActions()
+	{
+		BitSet s(set);
+		std::vector<int> actions;
+
+		int num = s.numActions();
+
+		for(int i = 0; i < num; i++)
+		{
+			actions.push_back(s.popAction());
+		}
+
+		return actions;
+	}
+
 	void print() const
 	{
 		// print the bits from left to right

@@ -123,7 +123,14 @@ class SmartStarcraftSearch
 				if (goal[a] > 0)
 				{				
 					// add this to the sum
-					numGoalUnitsBuiltBy[DATA[a].whatBuildsAction()] += goal[a]; 
+					ActionSet prereqs = DATA[a].getPrerequisites();
+
+					while(!prereqs.isEmpty())
+					{
+						Action prereq = prereqs.popAction();
+						//numGoalUnitsBuiltBy[DATA[a].whatBuildsAction()] += goal[a]; 
+						numGoalUnitsBuiltBy[prereq] += goal[a]; 
+					}
 
 					// if it's in the goal, max sure it's in the max
 					UnitCountType max = goal.getMax(a);

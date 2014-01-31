@@ -3,7 +3,7 @@
 
 
 BuildingManager::BuildingManager() 
-	: debugMode(true)
+	: debugMode(false)
 	, reservedMinerals(0)
 	, reservedGas(0)
 	, buildingSpace(1)

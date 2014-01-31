@@ -230,6 +230,11 @@ public:
 			}
 		}	
 
+		// if we have enough of a building already to produce units for the goal, there is no need to make more of it
+		ActionSet excessiveBuildings = findExcessiveBuildings(s);
+		legalActions.subtract(excessiveBuildings);
+			
+
 		// if we have children, update the counter
 		if (!legalActions.isEmpty())
 		{
@@ -385,6 +390,43 @@ public:
 		}
 
 		return all;
+	}
+
+	// finds the buildings that we already have enough of to produce units for our goal
+	ActionSet findExcessiveBuildings(BuildOrderSearch::StarcraftState & s)
+	{
+		ActionSet excessiveBuildings;
+
+		// loop through to find which units we want for the goal
+		for(Action a(0); a < DATA.size(); ++a)
+		{
+			// if we want a unit of this type and it is not a building
+			if(params.goal.get(a) > 0 && !DATA[a].isBuilding())
+			{
+				// see how many more units of that type we want
+				int moreWanted = params.goal.get(a) - s.getNumUnits(a);
+
+				// calculate how many buildings we want, maximum, to produce this many of a unit
+				// as a heuristic, we'll say we want an additional producer for every 4 units we're trying to produce at once
+				int producersWanted = moreWanted / 4 + 1;
+
+				// see how many of instances of each prerequisite for this unit we have
+				ActionSet prereqs = DATA[a].getPrerequisites();
+
+				while(!prereqs.isEmpty())
+				{
+					Action curPrereq = prereqs.popAction();
+
+					int numPrereq = s.getNumUnits(curPrereq);
+
+					// if we have at as many producers as we want, do not build another building of this type
+					if(numPrereq >= producersWanted)
+						excessiveBuildings.add(curPrereq);
+				}
+			}
+		}
+
+		return excessiveBuildings;
 	}
 };
 }

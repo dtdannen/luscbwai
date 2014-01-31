@@ -53,10 +53,15 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));	
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Factory));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+
 	
 
 	setBuildOrder(buildOrder);
@@ -104,7 +109,7 @@ void ProductionManager::update()
 	// detect if there's a build order deadlock once per second
 	if ((BWAPI::Broodwar->getFrameCount() % 24 == 0) && detectBuildOrderDeadlock())
 	{
-		BWAPI::Broodwar->printf("Supply deadlock detected, building pylon!");
+		BWAPI::Broodwar->printf("Supply deadlock detected, building supply depot!");
 		queue.queueAsHighestPriority(MetaType(BWAPI::Broodwar->self()->getRace().getSupplyProvider()), true);
 	}
 
@@ -141,7 +146,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 	}
 		
 	// if it's a worker or a building, we need to re-search for the current goal
-	if ((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding())
+	if (false && (unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding())
 	{
 		BWAPI::Broodwar->printf("Critical unit died, re-searching build order");
 
@@ -164,6 +169,10 @@ void ProductionManager::manageBuildOrderQueue()
 	BuildOrderItem<PRIORITY_TYPE> & currentItem = queue.getHighestPriorityItem();
 
 	bool machineShop = currentItem.metaType.getName().compare("Terran Machine Shop") == 0;
+	if(queue.canSkipItem())
+		queue.skipItem();
+	bool scv = currentItem.metaType.getName().compare("Terran SCV") == 0 && queue.getNextHighestPriorityItem().metaType.getName().compare("Terran SCV") == 0;
+	queue.getHighestPriorityItem();
 
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
@@ -179,6 +188,9 @@ void ProductionManager::manageBuildOrderQueue()
 
 		// check to see if we can make it right now
 		bool canMake = canMakeNow(producer, currentItem.metaType);
+
+		if(scv && canMake)
+			queue = queue;
 
 		// if we try to build too many refineries manually remove it
 		if (currentItem.metaType.isRefinery() && (BWAPI::Broodwar->self()->allUnitCount(BWAPI::Broodwar->self()->getRace().getRefinery() >= 3)))
@@ -441,6 +453,7 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 	}
 
 	BWAPI::Unit * unit = NULL;
+	std::vector<BWAPI::Unit*> candidates;
 
 	// if we are concerned about the position of the unit, that takes priority
 	if (closestTo != BWAPI::Position(0,0)) {
@@ -469,7 +482,13 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 
 				return u;
 			}
+			
 		}
+
+		//BOOST_FOREACH(BWAPI::Unit * u, candidates)
+		//{
+
+		//}
 		// otherwise just return the first unit we come across
 	} else {
 

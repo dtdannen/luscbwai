@@ -35,9 +35,13 @@ protected:
 
 		// get the set of prerequisites for this action
 		ActionSet pre = DATA[action].getPrerequisites();
+
+		std::vector<int> actions = pre.getAllActions();
 	
 		// remove things we already have in all
 		pre.subtract(all);
+
+		actions = pre.getAllActions();
 	
 		// if it's empty, stop the recursion
 		if (pre.isEmpty()) 
