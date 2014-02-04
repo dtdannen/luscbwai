@@ -156,10 +156,18 @@
     <ClCompile Include="..\Source\ReplayVisualizer.cpp">
       <Filter>extra</Filter>
     </ClCompile>
-    <ClCompile Include="..\Source\ColorGraph.cpp" />
-    <ClCompile Include="..\Source\ColorNode.cpp" />
-    <ClCompile Include="..\Source\GoalAdvisor.cpp" />
-    <ClCompile Include="PositionAdvisor.cpp" />
+    <ClCompile Include="PositionAdvisor.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\GoalAdvisor.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ColorNode.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\ColorGraph.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -282,9 +290,17 @@
     <ClInclude Include="..\Source\ReplayVisualizer.h">
       <Filter>extra</Filter>
     </ClInclude>
-    <ClInclude Include="..\Source\ColorGraph.h" />
-    <ClInclude Include="..\Source\ColorNode.h" />
-    <ClInclude Include="..\Source\GoalAdvisor.h" />
-    <ClInclude Include="PositionAdvisor.h" />
+    <ClInclude Include="PositionAdvisor.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\GoalAdvisor.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ColorNode.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ColorGraph.h">
+      <Filter>game</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
