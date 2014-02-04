@@ -1,10 +1,12 @@
 #include "BWTA/Region.h"
 #include "BWAPI.h"
-#include <math.h>
+#include "Common.h"
+#include <cmath>
+#pragma once
 
 class PositionAdvisor {
 	public:
-		const int RANGE_FUDGE_FACTOR = 2;
+		static const int RANGE_FUDGE_FACTOR = 2;
 		/**
 		* Author: Steven Stinson
 		* Description: Returns the best scoring position on an arc with radius slightly smaller than unit's range
@@ -26,7 +28,7 @@ class PositionAdvisor {
 		* Description: Returns an integer representing the "score" of the given tile. This score is very modular, and the factors feeding into
 		*              it can vary greatly and can be recalculated with machine learning potentially.
 		*/
-		static int evaluateScore(const BWAPI::Position tile);
+		static double evaluateScore(const BWAPI::Position tile);
 
 		/*
 		* Author: Steven Stinosn
@@ -48,5 +50,5 @@ class PositionAdvisor {
 		*              >500px: 0
 		*			   0<x<500px: score=(-1/5)*dist+100
 		*/
-		static int distanceFromNearestUnitScore(const BWAPI::Position point);
+		static double distanceFromNearestUnitScore(const BWAPI::Position point);
 };

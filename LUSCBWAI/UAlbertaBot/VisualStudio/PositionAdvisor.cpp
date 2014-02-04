@@ -6,15 +6,15 @@ BWAPI::Position PositionAdvisor::getPosition(BWTA::Region* region, BWAPI::Unit* 
 	std::vector<BWAPI::Position> tiles = PositionAdvisor::getTileArc(region, defendedPosition, unit->getInitialType().groundWeapon().maxRange()-RANGE_FUDGE_FACTOR);
 
 	//Step 2: for the list of tiles, evaluate the score of each
-	std::vector<int> scores = *(new std::vector<int>());
-	for (int i = 0; i < tiles.size(); i++) {
+	std::vector<double> scores = *(new std::vector<double>());
+	for (unsigned int i = 0; i < tiles.size(); i++) {
 		scores.push_back(PositionAdvisor::evaluateScore(tiles[i]));
 	}
 
 	//Step 3: Get the highest score:
 
 	int max = 0;
-	for (int i = 1; i < tiles.size(); i++) {
+	for (unsigned int i = 1; i < tiles.size(); i++) {
 		if (scores[i]>scores[max]) {
 			max = i;
 		}
@@ -36,12 +36,13 @@ std::vector<BWAPI::Position> PositionAdvisor::getTileArc(const BWTA::Region* reg
 }
 
 double PositionAdvisor::getDistance(BWAPI::Position x, BWAPI::Position y) {
-	int x1 = x.x();
-	int y1 = x.y();
-	int x2 = y.x();
-	int y2 = y.y();
+	double x1 = x.x();
+	double y1 = x.y();
+	double x2 = y.x();
+	double y2 = y.y();
 
-	return sqrt( pow((x1-x2),2) + pow((y1-y2),2));
+	double root = sqrt( pow((x1-x2),2) + pow((y1-y2),2));
+	return root;
 }
 
 std::vector<BWAPI::Position> getCircle(const BWAPI::Position point, int radius) {
@@ -81,26 +82,26 @@ std::vector<BWAPI::Position> getCircle(const BWAPI::Position point, int radius) 
 	}
 }
 
-int PositionAdvisor::evaluateScore(const BWAPI::Position tile) {
-	int finalScore = 0;
+double PositionAdvisor::evaluateScore(const BWAPI::Position tile) {
+	double finalScore = 0;
 
 	//IMPLEMENTED SCORING FACTORS:
 	//1.Distance from nearest attacking unit
-	finalScore+=distanceFromNearestUnitScore();
+	finalScore+=distanceFromNearestUnitScore(tile);
 
 	//TODO: More factors!
 	return distanceFromNearestUnitScore(tile);
 }
 	
-int PositionAdvisor::distanceFromNearestUnitScore(const BWAPI::Position point) {
-	int dist =	INT_MAX;
+double PositionAdvisor::distanceFromNearestUnitScore(const BWAPI::Position point) {
+	double dist = DBL_MAX;
 	for(std::set<BWAPI::Unit*>::const_iterator i=BWAPI::Broodwar->self()->getUnits().begin();i!=BWAPI::Broodwar->self()->getUnits().end();i++) {
 		BWAPI::UnitType t = (*i)->getType();
 		if (t==BWAPI::UnitTypes::Terran_Firebat || t==BWAPI::UnitTypes::Terran_Ghost || t==BWAPI::UnitTypes::Terran_Goliath ||
 			t==BWAPI::UnitTypes::Terran_Marine || t==BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || t==BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode || 
 			t==BWAPI::UnitTypes::Terran_Vulture) {
 				BWAPI::Position unitPosition = (*i)->getPosition();
-				int unitDist = getDistance(point,unitPosition);
+				double unitDist = getDistance(point,unitPosition);
 				if (unitDist<dist)
 					dist=unitDist;
 		}
