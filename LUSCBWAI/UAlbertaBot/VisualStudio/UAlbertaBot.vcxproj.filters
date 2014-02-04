@@ -159,6 +159,7 @@
     <ClCompile Include="..\Source\ColorGraph.cpp" />
     <ClCompile Include="..\Source\ColorNode.cpp" />
     <ClCompile Include="..\Source\GoalAdvisor.cpp" />
+    <ClCompile Include="PositionAdvisor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -284,5 +285,6 @@
     <ClInclude Include="..\Source\ColorGraph.h" />
     <ClInclude Include="..\Source\ColorNode.h" />
     <ClInclude Include="..\Source\GoalAdvisor.h" />
+    <ClInclude Include="PositionAdvisor.h" />
   </ItemGroup>
 </Project>
