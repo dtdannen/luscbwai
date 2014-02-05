@@ -98,7 +98,7 @@ void BuildingManager::assignWorkersToUnassignedBuildings()
 
 		// grab a worker unit from WorkerManager which is closest to this final position
 		BWAPI::Unit * workerToAssign = WorkerManager::Instance().getBuilder(b);
-
+		
 		// if the worker exists
 		if (workerToAssign) {
 			//BWAPI::Broodwar->printf("VALID WORKER BEING ASSIGNED: %d", workerToAssign->getID());
@@ -153,6 +153,22 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 
 		testLocation = (posInRegion != BWAPI::TilePositions::None) ? posInRegion : posNotInRegion;
 	}
+	// special case for add ons, just add on to a building that doesn't already have an add on
+	else if(b.type.isAddon())
+	{
+		BWAPI::UnitType buildingToAddOn = b.type.whatBuilds().first;
+		BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
+		{
+			// if it is the right building and it doesn't have an add on
+			if(u->getType() == buildingToAddOn && u->getAddon() == NULL)
+			{
+				return u->getTilePosition();
+			}
+		}
+
+		// we didn't find a good candidate, so return null
+		return testLocation;
+	}
 	// every other type of building
 	else
 	{
@@ -202,6 +218,8 @@ void BuildingManager::constructAssignedBuildings()
 	{
 		// get a handy reference to the worker
 		Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
+		if(b.type.isAddon())
+			b = b;
 
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 
@@ -241,7 +259,10 @@ void BuildingManager::constructAssignedBuildings()
 				if (debugMode) { BWAPI::Broodwar->printf("Issuing Build Command To %s", b.type.getName().c_str()); }
 
 				// issue the build order!
-				b.builderUnit->build(b.finalPosition, b.type);
+				if(!b.type.isAddon())
+					b.builderUnit->build(b.finalPosition, b.type);
+				else
+					b.builderUnit->buildAddon(b.type);
 
 				// set the flag to true
 				b.buildCommandGiven = true;
@@ -268,8 +289,9 @@ void BuildingManager::checkForStartedConstruction()
 		{
 			Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
 
-			// check if the positions match
-			if (b.finalPosition == buildingStarted->getTilePosition()) {
+			// check if the positions match			
+			if (b.finalPosition == buildingStarted->getTilePosition() || 
+				(buildingStarted->getType().isAddon() && linesUpWithOffset(b.finalPosition, buildingStarted))) {
 				// the resources should now be spent, so unreserve them
 				reservedMinerals -= buildingStarted->getType().mineralPrice();
 				reservedGas      -= buildingStarted->getType().gasPrice();
@@ -306,6 +328,18 @@ void BuildingManager::checkForStartedConstruction()
 	}
 }
 
+bool BuildingManager::linesUpWithOffset(BWAPI::TilePosition startingPosition, BWAPI::Unit *unit)
+{
+	BWAPI::TilePosition addOnPosition = unit->getTilePosition();
+
+	// make sure the add on lines up with the original build position (the thing it is adding on to)
+	// plus the offset of the add on
+	if(unit->getType() == BWAPI::UnitTypes::Terran_Machine_Shop)
+	{
+		return (startingPosition.x() + 4 == addOnPosition.x()) && (startingPosition.y() + 1 == addOnPosition.y());
+	}
+}
+
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
 void BuildingManager::checkForDeadTerranBuilders() {}
 
@@ -324,7 +358,7 @@ void BuildingManager::checkForCompletedBuildings() {
 			if (debugMode) { BWAPI::Broodwar->printf("Construction Completed: %s", b.type.getName().c_str()); }
 
 			// if we are terran, give the worker back to worker manager
-			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
+			if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran && !b.type.isAddon())
 			{
 				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
 			}

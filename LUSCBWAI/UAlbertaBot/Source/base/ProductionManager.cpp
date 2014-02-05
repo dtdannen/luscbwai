@@ -55,12 +55,15 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));	
+	//buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay));	
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
+	//buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Factory));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 
 	
 
@@ -84,10 +87,6 @@ void ProductionManager::setBuildOrder(const std::vector<MetaType> & buildOrder)
 void ProductionManager::performBuildOrderSearch(const std::vector< std::pair<MetaType, UnitCountType> > & goal)
 {	
 	std::vector<MetaType> buildOrder = StarcraftBuildOrderSearchManager::Instance().findBuildOrder(goal);
-
-	bool nonZeroBuildOrder = buildOrder.size() != 0;
-	if(nonZeroBuildOrder)
-		buildOrder = buildOrder;
 
 	// set the build order
 	setBuildOrder(buildOrder);
@@ -146,7 +145,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 	}
 		
 	// if it's a worker or a building, we need to re-search for the current goal
-	if (false && (unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding())
+	if (false && ((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding()))
 	{
 		BWAPI::Broodwar->printf("Critical unit died, re-searching build order");
 
@@ -169,10 +168,6 @@ void ProductionManager::manageBuildOrderQueue()
 	BuildOrderItem<PRIORITY_TYPE> & currentItem = queue.getHighestPriorityItem();
 
 	bool machineShop = currentItem.metaType.getName().compare("Terran Machine Shop") == 0;
-	if(queue.canSkipItem())
-		queue.skipItem();
-	bool scv = currentItem.metaType.getName().compare("Terran SCV") == 0 && queue.getNextHighestPriorityItem().metaType.getName().compare("Terran SCV") == 0;
-	queue.getHighestPriorityItem();
 
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
@@ -181,16 +176,15 @@ void ProductionManager::manageBuildOrderQueue()
 		// this is the unit which can produce the currentItem
 		BWAPI::Unit * producer;
 		// special case for units that are created by buildings with add ons, so the correct building (with the add on) can be specified
-		if(currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others
-			producer = selectUnitOfType(currentItem.metaType.whatBuilds(), false, BWAPI::Position(0,0), currentItem.metaType.unitType);
+		// also a special case for the add ons themselves
+		if((currentItem.metaType.unitType == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || other things that require add ons
+			|| (currentItem.metaType.unitType.isAddon()))
+			producer = selectUnitOfType(currentItem.metaType.whatBuilds(), true, BWAPI::Position(0,0), currentItem.metaType.unitType);
 		else
 			producer = selectUnitOfType(currentItem.metaType.whatBuilds());
 
 		// check to see if we can make it right now
 		bool canMake = canMakeNow(producer, currentItem.metaType);
-
-		if(scv && canMake)
-			queue = queue;
 
 		// if we try to build too many refineries manually remove it
 		if (currentItem.metaType.isRefinery() && (BWAPI::Broodwar->self()->allUnitCount(BWAPI::Broodwar->self()->getRace().getRefinery() >= 3)))
@@ -200,7 +194,7 @@ void ProductionManager::manageBuildOrderQueue()
 		}
 
 		// if the next item in the list is a building and we can't yet make it
-		if (currentItem.metaType.isBuilding() && !(producer && canMake))
+		if (currentItem.metaType.isBuilding() && !(producer && canMake) && !currentItem.metaType.isAddOn())
 		{
 			// construct a temporary building object
 			Building b(currentItem.metaType.unitType, BWAPI::Broodwar->self()->getStartLocation());
@@ -403,13 +397,7 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Hive
 		&& t.unitType != BWAPI::UnitTypes::Zerg_Greater_Spire)
 	{
-		// if the building is not an addon, just send it to the building manager to build
-		if(t.unitType != BWAPI::UnitTypes::Terran_Machine_Shop)
-			// && t.unitType != other things that are addons
-			BuildingManager::Instance().addBuildingTask(t.unitType, BWAPI::Broodwar->self()->getStartLocation());
-		// otherwise do the add on
-		else
-			producer->buildAddon(t.unitType);
+		BuildingManager::Instance().addBuildingTask(t.unitType, BWAPI::Broodwar->self()->getStartLocation());
 	}
 	// if we're dealing with a non-building unit
 	else if (t.isUnit()) 
@@ -476,22 +464,57 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 		// amount of training time remaining
 	} else if (type.isBuilding() && leastTrainingTimeRemaining) {
 
+		// first get a list of all the potential candidates which can build this unit
 		BOOST_FOREACH (BWAPI::Unit * u, BWAPI::Broodwar->self()->getUnits()) {
 
-			if (u->getType() == type && u->isCompleted() && !u->isTraining() && !u->isLifted() &&!u->isUnpowered()) {
+			if (u->getType() == type && u->isCompleted() && !u->isLifted() &&!u->isUnpowered()) 
+			{
+				// special case for tanks and other units that require add ons to buildings. we will make sure we choose
+				// a building with the add on that is required
+				if((produced == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others that require add ons)
+					&& u->getAddon() == NULL) 
+					continue;
 
-				return u;
+				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
+				if((produced == BWAPI::UnitTypes::Terran_Machine_Shop) // || other add ons
+					&& u->getAddon() != NULL)
+					continue;
+
+				candidates.push_back(u);
 			}
 			
 		}
 
-		//BOOST_FOREACH(BWAPI::Unit * u, candidates)
-		//{
+		// then, if any of those buildings aren't training a unit, use that building
+		BOOST_FOREACH(BWAPI::Unit * u, candidates)
+		{
+			if(!u->isTraining())
+				return u;
+		}
+	
+		// if we made it here, all of the buildings are training a unit, so find the building with the shortest queue
+		int maxQueue = 5;
+		int smallestQueue = 10;
+		BWAPI::Unit *bestCandidate = NULL;
+		BOOST_FOREACH(BWAPI::Unit * u, candidates)
+		{
+			int size = u->getTrainingQueue().size();
+			// if this queue has room to train a unit and it is the smallest queue so far it is the best candidate so far
+			if(size < maxQueue && size < smallestQueue)
+			{
+				smallestQueue = size;
+				bestCandidate = u;
+			}
+		}
 
-		//}
-		// otherwise just return the first unit we come across
-	} else {
-
+		// if we found a good candidate, return it, otherwise do nothing and let it return null
+		if(bestCandidate != NULL)
+			return bestCandidate;
+		
+	} 
+	// otherwise just return the first unit we come across
+	else 
+	{
 		BOOST_FOREACH(BWAPI::Unit * u, BWAPI::Broodwar->self()->getUnits()) 
 		{
 			if (u->getType() == type && u->isCompleted() && u->getHitPoints() > 0 && !u->isLifted() &&!u->isUnpowered()) 
@@ -500,6 +523,11 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 				// a building with the add on that is required
 				if((produced == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others that require add ons)
 					&& u->getAddon() == NULL) 
+					continue;
+
+				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
+				if((produced == BWAPI::UnitTypes::Terran_Machine_Shop) // || other add ons
+					&& u->getAddon() != NULL)
 					continue;
 
 				return u;

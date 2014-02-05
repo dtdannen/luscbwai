@@ -611,11 +611,35 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-	int numVultures =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
-	int numTanks = BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numMarines =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	int numWraith =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int numVultures =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numTanks = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	
+	
+	// add in the number of units that we are currently training
+	BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
+	{
+		if(u->getType().isBuilding() && u->isTraining())
+		{
+			std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = u->getTrainingQueue();
+
+			BOOST_FOREACH(BWAPI::UnitType type, queue)
+			{
+				if(type == BWAPI::UnitTypes::Terran_Marine)
+					numMarines++;
+				else if(type == BWAPI::UnitTypes::Terran_Medic)
+					numMedics++;
+				else if(type == BWAPI::UnitTypes::Terran_Wraith)
+					numWraith++;
+				else if(type == BWAPI::UnitTypes::Terran_Vulture)
+					numVultures++;
+				else if(type == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
+					numTanks++;
+			}
+		}
+	}
 
 	int marinesWanted = numMarines + 3;
 	int medicsWanted = numMedics + 2;

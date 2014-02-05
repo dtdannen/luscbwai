@@ -293,6 +293,24 @@ BWAPI::Unit * WorkerManager::getGasWorker(BWAPI::Unit * refinery)
 // set 'setJobAsBuilder' to false if we just want to see which worker will build a building
 BWAPI::Unit * WorkerManager::getBuilder(Building & b, bool setJobAsBuilder)
 {
+	// first check for the special case of the building being an add on, in which case we just return
+	// the building to add on to
+	if(b.type.isAddon())
+	{
+		BWAPI::UnitType buildingToAddOn = b.type.whatBuilds().first;
+		BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
+		{
+			// if it is the right building and it doesn't have an add on
+			if(u->getType() == buildingToAddOn && u->getAddon() == NULL)
+			{
+				return u;
+			}
+		}
+
+		// we didn't find a building to add on to, return null
+		return NULL;
+	}
+
 	// variables to hold the closest worker of each type to the building
 	BWAPI::Unit * closestMovingWorker = NULL;
 	BWAPI::Unit * closestMiningWorker = NULL;

@@ -27,6 +27,7 @@ class StarcraftSearchData
 	// data for statistics
 	int lastSearchFrame;
 	int searchFrames;
+	int myStart;
 	int totalNodes;
 	double branch;
 	double totalSearchTime;
@@ -39,6 +40,7 @@ public:
 		: searchInProgress(false)
 		, lastSearchFrame(0)
 		, searchFrames(0)
+		, myStart(0)
 		, totalNodes(0)
 		, branch(0)
 		, totalSearchTime(0) {}
@@ -52,6 +54,9 @@ public:
 		{
 			//BWAPI::Broodwar->printf("Searching with %lf ms left", timeLimit);
 			lastSearchFrame = BWAPI::Broodwar->getFrameCount();
+
+			if(myStart == 0)
+				myStart = lastSearchFrame;
 
 			// set the time limit based on how much time we have this frame
 			previousParameters.searchTimeLimit = (int)(timeLimit > 3 ? timeLimit : 3);//(int)timeLimit;
@@ -69,7 +74,7 @@ public:
 			}
 
 			// if we didn't time out, then we're finished the search
-			if (!previousSearchResults.timedOut || searchFrames > 500)
+			if (!previousSearchResults.timedOut || ((searchFrames > 500 || lastSearchFrame - myStart > 500) && lastSolvedResults.solved))
 			{
 				searchInProgress = false;
 			}

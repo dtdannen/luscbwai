@@ -125,6 +125,19 @@ BuildOrderSearch::StarcraftState StarcraftBuildOrderSearchManager::getCurrentSta
 					// TODO: fix the timing
 					s.addHatchery(unit->getLarva().size(), BWAPI::Broodwar->getFrameCount());//unit->getRemainingTrainTime());
 				}
+
+				// if the building is training units, add those units to the "in progress"
+				if(unit->isTraining())
+				{
+					std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = unit->getTrainingQueue();
+					int trainingTime = unit->getRemainingTrainTime();
+					
+					BOOST_FOREACH(BWAPI::UnitType u, queue)
+					{
+						s.addActionInProgress(DATA.getAction(u), BWAPI::Broodwar->getFrameCount() + trainingTime);
+						trainingTime += unit->getRemainingTrainTime();
+					}
+				}
 			}
 		}
 

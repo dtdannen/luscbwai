@@ -233,6 +233,10 @@ public:
 		// if we have enough of a building already to produce units for the goal, there is no need to make more of it
 		ActionSet excessiveBuildings = findExcessiveBuildings(s);
 		legalActions.subtract(excessiveBuildings);
+		if(legalActions.contains(3))
+			legalActions = legalActions;
+		if(!legalActions.contains(13))
+			legalActions = legalActions;
 			
 
 		// if we have children, update the counter
@@ -268,7 +272,10 @@ public:
 		while (!legalActions.isEmpty()) 
 		{				
 			// get the next action
-			Action nextAction = legalActions.popAction();
+			//Action nextAction = legalActions.popAction();
+			// get a random action
+			Action nextAction = legalActions.randomAction();
+			legalActions.subtract(nextAction);
 			
 			// when this action would finish
 			int actionFinishTime = s.resourcesReady(nextAction) + DATA[nextAction].buildTime();
@@ -396,6 +403,9 @@ public:
 	ActionSet findExcessiveBuildings(BuildOrderSearch::StarcraftState & s)
 	{
 		ActionSet excessiveBuildings;
+		std::vector<int> unitsWantedFromBuilding(DATA.size(), 0);
+		std::vector<int> unitProducingBuildings;
+		int numGoalUnits = 0;
 
 		// loop through to find which units we want for the goal
 		for(Action a(0); a < DATA.size(); ++a)
@@ -403,12 +413,10 @@ public:
 			// if we want a unit of this type and it is not a building
 			if(params.goal.get(a) > 0 && !DATA[a].isBuilding())
 			{
-				// see how many more units of that type we want
-				int moreWanted = params.goal.get(a) - s.getNumUnits(a);
+				numGoalUnits += s.getNumUnits(a);
 
-				// calculate how many buildings we want, maximum, to produce this many of a unit
-				// as a heuristic, we'll say we want an additional producer for every 4 units we're trying to produce at once
-				int producersWanted = moreWanted / 4 + 1;
+				// see how many more units of that type we want
+				int moreWanted = params.goal.get(a) - s.getNumUnits(a);				
 
 				// see how many of instances of each prerequisite for this unit we have
 				ActionSet prereqs = DATA[a].getPrerequisites();
@@ -417,14 +425,37 @@ public:
 				{
 					Action curPrereq = prereqs.popAction();
 
-					int numPrereq = s.getNumUnits(curPrereq);
+					unitsWantedFromBuilding[curPrereq] += moreWanted;
 
-					// if we have at as many producers as we want, do not build another building of this type
-					if(numPrereq >= producersWanted)
-						excessiveBuildings.add(curPrereq);
+					// keep track of the buildings that produce these units
+					if(std::find(unitProducingBuildings.begin(), unitProducingBuildings.end(), curPrereq) == unitProducingBuildings.end())  // it didn't find it
+						unitProducingBuildings.push_back(curPrereq);
 				}
 			}
 		}
+
+		for(Action building(0); building < DATA.size(); ++building)
+		{
+			int unitsWanted = unitsWantedFromBuilding[building];
+
+			// if we want units from this building
+			if(std::find(unitProducingBuildings.begin(), unitProducingBuildings.end(), building) != unitProducingBuildings.end())
+			{
+				// calculate how many buildings we want, maximum, to produce this many of a unit
+				// as a heuristic, we'll say we want an additional producer for every 4 units we're trying to produce at once
+				int producersWanted = unitsWanted > 0 ? unitsWanted / 4 + 1 : 0;
+
+				int numBuildings = s.getNumUnits(building);
+
+				// if we have as many producers as we want, do not build another building of this type
+				if(numBuildings >= producersWanted)
+					excessiveBuildings.add(building);
+			}
+		}
+
+		// if we have less than 10 units per command center, do not build another command center yet
+		if(numGoalUnits < 20 * s.getNumUnits(2))
+			excessiveBuildings.add(2);
 
 		return excessiveBuildings;
 	}
