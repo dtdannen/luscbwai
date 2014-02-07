@@ -159,8 +159,9 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 		BWAPI::UnitType buildingToAddOn = b.type.whatBuilds().first;
 		BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
 		{
-			// if it is the right building and it doesn't have an add on
-			if(u->getType() == buildingToAddOn && u->getAddon() == NULL)
+			// if it is the right building, it doesn't have an add on, and it is available to build an add on
+			if(u->getType() == buildingToAddOn && u->getAddon() == NULL
+				&& !u->isTraining() && !u->isLifted() && !u->isUnpowered() && u->isCompleted())
 			{
 				return u->getTilePosition();
 			}

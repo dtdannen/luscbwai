@@ -233,10 +233,10 @@ public:
 		// if we have enough of a building already to produce units for the goal, there is no need to make more of it
 		ActionSet excessiveBuildings = findExcessiveBuildings(s);
 		legalActions.subtract(excessiveBuildings);
-		if(legalActions.contains(3))
-			legalActions = legalActions;
-		if(!legalActions.contains(13))
-			legalActions = legalActions;
+
+		// if the previous action was a building, do not build another of the same
+		if(s.getParent() != NULL && s.getParent()->getActionPerformed() != 255 && DATA[s.getParent()->getActionPerformed()].isBuilding())
+			legalActions.subtract(s.getParent()->getActionPerformed());
 			
 
 		// if we have children, update the counter
@@ -325,6 +325,9 @@ public:
 				{
 					repeat = 1;
 				}
+
+				if(DATA[nextAction].isBuilding() && repeat != 1)
+					repeat = 1;
 
 				// for each repetition of this action
 				for (int r = 0; r < repeat; ++r)

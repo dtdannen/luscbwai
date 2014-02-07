@@ -26,7 +26,7 @@ class SmartStarcraftSearch
 		params.ssc = ssc;
 		params.useRepetitions 				= true;
 		params.useIncreasingRepetitions 	= true;
-		params.useAlwaysMakeWorkers 		= true;
+		params.useAlwaysMakeWorkers 		= false;
 		params.useSupplyBounding 			= true;
 		//params.useConstraints				= true;
 		
@@ -258,9 +258,17 @@ class SmartStarcraftSearch
 			{
 				// set the repetitions to half of the value
 				params.setRepetitions(a, std::min((UnitCountType)4, goal[a]));
-				params.setRepetitions(DATA[a].whatBuildsAction(), 2);
+				params.setRepetitions(DATA[a].whatBuildsAction(), 1);
 				params.setRepetitionThreshold(DATA[a].whatBuildsAction(), 1);
 			}
+
+			// we only want one of any building at a time
+			if(!DATA[a].isSupplyProvider() && DATA[a].isBuilding())
+			{
+				params.setRepetitions(a, 1);
+				params.setRepetitionThreshold(a, 1);
+			}
+
 		}
 
 		params.setRepetitions(DATA.getWorker(), 2);
@@ -319,7 +327,7 @@ public:
 		params.ssc = ssc;
 		params.useRepetitions 				= true;
 		params.useIncreasingRepetitions 	= true;
-		params.useAlwaysMakeWorkers 		= true;
+		params.useAlwaysMakeWorkers 		= false;
 		params.useSupplyBounding 			= true;
 
 		return params;

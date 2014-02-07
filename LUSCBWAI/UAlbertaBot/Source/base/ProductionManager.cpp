@@ -52,9 +52,9 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Supply_Depot)); //scout when done
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));	
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
 	//buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay));	
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));

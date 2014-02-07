@@ -29,7 +29,7 @@ class StrategyManager
 	std::string					writeDir;
 	std::vector<IntPair>		results;
 	std::vector<int>			usableStrategies;
-	int							currentStrategy;
+	int							currentStrategy;	
 
 	BWAPI::Race					selfRace;
 	BWAPI::Race					enemyRace;

@@ -37,7 +37,7 @@ class SmartArmySearch
 		
 		params.useRepetitions 				= true;
 		params.useIncreasingRepetitions 	= true;
-		params.useAlwaysMakeWorkers 		= true;
+		params.useAlwaysMakeWorkers 		= false;
 		params.initialUpperBound 			= params.initialState.getCurrentFrame() + 4000;
 	}
 	
@@ -100,9 +100,10 @@ class SmartArmySearch
 		for (Action a = 0; a < DATA.size(); ++a)
 		{
 			// if it's a non depot producing building build in 2s after the first
+			// try building buildings in 1s
 			if (DATA[a].canProduce() && !DATA[a].isResourceDepot())
 			{
-				params.setRepetitions(a, 2);
+				params.setRepetitions(a, 1);
 				params.setRepetitionThreshold(a, 1);
 			}
 		}
