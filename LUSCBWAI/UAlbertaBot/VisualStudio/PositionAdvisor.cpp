@@ -45,7 +45,7 @@ double PositionAdvisor::getDistance(BWAPI::Position x, BWAPI::Position y) {
 	return root;
 }
 
-std::vector<BWAPI::Position> getCircle(const BWAPI::Position point, int radius) {
+std::vector<BWAPI::Position> PositionAdvisor::getCircle(const BWAPI::Position point, int radius) {
 	int x0 = point.x();
 	int y0 = point.y();
 	int f = 1 - radius;
