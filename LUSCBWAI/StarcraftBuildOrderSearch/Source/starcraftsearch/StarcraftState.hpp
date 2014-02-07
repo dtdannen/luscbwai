@@ -159,7 +159,7 @@ private:
 	{
 		if (DATA.getRace() == BWAPI::Races::Terran)
 		{
-			if (DATA[a].isBuilding())
+			if (DATA[a].isBuilding() && !DATA[a].isAddOn())
 			{
 				mineralWorkers--;
 			}
@@ -1414,6 +1414,16 @@ public:
 		{
 			#ifdef DEBUG_LEGAL
 				printf("PREREQ %d\n", a);
+			#endif
+			return false;
+		}
+
+		// check if the unit is an add on, that there is something to add it onto
+		//TODO: fix this
+		if(DATA[a].isAddOn() && !buildings.canAddOn(a))
+		{
+			#ifdef DEBUG_LEGAL
+				printf("NOTHING TO ADD ON TO %d\n", a);
 			#endif
 			return false;
 		}

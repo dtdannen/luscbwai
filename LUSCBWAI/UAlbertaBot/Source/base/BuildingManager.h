@@ -6,6 +6,7 @@
 #include "BuildingData.h"
 #include "InformationManager.h"
 #include "MapTools.h"
+#include "BWAPI.h"
 
 class BuildingManager {
 
@@ -28,7 +29,7 @@ class BuildingManager {
 
 	// functions
 	bool						isEvolvedBuilding(BWAPI::UnitType type);
-	bool						isBuildingPositionExplored(const Building & b) const;
+	bool						isBuildingPositionExplored(const Building & b) const;	
 
 	// the update() functions
 	void						validateWorkersAndBuildings();		// STEP 1
@@ -51,6 +52,7 @@ public:
 	void						onUnitDestroy(BWAPI::Unit * unit);
 	void						addBuildingTask(BWAPI::UnitType type, BWAPI::TilePosition desiredLocation);
 	BWAPI::TilePosition			getBuildingLocation(const Building & b);
+	bool						linesUpWithOffset(BWAPI::TilePosition startingPosition, BWAPI::Unit *unit);
 
 	int							getReservedMinerals();
 	int							getReservedGas();

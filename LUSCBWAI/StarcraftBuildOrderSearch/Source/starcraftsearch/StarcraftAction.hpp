@@ -55,6 +55,7 @@ private:
 			refinery,						// is this a refinery
 			resourceDepot,					// is this a resource depot
 			supplyProvider,					// is this a supply provider
+			addOn,							// is this an add on
 			canProduceBool,
 			canAttackBool,
 			whatBuildsIsBuildingBool,		// is what builds this action a building?
@@ -84,6 +85,7 @@ public:
 		, name(t.getName())
 		, metaName(t.getName())
 		, building(t.isBuilding())
+		, addOn(t.isAddon())
 		, worker(t.isWorker())
 		, refinery(t.isRefinery())
 		, resourceDepot(t.isResourceDepot())
@@ -117,6 +119,7 @@ public:
 		, name(t.getName())
 		, metaName(t.getName())
 		, building(false)
+		, addOn(false)
 		, worker(false)
 		, refinery(false)
 		, resourceDepot(false)
@@ -141,6 +144,7 @@ public:
 		, name(t.getName())
 		, metaName(t.getName())
 		, building(false)
+		, addOn(false)
 		, worker(false)
 		, refinery(false)
 		, resourceDepot(false)
@@ -175,11 +179,12 @@ public:
 	bool				isRefinery() 			const	{ return refinery; }
 	bool				isWorker() 				const	{ return worker;   }
 	bool				isBuilding()			const	{ return building; }
+	bool				isAddOn()				const	{ return addOn; }
 	bool				isResourceDepot()		const	{ return resourceDepot; }
 	bool				isSupplyProvider()		const	{ return supplyProvider; }
 	bool				isUnit()				const	{ return type == UnitType; }
 	bool				isTech()				const	{ return type == TechType; }
-	bool				isUpgrade()				const	{ return type == UpgradeType; }
+	bool				isUpgrade()				const	{ return type == UpgradeType; }	
 	
 	bool				whatBuildsIsBuilding() 	const	{ return whatBuildsIsBuildingBool; }
 	bool				whatBuildsIsLarva() 	const	{ return whatBuildsIsLarvaBool; }

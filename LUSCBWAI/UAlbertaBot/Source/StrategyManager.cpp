@@ -388,7 +388,8 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
 	{
-		return getTerranBuildOrderGoal();
+		const MetaPairVector vector = getTerranBuildOrderGoal();
+		return vector;
 	}
 	else
 	{
@@ -611,19 +612,86 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	int numMarines =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numMedics =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	int numWraith =				BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-	int numVultures =			BWAPI::Broodwar->self()->allUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numMarines =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	int numMedics =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	int numWraith =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	int numVultures =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	int numTanks = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numGoliaths = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Goliath);
+	int machineShops = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	
+	
+	// add in the number of units that we are currently training
+	BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
+	{
+		if(u->getType().isBuilding() && u->isTraining())
+		{
+			std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = u->getTrainingQueue();
 
-	int marinesWanted = numMarines + 12;
+			BOOST_FOREACH(BWAPI::UnitType type, queue)
+			{
+				if(type == BWAPI::UnitTypes::Terran_Marine)
+					numMarines++;
+				else if(type == BWAPI::UnitTypes::Terran_Medic)
+					numMedics++;
+				else if(type == BWAPI::UnitTypes::Terran_Wraith)
+					numWraith++;
+				else if(type == BWAPI::UnitTypes::Terran_Vulture)
+					numVultures++;
+				else if(type == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
+					numTanks++;
+				else if(type == BWAPI::UnitTypes::Terran_Goliath)
+					numGoliaths++;
+			}
+		}
+
+		// check for units in our goal that are already constructing
+		if(u->getType().isBuilding() && u->isConstructing())
+		{
+			if(u->getType() == BWAPI::UnitTypes::Terran_Machine_Shop)
+				machineShops++;
+		}
+	}
+
+	int marinesWanted;
 	int medicsWanted = numMedics + 2;
 	int wraithsWanted = numWraith + 4;
-	int vulturesWanted = numVultures + 2;
+	int vulturesWanted;
+	int tanksWanted;
+	
+	if(numMarines < 5)
+	{
+		marinesWanted = numMarines + 3;
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
+	}
+		
+	// one vulture for every 5 tanks
+	vulturesWanted = numVultures + (numTanks / 5);
+	if(vulturesWanted > 0)
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
 
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-	//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, 3));
+	// one goliath for every 5 tanks
+	int goliathsWanted = numGoliaths + (numTanks / 5);
+	if(goliathsWanted > 0)
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
+
+	// always get 5 more tanks, plus a little bit extra
+	tanksWanted = numTanks + numTanks / 3 + 5;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));	
+
+	// we don't want the tree to be too much to compute, so if our goal units add up to more than 30, just do a hard coded distribution
+	if(vulturesWanted + tanksWanted + goliathsWanted > 30)
+	{
+		vulturesWanted = numVultures + 8;
+		goliathsWanted = numGoliaths + 8;
+		tanksWanted = numTanks + 14;
+	}
+
+	// make sure we always have at least two machine shops
+	int machineShopsWanted = 2 - machineShops;
+	if(machineShopsWanted > 0)
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
+	BWAPI::Broodwar->printf("Trying to get %d vultures and %d tanks and %d goliaths", (vulturesWanted-numVultures), (tanksWanted-numTanks), (goliathsWanted - numGoliaths));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }

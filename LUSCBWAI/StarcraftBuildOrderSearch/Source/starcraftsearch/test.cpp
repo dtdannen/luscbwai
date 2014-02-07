@@ -79,7 +79,7 @@ void testArmySearch()
 	params.initialState = StarcraftState(true);
 	params.initialUpperBound = 6000;
 	params.goal = defaultProtossGoal();
-	params.useAlwaysMakeWorkers = true;
+	params.useAlwaysMakeWorkers = false;
 	params.useIncreasingRepetitions = true;
 	params.setRepetitionThreshold(DATA.getSupplyProvider(), 1);
 	params.setRepetitionThreshold(DATA.getWorker(), 8);

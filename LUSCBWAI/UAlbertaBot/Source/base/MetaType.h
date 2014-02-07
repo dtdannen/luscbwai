@@ -24,6 +24,7 @@ struct MetaType {
 	bool isCommand()	{ return type == Command; }
 	bool isBuilding()	{ return type == Unit && unitType.isBuilding(); }
 	bool isRefinery()	{ return isBuilding() && unitType.isRefinery(); }
+	bool isAddOn()		{ return isBuilding() && unitType.isAddon(); }
 
 	int supplyRequired()
 	{

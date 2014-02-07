@@ -54,7 +54,8 @@ class ProductionManager
 	void						performBuildOrderSearch(const std::vector< std::pair<MetaType, UnitCountType> > & goal);
 	void						setBuildOrder(const std::vector<MetaType> & buildOrder);
 	void						createMetaType(BWAPI::Unit * producer, MetaType type);
-	BWAPI::Unit *				selectUnitOfType(BWAPI::UnitType type, bool leastTrainingTimeRemaining = true, BWAPI::Position closestTo = BWAPI::Position(0,0));
+	BWAPI::Unit *				selectUnitOfType(BWAPI::UnitType type, bool leastTrainingTimeRemaining = true, BWAPI::Position closestTo = BWAPI::Position(0,0),
+													BWAPI::UnitType produced = NULL);
 	
 	BuildOrderQueue				queue;
 	void						manageBuildOrderQueue();

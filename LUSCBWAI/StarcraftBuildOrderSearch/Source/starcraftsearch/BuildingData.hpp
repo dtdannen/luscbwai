@@ -42,6 +42,7 @@ class BuildingData
 public:
 
 	int numBuildings;
+	std::vector<std::pair<int, int>> availableForAddons;
 
 	BuildingData() : numBuildings(0) {}
 
@@ -49,6 +50,8 @@ public:
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS - 1));
+
+		updateAddOns(t);
 	
 		buildings[numBuildings++] = BuildingStatus(t, 0);
 	}
@@ -57,8 +60,66 @@ public:
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS - 1));
-	
+			
+		updateAddOns(t);
+
 		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree);
+	}
+
+	bool canAddOn(Action t) const
+	{
+		assert(DATA[t].isAddOn());
+
+		ActionSet prereqs = DATA[t].getPrerequisites();
+		Action buildingAddedOn = prereqs.popAction();
+		std::pair<int, int> pair;
+
+		BOOST_FOREACH(pair, availableForAddons)
+		{
+			if(pair.first == buildingAddedOn)
+				return pair.second > 0;
+		}
+
+		// if the prerequisite wasn't in the list, we can't add on
+		return false;
+	}
+
+	void updateAddOns(Action t)
+	{
+		// if the building is not an add on, update the list to indicate that we have another building
+		// of that type
+		if(!DATA[t].isAddOn())
+		{
+			bool found = false;
+			for(int i = 0; i < availableForAddons.size(); ++i)
+			{
+				if(availableForAddons[i].first == t)
+				{
+					availableForAddons[i].second++;
+					found = true;
+					break;
+				}
+			}
+
+			if(!found)
+				availableForAddons.push_back(std::pair<int, int>(t, 0));
+		}
+		// otherwise it is an add on, so subtract the building it was added onto from the available add ons
+		else
+		{
+			ActionSet prereqs = DATA[t].getPrerequisites();
+
+			Action buildingAddedOn = prereqs.popAction();
+
+			for(int i = 0; i < availableForAddons.size(); ++i)
+			{
+				if(availableForAddons[i].first == buildingAddedOn)
+				{
+					availableForAddons[i].second--;
+					break;
+				}
+			}
+		}
 	}
 
 	const BuildingStatus & getBuilding(int i) const
