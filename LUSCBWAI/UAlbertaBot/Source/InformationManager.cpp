@@ -78,20 +78,20 @@ void InformationManager::updateUnitInfo()
 			}
 		}
 		
-		// if we have a base, color it green (if that doesn't conflict with red/orange)
+		// if we have a unit in a node, color it green (if that doesn't conflict with red/orange)
 		data = selfUnitData.getUnits();
 		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-			if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
-			{
+			//if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
+			//{
 				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
 
 				if (ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED
-					|| ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED)
+					&& ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::ORANGE)
 				{
 					ColorGraph::Instance().setNodeColor(ourBaseLocation, NodeColor::GREEN);
 				}
-			}
+			//}
 		}
 	}
 }
