@@ -50,6 +50,7 @@ void InformationManager::updateUnitInfo()
 	// update the color graph once every 10 seconds
 	if (BWAPI::Broodwar->getFrameCount() % 300 == 0)
 	{
+		enemyUnitData.removeBadUnits();
 		std::map<BWAPI::Unit *, UnitInfo> data = enemyUnitData.getUnits();
 		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
 		{
@@ -66,7 +67,7 @@ void InformationManager::updateUnitInfo()
 			}
 			else // if there is an enemy in the cell and it is not red, color it orange
 			{
-				if (it->first->isVisible())
+				if (it->first != NULL && it->first->isVisible() && BWTA::getRegion(it->first->getPosition()) != NULL)
 				{
 					int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
 
@@ -79,11 +80,14 @@ void InformationManager::updateUnitInfo()
 		}
 		
 		// if we have a unit in a node, color it green (if that doesn't conflict with red/orange)
+		selfUnitData.removeBadUnits();
 		data = selfUnitData.getUnits();
 		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
 		{
 			//if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
 			//{
+			if (it->first != NULL && it->first->getPosition() != NULL && BWTA::getRegion(it->first->getPosition()) != NULL)
+			{
 				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
 
 				if (ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED
@@ -91,6 +95,7 @@ void InformationManager::updateUnitInfo()
 				{
 					ColorGraph::Instance().setNodeColor(ourBaseLocation, NodeColor::GREEN);
 				}
+			}
 			//}
 		}
 	}
