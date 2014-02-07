@@ -476,7 +476,7 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 					continue;
 
 				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
-				if((produced == BWAPI::UnitTypes::Terran_Machine_Shop) // || other add ons
+				if((produced.isAddon()) // || other add ons
 					&& u->getAddon() != NULL)
 					continue;
 
@@ -526,7 +526,7 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 					continue;
 
 				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
-				if((produced == BWAPI::UnitTypes::Terran_Machine_Shop) // || other add ons
+				if((produced.isAddon())
 					&& u->getAddon() != NULL)
 					continue;
 

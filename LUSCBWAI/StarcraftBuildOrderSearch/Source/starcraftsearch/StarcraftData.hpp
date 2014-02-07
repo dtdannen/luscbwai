@@ -102,6 +102,8 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Missile_Turret, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Engineering_Bay, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Armory, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Goliath, actions.size()));
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{

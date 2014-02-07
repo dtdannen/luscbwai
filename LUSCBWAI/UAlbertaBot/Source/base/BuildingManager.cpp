@@ -339,6 +339,8 @@ bool BuildingManager::linesUpWithOffset(BWAPI::TilePosition startingPosition, BW
 	{
 		return (startingPosition.x() + 4 == addOnPosition.x()) && (startingPosition.y() + 1 == addOnPosition.y());
 	}
+
+	return false;
 }
 
 // STEP 5: IF WE ARE TERRAN, THIS MATTERS, SO: LOL
