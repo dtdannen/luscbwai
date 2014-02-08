@@ -460,6 +460,20 @@ public:
 		if(numGoalUnits < 20 * s.getNumUnits(2))
 			excessiveBuildings.add(2);
 
+		// make sure we only ever have one armory or engineering bay
+		for(Action a(0); a < DATA.size(); ++a)
+		{
+			if(DATA[a].getUnitType() == BWAPI::UnitTypes::Terran_Armory && s.getNumUnits(a) >= 1)
+			{
+				excessiveBuildings.add(a);
+			}
+			if(DATA[a].getUnitType() == BWAPI::UnitTypes::Terran_Engineering_Bay && s.getNumUnits(a) >= 1)
+			{
+				excessiveBuildings.add(a);
+			}
+		}
+
+
 		return excessiveBuildings;
 	}
 };

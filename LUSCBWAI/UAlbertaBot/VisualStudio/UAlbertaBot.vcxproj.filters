@@ -156,9 +156,6 @@
     <ClCompile Include="..\Source\ReplayVisualizer.cpp">
       <Filter>extra</Filter>
     </ClCompile>
-    <ClCompile Include="PositionAdvisor.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\GoalAdvisor.cpp">
       <Filter>game</Filter>
     </ClCompile>
@@ -289,9 +286,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\ReplayVisualizer.h">
       <Filter>extra</Filter>
-    </ClInclude>
-    <ClInclude Include="PositionAdvisor.h">
-      <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\GoalAdvisor.h">
       <Filter>game</Filter>

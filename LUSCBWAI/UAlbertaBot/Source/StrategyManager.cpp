@@ -616,9 +616,11 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	int numMedics =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Medic);
 	int numWraith =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Wraith);
 	int numVultures =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture);
-	int numTanks = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
-	int numGoliaths = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Goliath);
-	int machineShops = BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numTanks =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
+	int numGoliaths =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Goliath);
+	int machineShops =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
+	int numBases =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
+	int numTurrets =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
 	
 	
 	// add in the number of units that we are currently training
@@ -650,33 +652,41 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		{
 			if(u->getType() == BWAPI::UnitTypes::Terran_Machine_Shop)
 				machineShops++;
+			else if(u->getType() == BWAPI::UnitTypes::Terran_Command_Center)
+				numBases++;
+			else if(u->getType() == BWAPI::UnitTypes::Terran_Command_Center)
+				numTurrets++;
 		}
 	}
-
-	int marinesWanted;
-	int medicsWanted = numMedics + 2;
-	int wraithsWanted = numWraith + 4;
-	int vulturesWanted;
-	int tanksWanted;
 	
+	/*
+
+		We want the following units for our build order:
+
+		1. At least 5 marines at all times.
+		2. One vulture for every 5 tanks we are creating.
+		3. One goliath for every 5 tanks we are creating.
+		4. 5 more tanks + 33% more tanks.
+		5. At least 2 machine shops.
+		6. 5 missile turrets / command center.
+
+	*/
+
 	if(numMarines < 5)
 	{
-		marinesWanted = numMarines + 3;
+		int marinesWanted = numMarines + 3;
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	}
 		
-	// one vulture for every 5 tanks
-	vulturesWanted = numVultures + (numTanks / 5);
+	int vulturesWanted = numVultures + (numTanks / 5);
 	if(vulturesWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
 
-	// one goliath for every 5 tanks
 	int goliathsWanted = numGoliaths + (numTanks / 5);
 	if(goliathsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
 
-	// always get 5 more tanks, plus a little bit extra
-	tanksWanted = numTanks + numTanks / 3 + 5;
+	int tanksWanted = numTanks + numTanks / 3 + 5;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));	
 
 	// we don't want the tree to be too much to compute, so if our goal units add up to more than 30, just do a hard coded distribution
@@ -687,10 +697,14 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		tanksWanted = numTanks + 14;
 	}
 
-	// make sure we always have at least two machine shops
 	int machineShopsWanted = 2 - machineShops;
 	if(machineShopsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
+
+	int turretsWanted = numTanks >= 5 ? numBases * 5 : 0;
+	if(turretsWanted > numTurrets)
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
+
 	BWAPI::Broodwar->printf("Trying to get %d vultures and %d tanks and %d goliaths", (vulturesWanted-numVultures), (tanksWanted-numTanks), (goliathsWanted - numGoliaths));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
