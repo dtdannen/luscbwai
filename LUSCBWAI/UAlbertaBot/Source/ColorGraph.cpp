@@ -113,7 +113,7 @@ void ColorGraph::processColorExpiration()
 		{
 			it->second->setColor(BLACK);
 		}
-		if (it->second->getColor() == GREEN && BWAPI::Broodwar->getFrameCount() - it->second->getLastFrameUpdated() > 3000)
+		if (it->second->getColor() == GREEN && BWAPI::Broodwar->getFrameCount() - it->second->getLastFrameUpdated() > 6000)
 		{
 			it->second->setColor(BLACK);
 		}

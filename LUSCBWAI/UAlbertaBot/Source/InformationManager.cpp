@@ -54,26 +54,29 @@ void InformationManager::updateUnitInfo()
 		std::map<BWAPI::Unit *, UnitInfo> data = enemyUnitData.getUnits();
 		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-			// if there is an enemy base, color it red
-			if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center
-				|| it->first->getType() == BWAPI::UnitTypes::Protoss_Nexus
-				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hatchery
-				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Lair
-				|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hive)
+			if (it->first != NULL && it->first->getPosition() != NULL && BWTA::getRegion(it->first->getPosition()) != NULL)
 			{
-				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
-
-				ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
-			}
-			else // if there is an enemy in the cell and it is not red, color it orange
-			{
-				if (it->first != NULL && it->first->isVisible() && BWTA::getRegion(it->first->getPosition()) != NULL)
+				// if there is an enemy base, color it red
+				if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center
+					|| it->first->getType() == BWAPI::UnitTypes::Protoss_Nexus
+					|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hatchery
+					|| it->first->getType() == BWAPI::UnitTypes::Zerg_Lair
+					|| it->first->getType() == BWAPI::UnitTypes::Zerg_Hive)
 				{
-					int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+					int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
 
-					if (ColorGraph::Instance().getNodeColor(enemyLocation) != NodeColor::RED)
+					ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+				}
+				else // if there is an enemy in the cell and it is not red, color it orange
+				{
+					if (it->first != NULL && it->first->getPosition() != NULL && BWTA::getRegion(it->first->getPosition()) != NULL)
 					{
-						ColorGraph::Instance().setNodeColor(enemyLocation, NodeColor::ORANGE);
+						int enemyLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+
+						if (ColorGraph::Instance().getNodeColor(enemyLocation) != NodeColor::RED)
+						{
+							ColorGraph::Instance().setNodeColor(enemyLocation, NodeColor::ORANGE);
+						}
 					}
 				}
 			}
@@ -136,12 +139,15 @@ void InformationManager::updateBaseLocationInfo()
 				mainBaseLocations[ENEMY_INDEX] = startLocation;
 				updateOccupiedRegions(BWTA::getRegion(startLocation->getTilePosition()), BWAPI::Broodwar->enemy());
 
-				// Color node red
-				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(startLocation->getPosition());
-		
-				if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+				if (startLocation->getPosition() != NULL)
 				{
-					ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+					// Color node red
+					int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(startLocation->getPosition());
+		
+					if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+					{
+						ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+					}
 				}
 			}
 
@@ -165,12 +171,15 @@ void InformationManager::updateBaseLocationInfo()
 			mainBaseLocations[ENEMY_INDEX] = unexplored;
 			updateOccupiedRegions(BWTA::getRegion(unexplored->getTilePosition()), BWAPI::Broodwar->enemy());
 
-			// Color node red
-			int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(unexplored->getPosition());
-		
-			if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+			if (unexplored->getPosition())
 			{
-				ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+				// Color node red
+				int enemyBaseNodeNum = ColorGraph::Instance().getNodeAtPosition(unexplored->getPosition());
+		
+				if (ColorGraph::Instance().getNodeColor(enemyBaseNodeNum) != NodeColor::RED)
+				{
+					ColorGraph::Instance().setNodeColor(enemyBaseNodeNum, NodeColor::RED);
+				}
 			}
 		}
 
