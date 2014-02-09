@@ -31,6 +31,11 @@ BWAPI::Position ColorNode::getCenter()
 	return center;
 }
 
+double ColorNode::getImportance()
+{
+	return importance;
+}
+
 void ColorNode::setColor(NodeColor nodeColor)
 {
 	color = nodeColor;
@@ -52,6 +57,12 @@ void ColorNode::setCenter(BWAPI::Position regionCenter)
 void ColorNode::updateAge()
 {
 	lastUpdated = BWAPI::Broodwar->getFrameCount();
+}
+
+void ColorNode::setImportance(double imp)
+{
+	importance = imp;
+	updateAge();
 }
 
 ColorNode::~ColorNode(void)

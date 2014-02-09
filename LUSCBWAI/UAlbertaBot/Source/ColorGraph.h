@@ -16,7 +16,9 @@ public:
 	static ColorGraph &	Instance();
 
 	NodeColor getNodeColor(int id);
+	double getNodeImportance(int id);
 	void setNodeColor(int id, NodeColor color);
+	void setNodeImportance(int id, double importance);
 	BWAPI::Position getNodeCenter(int id);
 	int getLastUpdatedFrame(int id);
 	std::list<int> getNodeNeighbors(int id);
