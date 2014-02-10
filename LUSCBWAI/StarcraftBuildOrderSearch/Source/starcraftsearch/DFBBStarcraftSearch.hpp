@@ -460,7 +460,7 @@ public:
 		if(numGoalUnits < 20 * s.getNumUnits(2))
 			excessiveBuildings.add(2);
 
-		// make sure we only ever have one armory or engineering bay
+		// make sure we only ever have one armory, engineering bay, or comsat station
 		for(Action a(0); a < DATA.size(); ++a)
 		{
 			if(DATA[a].getUnitType() == BWAPI::UnitTypes::Terran_Armory && s.getNumUnits(a) >= 1)
@@ -471,6 +471,8 @@ public:
 			{
 				excessiveBuildings.add(a);
 			}
+			if(DATA[a].getUnitType() == BWAPI::UnitTypes::Terran_Comsat_Station && s.getNumUnits(a) >= 1)
+				excessiveBuildings.add(a);
 		}
 
 
