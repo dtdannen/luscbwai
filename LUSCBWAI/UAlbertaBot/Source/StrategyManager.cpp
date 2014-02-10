@@ -712,14 +712,17 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	if(machineShopsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
 
-	int turretsWanted = numTanks >= 5 ? numBases * 5 : 0;
+	if(numTanks >= 5 && numCommSat < 1)
+	{
+		BWAPI::Broodwar->printf("Trying to build a comsat!");
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
+	}
+
+	int turretsWanted = numTanks >= 5 && numCommSat >= 1 ? numBases * 5 : 0;
 	// make sure we don't try to make more than 5 at a time
 	turretsWanted = turretsWanted - numTurrets > 5 ? numTurrets + 5 : turretsWanted;
 	if(turretsWanted > numTurrets)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
-
-	if(numTanks > 5 && numCommSat < 1)
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 
 	BWAPI::Broodwar->printf("Getting %d vultures, %d tanks, %d goliaths, %d mach. shops, %d turrets", (vulturesWanted-numVultures), 
 		(tanksWanted-numTanks), (goliathsWanted - numGoliaths), (machineShopsWanted - machineShops), (turretsWanted - numTurrets));

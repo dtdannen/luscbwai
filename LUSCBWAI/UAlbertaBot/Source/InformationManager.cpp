@@ -89,9 +89,11 @@ void InformationManager::updateUnitInfo()
 		{
 			//if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
 			//{
-			if (it->first != NULL && it->first->getPosition() != NULL && BWTA::getRegion(it->first->getPosition()) != NULL)
+			BWAPI::Position p = it->first->getPosition();
+			BWTA::Region * r = BWTA::getRegion(p);
+			if (it->first != NULL && it->first->getPosition() != NULL && r != NULL)
 			{
-				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(it->first->getPosition());
+				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(p);
 
 				if (ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED
 					&& ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::ORANGE)

@@ -104,6 +104,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Engineering_Bay, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Armory, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Goliath, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Comsat_Station, actions.size()));
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{
