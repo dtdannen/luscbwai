@@ -70,9 +70,21 @@ public:
 	{
 		assert(DATA[t].isAddOn());
 
-		ActionSet prereqs = DATA[t].getPrerequisites();
-		Action buildingAddedOn = prereqs.popAction();
+		BWAPI::UnitType whatBuilds = DATA[t].whatBuilds();
+		Action buildingAddedOn = 255;
 		std::pair<int, int> pair;
+
+		// find the action number of the building
+		for(Action a(0); a < DATA.size(); ++a)
+		{
+			if(DATA[a].getUnitType() == whatBuilds)
+			{
+				buildingAddedOn = a;
+				break;
+			}
+		}
+
+		assert(buildingAddedOn < 255);
 
 		BOOST_FOREACH(pair, availableForAddons)
 		{
@@ -102,14 +114,24 @@ public:
 			}
 
 			if(!found)
-				availableForAddons.push_back(std::pair<int, int>(t, 0));
+				availableForAddons.push_back(std::pair<int, int>(t, 1));
 		}
 		// otherwise it is an add on, so subtract the building it was added onto from the available add ons
 		else
 		{
-			ActionSet prereqs = DATA[t].getPrerequisites();
+			BWAPI::UnitType whatBuilds = DATA[t].whatBuilds();
+			Action buildingAddedOn = 255;
+			std::pair<int, int> pair;
 
-			Action buildingAddedOn = prereqs.popAction();
+			// find the action number of the building
+			for(Action a(0); a < DATA.size(); ++a)
+			{
+				if(DATA[a].getUnitType() == whatBuilds)
+				{
+					buildingAddedOn = a;
+					break;
+				}
+			}
 
 			for(int i = 0; i < availableForAddons.size(); ++i)
 			{
