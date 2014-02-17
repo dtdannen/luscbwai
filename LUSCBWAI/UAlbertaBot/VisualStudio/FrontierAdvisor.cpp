@@ -28,7 +28,7 @@ int FrontierAdvisor::getNextNodeId()
 	{
 		for each (int neighbor in ColorGraph::Instance().getNodeNeighbors(node))
 		{
-			if (std::find(controlled.begin(), controlled.end(), neighbor) == controlled.end())
+			if (std::find(controlled.begin(), controlled.end(), neighbor) == controlled.end() && std::find(frontier.begin(), frontier.end(), neighbor) == frontier.end())
 			{
 				double score = calculateNodeValue(neighbor);
 				if (score < minScore)
