@@ -21,7 +21,7 @@ BWAPI::Position MicroManager::calcCenter() const
 void MicroManager::execute(const SquadOrder & inputOrder)
 {
 	// Nothing to do if we have no units
-	if(units.empty() || !(inputOrder.type == SquadOrder::Attack || inputOrder.type == SquadOrder::Defend))
+	if(units.empty() || !(inputOrder.type == SquadOrder::Attack || inputOrder.type == SquadOrder::Defend || inputOrder.type == SquadOrder::Tanks || inputOrder.type == SquadOrder::Vultures || inputOrder.type == SquadOrder::Goliaths || inputOrder.type == SquadOrder::Marines))
 	{
 		//BWAPI::Broodwar->printf("Gots no units, fix shit up (%d)", order.type);
 		return;
@@ -38,7 +38,7 @@ void MicroManager::execute(const SquadOrder & inputOrder)
 		MapGrid::Instance().GetUnits(nearbyEnemies, order.position, 800, false, true);
 	
 	} // otherwise we want to see everything on the way
-	else if (order.type == order.Attack) 
+	else if (order.type == order.Attack || order.type == order.Tanks || order.type == order.Vultures || order.type == order.Goliaths || order.type == order.Marines) 
 	{
 		MapGrid::Instance().GetUnits(nearbyEnemies, order.position, 800, false, true);
 		BOOST_FOREACH (BWAPI::Unit * unit, units) 
@@ -51,7 +51,7 @@ void MicroManager::execute(const SquadOrder & inputOrder)
 
 	// the following block of code attacks all units on the way to the order position
 	// we want to do this if the order is attack, defend, or harass
-	if (order.type == order.Attack || order.type == order.Defend) 
+	if (order.type == order.Attack || order.type == order.Defend || order.type == order.Tanks || order.type == order.Vultures || order.type == order.Goliaths || order.type == order.Marines) 
 	{
 		// Allow micromanager to handle enemies
 		executeMicro(nearbyEnemies);

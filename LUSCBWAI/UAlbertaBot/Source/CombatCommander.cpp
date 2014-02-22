@@ -36,8 +36,133 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		if (goal != goalRegion)
 		{
 			UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
-			squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
-				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
+
+			UnitVector tanks;
+			UnitVector vultures;
+			UnitVector goliaths;
+			UnitVector marines;
+
+			for each (BWAPI::Unit * unit in units)
+			{
+				if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
+				{
+					tanks.push_back(unit);
+				}
+				else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
+				{
+					vultures.push_back(unit);
+				}
+				else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
+				{
+					goliaths.push_back(unit);
+				}				
+				else if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
+				{
+					marines.push_back(unit);
+				}
+			}
+
+			UnitVector temp;
+			int count = 0;
+			for each (BWAPI::Unit * unit in tanks)
+			{
+				if (count < 6)
+				{
+					temp.push_back(unit);
+					count++;
+				}
+				else
+				{
+					count = 0;
+					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Tanks,  
+						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks")));
+					temp.clear();
+				}
+			}
+
+			if (count != 0)
+			{
+				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Tanks,  
+					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks")));
+			}
+
+			count = 0;
+			temp.clear();
+
+			for each (BWAPI::Unit * unit in vultures)
+			{
+				if (count < 6)
+				{
+					temp.push_back(unit);
+					count++;
+				}
+				else
+				{
+					count = 0;
+					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Vultures,  
+						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures")));
+					temp.clear();
+				}
+			}
+
+			if (count != 0)
+			{
+				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Vultures,  
+					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures")));
+			}
+
+			count = 0;
+			temp.clear();
+
+			for each (BWAPI::Unit * unit in goliaths)
+			{
+				if (count < 6)
+				{
+					temp.push_back(unit);
+					count++;
+				}
+				else
+				{
+					count = 0;
+					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Goliaths,  
+						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths")));
+					temp.clear();
+				}
+			}
+
+			if (count != 0)
+			{
+				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Goliaths,  
+					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths")));
+			}
+
+			count = 0;
+			temp.clear();
+
+			for each (BWAPI::Unit * unit in marines)
+			{
+				if (count < 6)
+				{
+					temp.push_back(unit);
+					count++;
+				}
+				else
+				{
+					count = 0;
+					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Marines,  
+						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines")));
+					temp.clear();
+				}
+			}
+
+			if (count != 0)
+			{
+				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Marines,  
+					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines")));
+			}
+			
+			//squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
+			//	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
 		}
 	}
 
