@@ -26,7 +26,7 @@ void MeleeManager::executeMicro(const UnitVector & targets)
 	BOOST_FOREACH(BWAPI::Unit * meleeUnit, meleeUnits)
 	{
 		// if the order is to attack or defend
-		if (order.type == order.Attack || order.type == order.Defend) {
+		if (order.type == order.Attack || order.type == order.Defend || order.type == order.Tanks || order.type == order.Vultures || order.type == order.Goliaths || order.type == order.Marines) {
 
 			// if there are targets
 			if (!meleeUnitTargets.empty())

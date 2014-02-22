@@ -25,7 +25,7 @@ void RangedManager::executeMicro(const UnitVector & targets)
 		//trainSubUnits(rangedUnit);
 
 		// if the order is to attack or defend
-		if (order.type == order.Attack || order.type == order.Defend) {
+		if (order.type == order.Attack || order.type == order.Defend || order.type == order.Tanks || order.type == order.Vultures || order.type == order.Goliaths || order.type == order.Marines) {
 
 			// if there are targets
 			if (!rangedUnitTargets.empty())
