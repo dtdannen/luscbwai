@@ -24,14 +24,18 @@ public:
 	// the number of frames remaining (from currentFrame) until this building is free
 	FrameCountType timeRemaining;
 
+	// whether or not this building has an add on attached to it
+	bool hasAddOn;
+
 	BuildingStatus() : type(0), timeRemaining(0) 
 	{
 		memset(this, 0, sizeof(*this));
 	}
 	
 	~BuildingStatus() {}
-	BuildingStatus(Action t) : type(t), timeRemaining(0) {}
-	BuildingStatus(Action t, FrameCountType time) : type(t), timeRemaining(time) {}
+	BuildingStatus(Action t) : type(t), timeRemaining(0), hasAddOn(false) {}
+	BuildingStatus(Action t, FrameCountType time) : type(t), timeRemaining(time), hasAddOn(false) {}
+	BuildingStatus(Action t, FrameCountType time, bool addOn) : type(t), timeRemaining(time), hasAddOn(addOn) {}
 };
 
 class BuildingData
@@ -50,8 +54,6 @@ public:
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS - 1));
-
-		updateAddOns(t);
 	
 		buildings[numBuildings++] = BuildingStatus(t, 0);
 	}
@@ -60,21 +62,26 @@ public:
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS - 1));
-			
-		updateAddOns(t);
 
 		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree);
 	}
 
-	bool canAddOn(Action t) const
+	void addBuilding(const Action t, const FrameCountType timeUntilFree, bool hasAddon)
+	{
+		assert(DATA[t].isBuilding());
+		assert(numBuildings < (MAX_BUILDINGS -1));
+
+		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree, hasAddon);
+	}
+
+	bool canAddOn(const Action t) const
 	{
 		assert(DATA[t].isAddOn());
 
 		BWAPI::UnitType whatBuilds = DATA[t].whatBuilds();
 		Action buildingAddedOn = 255;
-		std::pair<int, int> pair;
 
-		// find the action number of the building
+		// find the action number of the building to add on to
 		for(Action a(0); a < DATA.size(); ++a)
 		{
 			if(DATA[a].getUnitType() == whatBuilds)
@@ -86,62 +93,50 @@ public:
 
 		assert(buildingAddedOn < 255);
 
-		BOOST_FOREACH(pair, availableForAddons)
+		// iterate through the buildings and try to find one of the correct type that is completed and doesn't have an add on
+		for (int i=0; i<numBuildings; ++i)
 		{
-			if(pair.first == buildingAddedOn)
-				return pair.second > 0;
+			if (buildings[i].type == buildingAddedOn && buildings[i].timeRemaining == 0 && !buildings[i].hasAddOn)
+			{
+				return true;
+			}
 		}
 
-		// if the prerequisite wasn't in the list, we can't add on
+		// if a building to add on wasn't found, we can't add on
 		return false;
 	}
 
-	void updateAddOns(Action t)
+	void simulateAddOn(const Action t)
 	{
-		// if the building is not an add on, update the list to indicate that we have another building
-		// of that type
-		if(!DATA[t].isAddOn())
+		assert(DATA[t].isAddOn());
+
+		BWAPI::UnitType whatBuilds = DATA[t].whatBuilds();
+		Action buildingAddedOn = 255;
+
+		// find the action number of the building to add on to
+		for(Action a(0); a < DATA.size(); ++a)
 		{
-			bool found = false;
-			for(int i = 0; i < availableForAddons.size(); ++i)
+			if(DATA[a].getUnitType() == whatBuilds)
 			{
-				if(availableForAddons[i].first == t)
-				{
-					availableForAddons[i].second++;
-					found = true;
-					break;
-				}
-			}
-
-			if(!found)
-				availableForAddons.push_back(std::pair<int, int>(t, 1));
-		}
-		// otherwise it is an add on, so subtract the building it was added onto from the available add ons
-		else
-		{
-			BWAPI::UnitType whatBuilds = DATA[t].whatBuilds();
-			Action buildingAddedOn = 255;
-			std::pair<int, int> pair;
-
-			// find the action number of the building
-			for(Action a(0); a < DATA.size(); ++a)
-			{
-				if(DATA[a].getUnitType() == whatBuilds)
-				{
-					buildingAddedOn = a;
-					break;
-				}
-			}
-
-			for(int i = 0; i < availableForAddons.size(); ++i)
-			{
-				if(availableForAddons[i].first == buildingAddedOn)
-				{
-					availableForAddons[i].second--;
-					break;
-				}
+				buildingAddedOn = a;
+				break;
 			}
 		}
+
+		assert(buildingAddedOn < 255);
+
+		// find the building to add on to. this should not fail since the action would be illegal if it could not get here
+		for (int i=0; i<numBuildings; ++i)
+		{
+			if (buildings[i].type == buildingAddedOn && buildings[i].timeRemaining == 0 && !buildings[i].hasAddOn)
+			{
+				buildings[i].hasAddOn = true;
+				return;
+			}
+		}
+
+		// we should not get here
+		assert(false);
 	}
 
 	const BuildingStatus & getBuilding(int i) const
@@ -197,6 +192,9 @@ public:
 			{
 				// queue it here
 				buildings[i].timeRemaining = (unsigned short)DATA[a].buildTime();
+				// if we are adding and add on to this building, indicate that it has an add on
+				if(DATA[a].isAddOn())
+					buildings[i].hasAddOn = true;
 				//printf("\t\t%s is ready! Using it for %s.\n", DATA[buildings[i].type].getName().c_str(), DATA[a].getName().c_str());
 				return;
 			}

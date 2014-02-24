@@ -1683,6 +1683,11 @@ public:
 		buildings.addBuilding(action, timeUntilFree);
 	}
 
+	void addBuilding(const Action action, const FrameCountType timeUntilFree, bool hasAddon)
+	{
+		buildings.addBuilding(action, timeUntilFree, hasAddon);
+	}
+
 	void addActionInProgress(const Action action, const int completionFrame)
 	{
 		// add it to the actions in progress

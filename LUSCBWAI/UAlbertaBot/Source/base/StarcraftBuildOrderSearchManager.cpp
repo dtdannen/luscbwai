@@ -107,9 +107,9 @@ BuildOrderSearch::StarcraftState StarcraftBuildOrderSearchManager::getCurrentSta
 			// if it is a building
 			if (unit->getType().isBuilding())
 			{
-				// add the building data accordingly
+				// add the building data accordingly				
 				FrameCountType trainTime = unit->getType() == BWAPI::UnitTypes::Zerg_Hatchery ? 0 : unit->getRemainingTrainTime();
-				s.addBuilding(action, (FrameCountType)(trainTime + unit->getRemainingResearchTime() + unit->getRemainingUpgradeTime()));
+				s.addBuilding(action, (FrameCountType)(trainTime + unit->getRemainingResearchTime() + unit->getRemainingUpgradeTime()), unit->getAddon() != NULL);
 
 				if (unit->getRemainingResearchTime() > 0)
 				{
