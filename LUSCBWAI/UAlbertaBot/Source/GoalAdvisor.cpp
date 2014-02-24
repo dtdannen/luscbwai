@@ -1,5 +1,10 @@
 #include "GoalAdvisor.h"
 
+//g(x) = edge distance, aka dijkstra distance
+//h(x) = crow flies distance, aka distance to their base
+
+//a* ftw
+
 class ColorNode;
 
 int getSmallest(std::list<ColorNode*>,std::map<int,double>);
