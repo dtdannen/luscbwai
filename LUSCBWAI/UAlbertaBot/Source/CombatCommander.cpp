@@ -28,11 +28,31 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 		if (unitsToAssign.empty()) { return; }
 
 		// Assign defense and attack squads
-		/*assignDefenseSquads(unitsToAssign);
+		assignDefenseSquads(unitsToAssign);
 		assignAttackSquads(unitsToAssign);
-		assignIdleSquads(unitsToAssign);*/
+		//assignIdleSquads(unitsToAssign);
+		
+		
+	}
 
-		int goal = GoalAdvisor::Instance().getGoalRegion();
+	squadData.update();
+}
+
+void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)
+{
+	if (unitsToAssign.empty()) { return; }
+
+	UnitVector combatUnits(unitsToAssign.begin(), unitsToAssign.end());
+	unitsToAssign.clear();
+
+	squadData.addSquad(Squad(combatUnits, SquadOrder(SquadOrder::Defend, BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()), 1000, "Defend Idle")));
+}
+
+void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign)
+{
+	if (unitsToAssign.empty()) { return; }
+
+	int goal = GoalAdvisor::Instance().getGoalRegion();
 		if (goal != goalRegion)
 		{
 			UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
@@ -47,18 +67,22 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 				if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
 				{
 					tanks.push_back(unit);
+					unitsToAssign.erase(unit);
 				}
 				else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
 				{
 					vultures.push_back(unit);
+					unitsToAssign.erase(unit);
 				}
 				else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
 				{
 					goliaths.push_back(unit);
+					unitsToAssign.erase(unit);
 				}				
 				else if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
 				{
 					marines.push_back(unit);
+					unitsToAssign.erase(unit);
 				}
 			}
 
@@ -164,45 +188,29 @@ void CombatCommander::update(std::set<BWAPI::Unit *> unitsToAssign)
 			//squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
 			//	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
 		}
-	}
 
-	squadData.update();
-}
+	//bool workersDefending = false;
+	//BOOST_FOREACH (BWAPI::Unit * unit, unitsToAssign)
+	//{
+	//	if (unit->getType().isWorker())
+	//	{
+	//		workersDefending = true;
+	//	}
+	//}
 
-void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)
-{
-	if (unitsToAssign.empty()) { return; }
+	//// do we have workers in combat
+	//bool attackEnemy = !unitsToAssign.empty() && !workersDefending && StrategyManager::Instance().doAttack(unitsToAssign);
 
-	UnitVector combatUnits(unitsToAssign.begin(), unitsToAssign.end());
-	unitsToAssign.clear();
+	//// if we are attacking, what area are we attacking?
+	//if (attackEnemy) 
+	//{	
+	//	//assignAttackRegion(unitsToAssign);				// attack occupied enemy region
+	//	//assignAttackKnownBuildings(unitsToAssign);		// attack known enemy buildings
+	//	//assignAttackVisibleUnits(unitsToAssign);			// attack visible enemy units
+	//	//assignAttackExplore(unitsToAssign);				// attack and explore for unknown units
 
-	squadData.addSquad(Squad(combatUnits, SquadOrder(SquadOrder::Defend, BWAPI::Position(BWAPI::Broodwar->self()->getStartLocation()), 1000, "Defend Idle")));
-}
-
-void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign)
-{
-	if (unitsToAssign.empty()) { return; }
-
-	bool workersDefending = false;
-	BOOST_FOREACH (BWAPI::Unit * unit, unitsToAssign)
-	{
-		if (unit->getType().isWorker())
-		{
-			workersDefending = true;
-		}
-	}
-
-	// do we have workers in combat
-	bool attackEnemy = !unitsToAssign.empty() && !workersDefending && StrategyManager::Instance().doAttack(unitsToAssign);
-
-	// if we are attacking, what area are we attacking?
-	if (attackEnemy) 
-	{	
-		assignAttackRegion(unitsToAssign);				// attack occupied enemy region
-		assignAttackKnownBuildings(unitsToAssign);		// attack known enemy buildings
-		assignAttackVisibleUnits(unitsToAssign);			// attack visible enemy units
-		assignAttackExplore(unitsToAssign);				// attack and explore for unknown units
-	} 
+	//	
+	//} 
 }
 
 BWTA::Region * CombatCommander::getClosestEnemyRegion()
