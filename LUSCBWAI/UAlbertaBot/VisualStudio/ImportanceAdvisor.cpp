@@ -1,8 +1,12 @@
 #include "ImportanceAdvisor.h"
+#include <queue>
+#include <boost/foreach.hpp>
 
 int* centroid();
 std::list<int> getNodesWithColor(NodeColor);
 int distance(int*, int*);
+int dijkstra(int,int);
+double min(std::list<int>,double*);
 
 ImportanceAdvisor ImportanceAdvisor::Instance() {
 	if (instance == NULL) {
@@ -35,8 +39,9 @@ void ImportanceAdvisor::update(int nodeId){
 	center[0] = node.x();
 	center[1] = node.y();
 
-	double imp = 1.0 / ( (distance(center,theirCentroid) + distance(center,ourCentroid)) / maxDistance);
-	ColorGraph::Instance().setNodeImportance(nodeId,imp);
+	double triangleDistance = 1.0 / (distance(center,theirCentroid) + distance(center,ourCentroid));
+	double nodeDistance = 1.0 / dijkstra(nodeId,ColorGraph::Instance().getNodeAtPosition(theirCentroid));
+	ColorGraph::Instance().setNodeImportance(nodeId, triangleDistance+nodeDistance);
 }
 
 int* centroid(std::list<int> bases) {
@@ -66,4 +71,47 @@ std::list<int> getNodesWithColor(NodeColor c) {
 
 int distance(int* a, int* b) {
 	return sqrt( pow((double) b[0] - a[0],2) + pow((double) b[1]-a[1],2));
+}
+
+int dijkstra(int startNode, int endNode) {
+	int graphSize = ColorGraph::Instance().size();
+	double* distance = new double[graphSize];
+	for (int i = 0; i < graphSize; i++) {
+		if (i = startNode) {
+			distance[i] = 0;
+		}
+		else {
+			distance[i] = DBL_MAX;
+		}
+	}
+	std::list<int> q = *new std::list<int>();
+
+	for (int i = 0; i < graphSize; i++) {
+		q.push_back(i);
+	}
+
+	while (!q.empty()) {
+		int minNode = min(q,distance);
+		q.remove(minNode);
+		if (distance[minNode] == DBL_MAX) {
+			break;
+		}
+
+		BOOST_FOREACH(int i, ColorGraph::Instance().getNodeNeighbors(minNode)) {
+			int minCenter[2];
+			int neighborCenter[2];
+
+			minCenter[0] = ColorGraph::Instance().getNodeCenter(minNode).x();
+			minCenter[1] = ColorGraph::Instance().getNodeCenter(minNode).y();
+			neighborCenter[0] = ColorGraph::Instance().getNodeCenter(i).x();
+			neighborCenter[1] = ColorGraph::Instance().getNodeCenter(i).y();
+
+			double alt = distance[minNode] + distance(minCenter,neighborCenter);
+			if (alt < distance[i]) {
+				distance[i] = alt;
+			}
+		}
+
+		return distance[endNode];
+
 }
