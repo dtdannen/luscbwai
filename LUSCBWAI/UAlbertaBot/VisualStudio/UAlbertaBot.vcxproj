@@ -123,6 +123,7 @@
     <ClCompile Include="..\Source\ColorNode.cpp" />
     <ClCompile Include="..\Source\CombatSimulation.cpp" />
     <ClCompile Include="..\Source\GoalAdvisor.cpp" />
+    <ClCompile Include="..\Source\ImportanceAdvisor.cpp" />
     <ClCompile Include="..\Source\MicroSearchManager.cpp" />
     <ClCompile Include="..\Source\base\BuildingData.cpp" />
     <ClCompile Include="..\Source\base\BuildingManager.cpp" />
@@ -158,7 +159,6 @@
     <ClCompile Include="..\Source\UAlbertaBotModule.cpp" />
     <ClCompile Include="..\Source\UnitData.cpp" />
     <ClCompile Include="..\Source\Visualizer.cpp" />
-    <ClCompile Include="ImportanceAdvisor.cpp" />
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +166,7 @@
     <ClInclude Include="..\Source\ColorNode.h" />
     <ClInclude Include="..\Source\CombatSimulation.h" />
     <ClInclude Include="..\Source\GoalAdvisor.h" />
+    <ClInclude Include="..\Source\ImportanceAdvisor.h" />
     <ClInclude Include="..\Source\MicroSearchManager.h" />
     <ClInclude Include="..\Source\base\BuildingData.h" />
     <ClInclude Include="..\Source\base\BuildingManager.h" />
@@ -205,7 +206,6 @@
     <ClInclude Include="..\Source\UAlbertaBotModule.h" />
     <ClInclude Include="..\Source\UnitData.h" />
     <ClInclude Include="..\Source\Visualizer.h" />
-    <ClInclude Include="ImportanceAdvisor.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
