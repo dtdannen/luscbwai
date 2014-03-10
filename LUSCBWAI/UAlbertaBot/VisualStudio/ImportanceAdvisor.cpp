@@ -2,26 +2,24 @@
 #include <queue>
 #include <boost/foreach.hpp>
 
-int* centroid();
-std::list<int> getNodesWithColor(NodeColor);
-int distance(int*, int*);
-int dijkstra(int,int);
-double min(std::list<int>,double*);
+int* centroid(std::vector<int>);
+std::vector<int> getNodesWithColor(NodeColor);
+double distance(int*, int*);
+double dijkstra(int,int);
+int min(std::vector<int>,double*);
 
-ImportanceAdvisor ImportanceAdvisor::Instance() {
-	if (instance == NULL) {
-		instance = new ImportanceAdvisor();
-	}
-	return *instance;
+ImportanceAdvisor & ImportanceAdvisor::Instance() {
+	static ImportanceAdvisor instance;
+	return instance;
 }
 
-ImportanceAdvisor::ImportanceAdvisor() {
+ImportanceAdvisor::ImportanceAdvisor(void) {
 	update();
 }
 
 void ImportanceAdvisor::update() {
-	std::list<int> ourBases = getNodesWithColor(NodeColor::GREEN);
-	std::list<int> theirBases = getNodesWithColor(NodeColor::RED);
+	std::vector<int> ourBases = getNodesWithColor(NodeColor::GREEN);
+	std::vector<int> theirBases = getNodesWithColor(NodeColor::RED);
 
 	assert(ourBases.size()>0);
 
@@ -40,27 +38,28 @@ void ImportanceAdvisor::update(int nodeId){
 	center[1] = node.y();
 
 	double triangleDistance = 1.0 / (distance(center,theirCentroid) + distance(center,ourCentroid));
-	double nodeDistance = 1.0 / dijkstra(nodeId,ColorGraph::Instance().getNodeAtPosition(theirCentroid));
+	double nodeDistance = 1.0 / dijkstra(nodeId,ColorGraph::Instance().getNodeAtPosition(*new BWAPI::Position(theirCentroid[0],theirCentroid[1])));
 	ColorGraph::Instance().setNodeImportance(nodeId, triangleDistance+nodeDistance);
+	BWAPI::Broodwar->printf("Setting %d to %f",nodeId,triangleDistance+nodeDistance);
 }
 
-int* centroid(std::list<int> bases) {
+int* centroid(std::vector<int> bases) {
 	int totalx;
 	int totaly;
 
-	for (std::list<int>::iterator it=bases.begin(); it != bases.end(); ++it) {
+	for (std::vector<int>::iterator it=bases.begin(); it != bases.end(); ++it) {
 		totalx += ColorGraph::Instance().getNodeCenter(*it).x();
 		totaly += ColorGraph::Instance().getNodeCenter(*it).y();
 	}
 
-	int result[2];
+	int *result = new int[2];
 	result[0] = totalx/bases.size();
 	result[1] = totaly/bases.size();
 	return result;
 }
 
-std::list<int> getNodesWithColor(NodeColor c) {
-	std::list<int> result = *new std::list<int>();
+std::vector<int> getNodesWithColor(NodeColor c) {
+	std::vector<int> result = *new std::vector<int>();
 	for (int i = 0; i < ColorGraph::Instance().size(); i++) {
 		if (ColorGraph::Instance().getNodeColor(i) == c) {
 			result.push_back(i);
@@ -69,31 +68,31 @@ std::list<int> getNodesWithColor(NodeColor c) {
 	return result;
 }
 
-int distance(int* a, int* b) {
+double distance(int* a, int* b) {
 	return sqrt( pow((double) b[0] - a[0],2) + pow((double) b[1]-a[1],2));
 }
 
-int dijkstra(int startNode, int endNode) {
+double dijkstra(int startNode, int endNode) {
 	int graphSize = ColorGraph::Instance().size();
-	double* distance = new double[graphSize];
+	double* dist = new double[graphSize];
 	for (int i = 0; i < graphSize; i++) {
 		if (i = startNode) {
-			distance[i] = 0;
+			dist[i] = 0;
 		}
 		else {
-			distance[i] = DBL_MAX;
+			dist[i] = DBL_MAX;
 		}
 	}
-	std::list<int> q = *new std::list<int>();
+	std::vector<int> q = *new std::vector<int>();
 
 	for (int i = 0; i < graphSize; i++) {
 		q.push_back(i);
 	}
 
 	while (!q.empty()) {
-		int minNode = min(q,distance);
-		q.remove(minNode);
-		if (distance[minNode] == DBL_MAX) {
+		int minNode = min(q,dist);
+		q.erase(q.begin() + minNode);
+		if (dist[minNode] == DBL_MAX) {
 			break;
 		}
 
@@ -106,12 +105,26 @@ int dijkstra(int startNode, int endNode) {
 			neighborCenter[0] = ColorGraph::Instance().getNodeCenter(i).x();
 			neighborCenter[1] = ColorGraph::Instance().getNodeCenter(i).y();
 
-			double alt = distance[minNode] + distance(minCenter,neighborCenter);
-			if (alt < distance[i]) {
-				distance[i] = alt;
+			double alt = dist[minNode] + distance(minCenter,neighborCenter);
+			if (alt < dist[i]) {
+				dist[i] = alt;
 			}
 		}
+	}
 
-		return distance[endNode];
+	return dist[endNode];
+}
 
+int min(std::vector<int> q, double* dist) {
+	int min = q[0];
+	double minDist = dist[min];
+
+	for (int i = 1; i < q.size(); i++) {
+		if (dist[q[i]] < minDist) {
+			min = i;
+			minDist = dist[q[i]];
+		}
+	}
+
+	return min;
 }

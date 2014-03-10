@@ -8,16 +8,13 @@
 
 #pragma once
 class ImportanceAdvisor {
-private:
-	static const double IMOPRTANCE_ADJUSTMENT = 0.05;
 	ImportanceAdvisor();
-	static ImportanceAdvisor* instance;
 	int* ourCentroid;
 	int* theirCentroid;
 	int maxDistance;
 
 public:
-	static ImportanceAdvisor Instance();
+	static ImportanceAdvisor & Instance();
 	void update(int nodeId);
 	void update();
 };
