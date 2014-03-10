@@ -387,9 +387,8 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 		return getProtossZealotRushBuildOrderGoal();
 	}
 	else if (BWAPI::Broodwar->self()->getRace() == BWAPI::Races::Terran)
-	{
-		const MetaPairVector vector = getTerranBuildOrderGoal();
-		return vector;
+	{		
+		return getTerranBuildOrderGoal();
 	}
 	else
 	{
@@ -612,54 +611,42 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	// the goal to return
 	std::vector< std::pair<MetaType, UnitCountType> > goal;
 
-	int numMarines =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Marine);
-	int numMedics =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Medic);
-	int numWraith =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Wraith);
-	int numVultures =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Vulture);
-	int numTanks =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode);
-	int numGoliaths =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Goliath);
-	int machineShops =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Machine_Shop);
-	int numBases =				BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Command_Center);
-	int numTurrets =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Missile_Turret);
-	int numCommSat =			BWAPI::Broodwar->self()->completedUnitCount(BWAPI::UnitTypes::Terran_Comsat_Station);
+	std::map<BWAPI::UnitType, int> unitCounts;
 	
-	
-	// add in the number of units that we are currently training
+	// count up the number of units we have, and are training and constructing
+		// NOTE: in previous versions, we used BWAPI::Broodwar->self()->allUnitCount() and BWAPI::Broodwar->self()->completedUnitCount()
+		// but both were found to have issues, so we just count them ourselves now
 	BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
 	{
+		// if the key isn't already in the array, initialize it to 0
+		if(unitCounts.count(u->getType()) != 1)
+			unitCounts[u->getType()] = 0;
+
+		unitCounts[u->getType()]++;	
+
+		// if this unit is a building training units, BWAPI does not account for any units further in the training queue than
+		// the unit currently being trained. we must manually add in those units
 		if(u->getType().isBuilding() && u->isTraining())
 		{
 			std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = u->getTrainingQueue();
 
+			bool skipped = false;
 			BOOST_FOREACH(BWAPI::UnitType type, queue)
 			{
-				if(type == BWAPI::UnitTypes::Terran_Marine)
-					numMarines++;
-				else if(type == BWAPI::UnitTypes::Terran_Medic)
-					numMedics++;
-				else if(type == BWAPI::UnitTypes::Terran_Wraith)
-					numWraith++;
-				else if(type == BWAPI::UnitTypes::Terran_Vulture)
-					numVultures++;
-				else if(type == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
-					numTanks++;
-				else if(type == BWAPI::UnitTypes::Terran_Goliath)
-					numGoliaths++;
+				// skip the first unit, because BWAPI accounts for it
+				if(!skipped)
+				{
+					skipped = true;
+					continue;
+				}
+
+				if(unitCounts.count(type) != 1)
+					unitCounts[type] = 0;
+
+				unitCounts[type]++;	
 			}
 		}
 
-		// check for units in our goal that are already constructing
-		if(u->getType().isBuilding() && u->isConstructing())
-		{
-			if(u->getType() == BWAPI::UnitTypes::Terran_Machine_Shop)
-				machineShops++;
-			else if(u->getType() == BWAPI::UnitTypes::Terran_Command_Center)
-				numBases++;
-			else if(u->getType() == BWAPI::UnitTypes::Terran_Missile_Turret)
-				numTurrets++;
-			else if(u->getType() == BWAPI::UnitTypes::Terran_Comsat_Station)
-				numCommSat++;
-		}
 	}
 	
 	/*
@@ -679,16 +666,24 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	//     UNITS
 	//==========================================
 
+	// include both types of tanks
+	int numTanks = 0;
+	numTanks += unitCounts.count(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode] : 0;
+	numTanks += unitCounts.count(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode] : 0;
+
+	int numMarines = unitCounts.count(BWAPI::UnitTypes::Terran_Marine) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Marine] : 0;
 	if(numMarines < 5)
 	{
 		int marinesWanted = numMarines + 3;
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
 	}
-		
+
+	int numVultures = unitCounts.count(BWAPI::UnitTypes::Terran_Vulture) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Vulture] : 0;	
 	int vulturesWanted = numVultures + (numTanks / 5);
 	if(vulturesWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
 
+	int numGoliaths = unitCounts.count(BWAPI::UnitTypes::Terran_Goliath) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Goliath] : 0;
 	int goliathsWanted = numGoliaths + (numTanks / 5);
 	if(goliathsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
@@ -708,24 +703,39 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	//     BUILDINGS
 	//==========================================
 
+	int machineShops = unitCounts.count(BWAPI::UnitTypes::Terran_Machine_Shop) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Machine_Shop] : 0;
 	int machineShopsWanted = 2 - machineShops;
 	if(machineShopsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
 
+	int numCommSat = unitCounts.count(BWAPI::UnitTypes::Terran_Comsat_Station) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Comsat_Station] : 0;
 	if(numTanks >= 5 && numCommSat < 1)
 	{
 		BWAPI::Broodwar->printf("Trying to build a comsat!");
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	}
 
+	int numBases = unitCounts.count(BWAPI::UnitTypes::Terran_Command_Center) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Command_Center] : 0;
+	int numTurrets = unitCounts.count(BWAPI::UnitTypes::Terran_Missile_Turret) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Missile_Turret] : 0;
 	int turretsWanted = numTanks >= 5 && numCommSat >= 1 ? numBases * 5 : 0;
 	// make sure we don't try to make more than 5 at a time
 	turretsWanted = turretsWanted - numTurrets > 5 ? numTurrets + 5 : turretsWanted;
 	if(turretsWanted > numTurrets)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
 
+	//==========================================
+	//     RESEARCH
+	//==========================================
+
+	if(numTanks >= 5 && !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
+		BWAPI::Broodwar->printf("Trying to research siege mode!");
+	}
+
+
 	BWAPI::Broodwar->printf("Getting %d vultures, %d tanks, %d goliaths, %d mach. shops, %d turrets", (vulturesWanted-numVultures), 
-		(tanksWanted-numTanks), (goliathsWanted - numGoliaths), (machineShopsWanted - machineShops), (turretsWanted - numTurrets));
+		(tanksWanted-numTanks), (goliathsWanted - numGoliaths), machineShopsWanted, (turretsWanted - numTurrets));
 
 	return (const std::vector< std::pair<MetaType, UnitCountType> >)goal;
 }

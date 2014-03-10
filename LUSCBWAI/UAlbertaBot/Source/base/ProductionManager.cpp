@@ -145,7 +145,7 @@ void ProductionManager::onUnitDestroy(BWAPI::Unit * unit)
 	}
 		
 	// if it's a worker or a building, we need to re-search for the current goal
-	if (false && ((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding()))
+	if (((unit->getType().isWorker() && !WorkerManager::Instance().isWorkerScout(unit)) || unit->getType().isBuilding()))
 	{
 		BWAPI::Broodwar->printf("Critical unit died, re-searching build order");
 

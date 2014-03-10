@@ -54,7 +54,15 @@ void InformationManager::updateUnitInfo()
 		std::map<BWAPI::Unit *, UnitInfo> data = enemyUnitData.getUnits();
 		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
 		{
-			if (it->first != NULL && it->first->getPosition() != NULL && BWTA::getRegion(it->first->getPosition()) != NULL)
+			BWAPI::Position p = it->first->getPosition();
+			BWTA::Region * r = NULL;
+			try
+			{
+				r = BWTA::getRegion(p);
+			} catch(...){
+				BWAPI::Broodwar->printf("Exception caught");
+			}
+			if (it->first != NULL && it->first->getPosition() != NULL && r != NULL)
 			{
 				// if there is an enemy base, color it red
 				if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center
@@ -90,7 +98,14 @@ void InformationManager::updateUnitInfo()
 			//if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
 			//{
 			BWAPI::Position p = it->first->getPosition();
-			BWTA::Region * r = BWTA::getRegion(p);
+			BWTA::Region * r = NULL;
+			try
+			{
+				r = BWTA::getRegion(p);
+			}catch(...)
+			{
+				BWAPI::Broodwar->printf("Error caught");
+			}
 			if (it->first != NULL && it->first->getPosition() != NULL && r != NULL)
 			{
 				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(p);

@@ -235,8 +235,8 @@ public:
 		legalActions.subtract(excessiveBuildings);
 
 		// if the previous action was a building, do not build another of the same
-		if(s.getParent() != NULL && s.getParent()->getActionPerformed() != 255 && DATA[s.getParent()->getActionPerformed()].isBuilding())
-			legalActions.subtract(s.getParent()->getActionPerformed());
+		if(s.getActionPerformed() != 255 && DATA[s.getActionPerformed()].isBuilding())
+			legalActions.subtract(s.getActionPerformed());
 			
 
 		// if we have children, update the counter
