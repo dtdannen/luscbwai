@@ -55,12 +55,10 @@ ProductionManager::ProductionManager()
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Barracks));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Refinery));
-	//buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Engineering_Bay));	
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));
-	//buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Missile_Turret));
-	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Factory));
+	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_Marine));
 	buildOrder.push_back(MetaType(BWAPI::UnitTypes::Terran_SCV));

@@ -671,13 +671,6 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	numTanks += unitCounts.count(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode] : 0;
 	numTanks += unitCounts.count(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode] : 0;
 
-	int numMarines = unitCounts.count(BWAPI::UnitTypes::Terran_Marine) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Marine] : 0;
-	if(numMarines < 5)
-	{
-		int marinesWanted = numMarines + 3;
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine,	marinesWanted));
-	}
-
 	int numVultures = unitCounts.count(BWAPI::UnitTypes::Terran_Vulture) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Vulture] : 0;	
 	int vulturesWanted = numVultures + (numTanks / 5);
 	if(vulturesWanted > 0)
@@ -688,7 +681,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	if(goliathsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
 
-	int tanksWanted = numTanks + numTanks / 3 + 5;
+	int tanksWanted = numTanks == 0 ? 2 : numTanks + numTanks / 3 + 5;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));	
 
 	// we don't want the tree to be too much to compute, so if our goal units add up to more than 30, just do a hard coded distribution
@@ -704,8 +697,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	//==========================================
 
 	int machineShops = unitCounts.count(BWAPI::UnitTypes::Terran_Machine_Shop) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Machine_Shop] : 0;
-	int machineShopsWanted = 2 - machineShops;
-	if(machineShopsWanted > 0)
+	int machineShopsWanted = tanksWanted < 5 ? 0 : 2;
+	if(machineShopsWanted > 0 && machineShops < 2)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
 
 	int numCommSat = unitCounts.count(BWAPI::UnitTypes::Terran_Comsat_Station) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Comsat_Station] : 0;

@@ -56,7 +56,10 @@ public:
 			lastSearchFrame = BWAPI::Broodwar->getFrameCount();
 
 			if(myStart == 0)
+			{
 				myStart = lastSearchFrame;
+				BWAPI::Broodwar->printf("Starting build order search at frame %d.", myStart);
+			}
 
 			// set the time limit based on how much time we have this frame
 			previousParameters.searchTimeLimit = (int)(timeLimit > 3 ? timeLimit : 3);//(int)timeLimit;
