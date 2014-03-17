@@ -168,6 +168,9 @@
     <ClCompile Include="FrontierAdvisor.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\ImportanceAdvisor.cpp">
+      <Filter>game</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -300,6 +303,9 @@
       <Filter>game</Filter>
     </ClInclude>
     <ClInclude Include="FrontierAdvisor.h">
+      <Filter>game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ImportanceAdvisor.h">
       <Filter>game</Filter>
     </ClInclude>
   </ItemGroup>

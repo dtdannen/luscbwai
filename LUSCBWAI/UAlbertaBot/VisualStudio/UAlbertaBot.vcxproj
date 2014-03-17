@@ -123,6 +123,7 @@
     <ClCompile Include="..\Source\ColorNode.cpp" />
     <ClCompile Include="..\Source\CombatSimulation.cpp" />
     <ClCompile Include="..\Source\GoalAdvisor.cpp" />
+    <ClCompile Include="..\Source\ImportanceAdvisor.cpp" />
     <ClCompile Include="..\Source\MicroSearchManager.cpp" />
     <ClCompile Include="..\Source\base\BuildingData.cpp" />
     <ClCompile Include="..\Source\base\BuildingManager.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="..\Source\ColorNode.h" />
     <ClInclude Include="..\Source\CombatSimulation.h" />
     <ClInclude Include="..\Source\GoalAdvisor.h" />
+    <ClInclude Include="..\Source\ImportanceAdvisor.h" />
     <ClInclude Include="..\Source\MicroSearchManager.h" />
     <ClInclude Include="..\Source\base\BuildingData.h" />
     <ClInclude Include="..\Source\base\BuildingManager.h" />
