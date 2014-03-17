@@ -45,9 +45,9 @@ void ImportanceAdvisor::update(int nodeId){
 	center[1] = node.y();
 
 	double triangleDistance = 1.0 / (distance(center,theirCentroid) + distance(center,ourCentroid));
-	double nodeDistance = 1.0 / dijkstra(nodeId,ColorGraph::Instance().getNodeAtPosition(BWAPI::Position(theirCentroid[0],theirCentroid[1])));
-	ColorGraph::Instance().setNodeImportance(nodeId, triangleDistance+nodeDistance);
-	BWAPI::Broodwar->printf("Setting %d to %f",nodeId,triangleDistance+nodeDistance);
+	//double nodeDistance = 1.0 / dijkstra(nodeId,ColorGraph::Instance().getNodeAtPosition(BWAPI::Position(theirCentroid[0],theirCentroid[1])));
+	ColorGraph::Instance().setNodeImportance(nodeId, triangleDistance);
+	BWAPI::Broodwar->printf("Setting %d to %f",nodeId,triangleDistance);
 }
 
 int* centroid(std::vector<int> bases) {
