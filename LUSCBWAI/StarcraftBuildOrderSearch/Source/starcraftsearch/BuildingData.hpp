@@ -27,15 +27,22 @@ public:
 	// whether or not this building has an add on attached to it
 	bool hasAddOn;
 
+	// the number of units that are currently being trained at this building
+	int trainingUnits;
+
+	// the vector containing the times left to train units at this building
+	std::vector<int> unitTrainingTime;
+
 	BuildingStatus() : type(0), timeRemaining(0) 
 	{
 		memset(this, 0, sizeof(*this));
 	}
 	
 	~BuildingStatus() {}
-	BuildingStatus(Action t) : type(t), timeRemaining(0), hasAddOn(false) {}
-	BuildingStatus(Action t, FrameCountType time) : type(t), timeRemaining(time), hasAddOn(false) {}
-	BuildingStatus(Action t, FrameCountType time, bool addOn) : type(t), timeRemaining(time), hasAddOn(addOn) {}
+	BuildingStatus(Action t) : type(t), timeRemaining(0), hasAddOn(false), trainingUnits(0) {}
+	BuildingStatus(Action t, FrameCountType time) : type(t), timeRemaining(time), hasAddOn(false), trainingUnits(0) {}
+	BuildingStatus(Action t, FrameCountType time, bool addOn, std::vector<int> trainingTimes) : type(t), timeRemaining(time), hasAddOn(addOn), 
+		trainingUnits(trainingTimes.size()), unitTrainingTime(trainingTimes) {}
 };
 
 class BuildingData
@@ -46,7 +53,6 @@ class BuildingData
 public:
 
 	int numBuildings;
-	std::vector<std::pair<int, int>> availableForAddons;
 
 	BuildingData() : numBuildings(0) {}
 
@@ -66,12 +72,12 @@ public:
 		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree);
 	}
 
-	void addBuilding(const Action t, const FrameCountType timeUntilFree, bool hasAddon)
+	void addBuilding(const Action t, const FrameCountType timeUntilFree, std::vector<int> unitsTrainingTime, bool hasAddon)
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS -1));
 
-		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree, hasAddon);
+		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree, hasAddon, unitsTrainingTime);
 	}
 
 	bool canAddOn(const Action t) const
@@ -103,6 +109,18 @@ public:
 		}
 
 		// if a building to add on wasn't found, we can't add on
+		return false;
+	}
+
+	bool buildingFreeForTraining(const Action trainingBuilding) const
+	{
+		// iterate through the buildings and try to find one that is of the correct type and has space to train the unit
+		for(int i = 0; i < numBuildings; ++i)
+		{
+			if(buildings[i].type == trainingBuilding && buildings[i].trainingUnits < 5)
+				return true;
+		}
+
 		return false;
 	}
 
@@ -191,7 +209,19 @@ public:
 			if (buildings[i].type == DATA[a].whatBuildsAction() && buildings[i].timeRemaining == 0)
 			{
 				// queue it here
-				buildings[i].timeRemaining = (unsigned short)DATA[a].buildTime();
+				// if the building is training less than 5 units so far, it is still available to be used to train units
+				if(DATA[a].isUnit() && buildings[i].trainingUnits < 5)
+				{
+					buildings[i].trainingUnits++;
+					buildings[i].unitTrainingTime.push_back((unsigned short)DATA[a].buildTime());
+				}
+				// if the building is already training 5 units, set the time remaining to the time left to train the first queued unit
+				else if(DATA[a].isUnit() && buildings[i].trainingUnits == 5)
+				{
+					buildings[i].timeRemaining = (unsigned short)buildings[i].unitTrainingTime[0];
+				}
+				else
+					buildings[i].timeRemaining = (unsigned short)DATA[a].buildTime();
 				// if we are adding and add on to this building, indicate that it has an add on
 				if(DATA[a].isAddOn())
 					buildings[i].hasAddOn = true;
@@ -212,6 +242,43 @@ public:
 		for (int i=0; i<numBuildings; ++i)
 		{
 			buildings[i].timeRemaining = ((buildings[i].timeRemaining - frames) > 0) ? (buildings[i].timeRemaining - frames) : 0;
+
+			// fast forward through the training time of the units being trained
+			if(buildings[i].trainingUnits > 0)
+			{
+				int numFinished = 0;
+				FrameCountType framesToProgress = frames;
+				for(int j = 0; j < buildings[i].trainingUnits; ++j)
+				{
+					bool completedUnit = false;
+
+					// if there are enough frames to complete a unit, subtract out the amount of time it takes to finish this unit
+					if(framesToProgress > buildings[i].unitTrainingTime[j])
+					{
+						framesToProgress -= buildings[i].unitTrainingTime[j];
+						completedUnit = true;
+					}
+
+					// if the current unit is completely done training, indicate it has finished and continue progressing
+					if(completedUnit)
+						numFinished++;
+					// otherwise, save the amount of time left to train
+					else
+					{
+						buildings[i].unitTrainingTime[j] -= framesToProgress;
+						break;
+					}
+				}
+
+				// erase the units from the queue that are done training
+				assert(numFinished <= buildings[i].unitTrainingTime.size());
+				if(numFinished > 0)
+				{
+					buildings[i].trainingUnits -= numFinished;
+					buildings[i].unitTrainingTime.erase(buildings[i].unitTrainingTime.begin(), buildings[i].unitTrainingTime.begin()+numFinished);
+				}
+			}
+
 			if (GSN_DEBUG && frames > 0) printf("\t\t\tBuilding %s reduced to %d frames remaining\n", DATA[buildings[i].type].getName().c_str(), buildings[i].timeRemaining);
 		}
 	}

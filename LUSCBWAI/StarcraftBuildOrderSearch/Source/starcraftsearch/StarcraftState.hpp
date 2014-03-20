@@ -1418,12 +1418,20 @@ public:
 			return false;
 		}
 
+		// if it is a unit, make sure one of the buildings that builds it has a space open in its queue
+		if(DATA[a].isUnit() && !DATA[a].isBuilding() && !buildingsFreeForTraining(a))
+		{
+			#ifdef DEBUG_LEGAL
+				printf("NO BUILDINGS AVAILABLE TO TRAIN %d\n", a);
+			#endif
+			return false;
+		}
+
 		// check if the unit is an add on, that there is something to add it onto
-		//TODO: fix this
 		if(DATA[a].isAddOn() && !buildings.canAddOn(a))
 		{
 			#ifdef DEBUG_LEGAL
-				printf("NOTHING TO ADD ON TO %d\n", a);
+				printf("CAN'T ADD ON %d\n", a);
 			#endif
 			return false;
 		}
@@ -1527,6 +1535,29 @@ public:
 
 		// otherwise it's fine
 		return true;
+	}
+
+	bool buildingsFreeForTraining(const Action unit) const
+	{
+		assert(DATA[unit].isUnit());
+
+		BWAPI::UnitType whatTrains = DATA[unit].whatBuilds();
+		Action trainingBuilding = 255;
+
+		// find the action number of the building that trains this unit
+		for(Action a(0); a < DATA.size(); ++a)
+		{
+			if(DATA[a].getUnitType() == whatTrains)
+			{
+				trainingBuilding = a;
+				break;
+			}
+		}
+
+		assert(trainingBuilding < 255);
+
+		// find out if we have a building of that type available to train units
+		return buildings.buildingFreeForTraining(trainingBuilding);				
 	}
 
 	bool meetsGoalCompleted(const StarcraftSearchGoal & goal) const
@@ -1683,9 +1714,9 @@ public:
 		buildings.addBuilding(action, timeUntilFree);
 	}
 
-	void addBuilding(const Action action, const FrameCountType timeUntilFree, bool hasAddon)
+	void addBuilding(const Action action, const FrameCountType timeUntilFree, std::vector<int> unitTrainingTimes, bool hasAddon)
 	{
-		buildings.addBuilding(action, timeUntilFree, hasAddon);
+		buildings.addBuilding(action, timeUntilFree, unitTrainingTimes, hasAddon);
 	}
 
 	void addActionInProgress(const Action action, const int completionFrame)

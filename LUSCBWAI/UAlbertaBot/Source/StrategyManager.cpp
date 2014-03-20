@@ -653,12 +653,11 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 		We want the following units for our build order:
 
-		1. At least 5 marines at all times.
-		2. One vulture for every 5 tanks we are creating.
-		3. One goliath for every 5 tanks we are creating.
-		4. 5 more tanks + 33% more tanks.
-		5. At least 2 machine shops.
-		6. 5 missile turrets / command center.
+		- One vulture for every 5 tanks we are creating.
+		- One goliath for every 5 tanks we are creating.
+		- 5 more tanks + 33% more tanks.
+		- At least 2 machine shops.
+		- 5 missile turrets / command center.
 
 	*/
 
