@@ -33,15 +33,15 @@ public:
 	// the vector containing the times left to train units at this building
 	std::vector<int> unitTrainingTime;
 
-	BuildingStatus() : type(0), timeRemaining(0) 
+	BuildingStatus() : type(0), timeRemaining(0), hasAddOn(false), trainingUnits(0)
 	{
-		memset(this, 0, sizeof(*this));
+		//memset(this, 0, sizeof(*this));
 	}
 	
 	~BuildingStatus() {}
 	BuildingStatus(Action t) : type(t), timeRemaining(0), hasAddOn(false), trainingUnits(0) {}
 	BuildingStatus(Action t, FrameCountType time) : type(t), timeRemaining(time), hasAddOn(false), trainingUnits(0) {}
-	BuildingStatus(Action t, FrameCountType time, bool addOn, std::vector<int> trainingTimes) : type(t), timeRemaining(time), hasAddOn(addOn), 
+	BuildingStatus(Action t, FrameCountType time, bool addOn, const std::vector<int> &trainingTimes) : type(t), timeRemaining(time), hasAddOn(addOn), 
 		trainingUnits(trainingTimes.size()), unitTrainingTime(trainingTimes) {}
 };
 
@@ -72,12 +72,13 @@ public:
 		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree);
 	}
 
-	void addBuilding(const Action t, const FrameCountType timeUntilFree, std::vector<int> unitsTrainingTime, bool hasAddon)
+	void addBuilding(const Action t, const FrameCountType timeUntilFree, const std::vector<int> unitsTrainingTime, bool hasAddon)
 	{
 		assert(DATA[t].isBuilding());
 		assert(numBuildings < (MAX_BUILDINGS -1));
 
 		buildings[numBuildings++] = BuildingStatus(t, timeUntilFree, hasAddon, unitsTrainingTime);
+		//BuildingStatus(t, timeUntilFree, hasAddon, unitsTrainingTime);
 	}
 
 	bool canAddOn(const Action t) const

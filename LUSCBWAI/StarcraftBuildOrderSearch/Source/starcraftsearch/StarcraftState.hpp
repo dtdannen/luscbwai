@@ -1714,7 +1714,7 @@ public:
 		buildings.addBuilding(action, timeUntilFree);
 	}
 
-	void addBuilding(const Action action, const FrameCountType timeUntilFree, std::vector<int> unitTrainingTimes, bool hasAddon)
+	void addBuilding(const Action action, const FrameCountType timeUntilFree, const std::vector<int> unitTrainingTimes, bool hasAddon)
 	{
 		buildings.addBuilding(action, timeUntilFree, unitTrainingTimes, hasAddon);
 	}
