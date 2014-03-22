@@ -27,6 +27,10 @@ void InformationManager::update()
 	map.setUnitData(BWAPI::Broodwar);
 	map.setBuildingData(BWAPI::Broodwar);
 	ColorGraph::Instance().processColorExpiration();
+	if (BWAPI::Broodwar->getFrameCount() % 300 == 0)
+	{
+		ImportanceScoreAdvisor::Instance().update();
+	}
 }
 
 void InformationManager::updateUnitInfo() 

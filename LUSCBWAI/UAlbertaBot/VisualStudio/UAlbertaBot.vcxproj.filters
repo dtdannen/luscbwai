@@ -165,12 +165,11 @@
     <ClCompile Include="..\Source\ColorGraph.cpp">
       <Filter>game</Filter>
     </ClCompile>
-    <ClCompile Include="FrontierAdvisor.cpp">
-      <Filter>game</Filter>
-    </ClCompile>
     <ClCompile Include="..\Source\ImportanceAdvisor.cpp">
       <Filter>game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\FrontierAdvisor.cpp" />
+    <ClCompile Include="..\Source\ImportanceScoreAdvisor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -302,11 +301,10 @@
     <ClInclude Include="..\Source\ColorGraph.h">
       <Filter>game</Filter>
     </ClInclude>
-    <ClInclude Include="FrontierAdvisor.h">
-      <Filter>game</Filter>
-    </ClInclude>
     <ClInclude Include="..\Source\ImportanceAdvisor.h">
       <Filter>game</Filter>
     </ClInclude>
+    <ClInclude Include="..\Source\FrontierAdvisor.h" />
+    <ClInclude Include="..\Source\ImportanceScoreAdvisor.h" />
   </ItemGroup>
 </Project>

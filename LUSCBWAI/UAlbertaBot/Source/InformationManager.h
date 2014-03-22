@@ -5,6 +5,8 @@
 
 #include "UnitData.h"
 #include "ColorGraph.h"
+#include "ImportanceAdvisor.h"
+#include "ImportanceScoreAdvisor.h"
 
 #include "..\..\AdversarialSearch\source\Map.hpp"
 

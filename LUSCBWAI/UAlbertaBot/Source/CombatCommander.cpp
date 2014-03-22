@@ -50,143 +50,143 @@ void CombatCommander::assignIdleSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign)
 {
 	if (unitsToAssign.empty()) { return; }
+	FrontierAdvisor::Instance().recalculateFrontier();
+	int goal = FrontierAdvisor::Instance().getNextNodeId(); //GoalAdvisor::Instance().getGoalRegion();
+	if (goal != goalRegion)
+	{
+		UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
 
-	int goal = GoalAdvisor::Instance().getGoalRegion();
-		if (goal != goalRegion)
+		UnitVector tanks;
+		UnitVector vultures;
+		UnitVector goliaths;
+		UnitVector marines;
+
+		for each (BWAPI::Unit * unit in units)
 		{
-			UnitVector units(unitsToAssign.begin(), unitsToAssign.end());
-
-			UnitVector tanks;
-			UnitVector vultures;
-			UnitVector goliaths;
-			UnitVector marines;
-
-			for each (BWAPI::Unit * unit in units)
+			if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
 			{
-				if (unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || unit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
-				{
-					tanks.push_back(unit);
-					unitsToAssign.erase(unit);
-				}
-				else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
-				{
-					vultures.push_back(unit);
-					unitsToAssign.erase(unit);
-				}
-				else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
-				{
-					goliaths.push_back(unit);
-					unitsToAssign.erase(unit);
-				}				
-				else if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
-				{
-					marines.push_back(unit);
-					unitsToAssign.erase(unit);
-				}
+				tanks.push_back(unit);
+				unitsToAssign.erase(unit);
 			}
-
-			UnitVector temp;
-			int count = 0;
-			for each (BWAPI::Unit * unit in tanks)
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Vulture)
 			{
-				if (count < 6)
-				{
-					temp.push_back(unit);
-					count++;
-				}
-				else
-				{
-					count = 0;
-					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Tanks,  
-						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks")));
-					temp.clear();
-				}
+				vultures.push_back(unit);
+				unitsToAssign.erase(unit);
 			}
-
-			if (count != 0)
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Goliath)
 			{
+				goliaths.push_back(unit);
+				unitsToAssign.erase(unit);
+			}				
+			else if (unit->getType() == BWAPI::UnitTypes::Terran_Marine)
+			{
+				marines.push_back(unit);
+				unitsToAssign.erase(unit);
+			}
+		}
+
+		UnitVector temp;
+		int count = 0;
+		for each (BWAPI::Unit * unit in tanks)
+		{
+			if (count < 6)
+			{
+				temp.push_back(unit);
+				count++;
+			}
+			else
+			{
+				count = 0;
 				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Tanks,  
 					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks")));
+				temp.clear();
 			}
+		}
 
-			count = 0;
-			temp.clear();
+		if (count != 0)
+		{
+			squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Tanks,  
+				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks")));
+		}
 
-			for each (BWAPI::Unit * unit in vultures)
+		count = 0;
+		temp.clear();
+
+		for each (BWAPI::Unit * unit in vultures)
+		{
+			if (count < 6)
 			{
-				if (count < 6)
-				{
-					temp.push_back(unit);
-					count++;
-				}
-				else
-				{
-					count = 0;
-					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Vultures,  
-						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures")));
-					temp.clear();
-				}
+				temp.push_back(unit);
+				count++;
 			}
-
-			if (count != 0)
+			else
 			{
+				count = 0;
 				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Vultures,  
 					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures")));
+				temp.clear();
 			}
+		}
 
-			count = 0;
-			temp.clear();
+		if (count != 0)
+		{
+			squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Vultures,  
+				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures")));
+		}
 
-			for each (BWAPI::Unit * unit in goliaths)
+		count = 0;
+		temp.clear();
+
+		for each (BWAPI::Unit * unit in goliaths)
+		{
+			if (count < 6)
 			{
-				if (count < 6)
-				{
-					temp.push_back(unit);
-					count++;
-				}
-				else
-				{
-					count = 0;
-					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Goliaths,  
-						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths")));
-					temp.clear();
-				}
+				temp.push_back(unit);
+				count++;
 			}
-
-			if (count != 0)
+			else
 			{
+				count = 0;
 				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Goliaths,  
 					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths")));
+				temp.clear();
 			}
+		}
 
-			count = 0;
-			temp.clear();
+		if (count != 0)
+		{
+			squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Goliaths,  
+				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths")));
+		}
 
-			for each (BWAPI::Unit * unit in marines)
+		count = 0;
+		temp.clear();
+
+		for each (BWAPI::Unit * unit in marines)
+		{
+			if (count < 6)
 			{
-				if (count < 6)
-				{
-					temp.push_back(unit);
-					count++;
-				}
-				else
-				{
-					count = 0;
-					squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Marines,  
-						ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines")));
-					temp.clear();
-				}
+				temp.push_back(unit);
+				count++;
 			}
-
-			if (count != 0)
+			else
 			{
+				count = 0;
 				squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Marines,  
 					ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines")));
+				temp.clear();
 			}
-			
-			//squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
-			//	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
 		}
+
+		if (count != 0)
+		{
+			squadData.addSquad(Squad(temp, SquadOrder(SquadOrder::Marines,  
+				ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines")));
+		}
+
+		//squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
+		//	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Move Test")));
+	}
 
 	//bool workersDefending = false;
 	//BOOST_FOREACH (BWAPI::Unit * unit, unitsToAssign)

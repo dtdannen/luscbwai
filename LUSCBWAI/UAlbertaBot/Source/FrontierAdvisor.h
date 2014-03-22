@@ -1,7 +1,8 @@
-#pragma once
 #include <list>
 #include <BWTA.h>
 #include "ColorGraph.h"
+
+#pragma once
 
 class FrontierAdvisor
 {
