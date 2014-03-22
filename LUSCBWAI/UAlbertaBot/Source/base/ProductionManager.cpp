@@ -405,7 +405,7 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 			producer->morph(t.unitType);
 
 		// if not, train the unit
-		} else {
+		} else {			
 			producer->train(t.unitType);
 		}
 	}
@@ -470,7 +470,7 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 				// special case for tanks and other units that require add ons to buildings. we will make sure we choose
 				// a building with the add on that is required
 				if((produced == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others that require add ons)
-					&& u->getAddon() == NULL) 
+					&& (u->getAddon() == NULL || u->getAddon()->isBeingConstructed())) 
 					continue;
 
 				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
