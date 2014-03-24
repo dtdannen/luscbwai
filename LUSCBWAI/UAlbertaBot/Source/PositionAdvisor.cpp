@@ -80,6 +80,8 @@ std::vector<BWAPI::Position> PositionAdvisor::getCircle(const BWAPI::Position po
 		result->push_back(*new BWAPI::Position(x0 + y, y0 - x));
 		result->push_back(*new BWAPI::Position(x0 - y, y0 - x));
 	}
+
+	return *result;
 }
 
 double PositionAdvisor::evaluateScore(const BWAPI::Position tile) {
