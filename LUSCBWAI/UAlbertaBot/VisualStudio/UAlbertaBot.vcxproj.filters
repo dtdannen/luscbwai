@@ -170,6 +170,7 @@
     </ClCompile>
     <ClCompile Include="..\Source\FrontierAdvisor.cpp" />
     <ClCompile Include="..\Source\ImportanceScoreAdvisor.cpp" />
+    <ClCompile Include="..\Source\PositionAdvisor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -306,5 +307,6 @@
     </ClInclude>
     <ClInclude Include="..\Source\FrontierAdvisor.h" />
     <ClInclude Include="..\Source\ImportanceScoreAdvisor.h" />
+    <ClInclude Include="..\Source\PositionAdvisor.h" />
   </ItemGroup>
 </Project>
