@@ -43,7 +43,7 @@ void RangedManager::executeMicro(const UnitVector & targets)
 				if (rangedUnit->getDistance(order.position) > 100)
 				{
 					// move to it
-					smartAttackMove(rangedUnit, order.position);
+					smartPositionAndDefend(rangedUnit, order.position);
 				}
 			}
 		}
