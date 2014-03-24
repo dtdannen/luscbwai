@@ -4,6 +4,7 @@
 #include "../MapGrid.h"
 #include "../SquadOrder.h"
 #include "../MapTools.h"
+#include "PositionAdvisor.h"
 
 struct AirThreat
 {
