@@ -39,11 +39,19 @@ void RangedManager::executeMicro(const UnitVector & targets)
 			// if there are no targets
 			else
 			{
-				// if we're not near the order position
-				if (rangedUnit->getDistance(order.position) > 100)
+				// if we're not in range of the position
+				if (rangedUnit->getDistance(order.position) > rangedUnit->getInitialType().groundWeapon().maxRange())
 				{
+					//unsiege tanks if they're sieged
+					if (order.type = order.Tanks && rangedUnit->isSieged()) {
+						rangedUnit->unsiege();
+					}
 					// move to it
 					smartPositionAndDefend(rangedUnit, order.position);
+				}
+				//else if we're in range and we're supposed to s
+				else if (order.type = order.Tanks) {
+					rangedUnit->siege();
 				}
 			}
 		}
