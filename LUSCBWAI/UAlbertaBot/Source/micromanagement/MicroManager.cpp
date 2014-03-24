@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "MicroManager.h"
+#include "PositionAdvisor.h"
 
 void MicroManager::setUnits(const UnitVector & u) 
 { 
@@ -244,7 +245,7 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 		return;
 	}
 
-	BWAPI::Position defTarget = PositionAdvisor::getPosition(BWTA::getRegion(targetPosition), targetPosition, attacker);
+	BWAPI::Position defTarget = PositionAdvisor::getPosition(BWTA::getRegion(targetPosition), attacker, targetPosition);
 
 	attacker->move(defTarget);
 
