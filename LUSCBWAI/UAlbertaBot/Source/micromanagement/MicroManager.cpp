@@ -214,7 +214,7 @@ void MicroManager::smartMove(BWAPI::Unit * attacker, BWAPI::Position targetPosit
 	}
 }
 
-void MicroManager::smartPositionAndDefend(BWAPI::Unit * unit, BWAPI::Position targetPosition) {
+void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const {
 
 	assert(attacker);
 
@@ -244,7 +244,7 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * unit, BWAPI::Position ta
 		return;
 	}
 
-	BWAPI::Position defTarget = PositionAdvisor::getPosition(BWTA::getRegion(targetPosition), targetPosition, unit);
+	BWAPI::Position defTarget = PositionAdvisor::getPosition(BWTA::getRegion(targetPosition), targetPosition, attacker);
 
 	attacker->move(defTarget);
 

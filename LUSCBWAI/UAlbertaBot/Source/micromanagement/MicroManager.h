@@ -33,6 +33,7 @@ protected:
 	void				smartAttackUnit(BWAPI::Unit * attacker, BWAPI::Unit * target) const;
 	void				smartAttackMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
 	void				smartMove(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
+	void                smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Position targetPosition) const;
 	bool				unitNearEnemy(BWAPI::Unit * unit);
 	bool				unitNearChokepoint(BWAPI::Unit * unit) const;
 	void				trainSubUnits(BWAPI::Unit * unit) const;
