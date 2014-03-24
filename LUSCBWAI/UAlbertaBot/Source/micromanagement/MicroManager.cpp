@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "MicroManager.h"
+#include "PositionAdvisor.h"
 
 void MicroManager::setUnits(const UnitVector & u) 
 { 
