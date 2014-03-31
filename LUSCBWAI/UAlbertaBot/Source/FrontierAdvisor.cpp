@@ -47,7 +47,7 @@ int FrontierAdvisor::getNextNodeId()
 		{
 			id = node;
 			maxScore = importance;
-			BWAPI::Broodwar->printf("Temp goal Node: %d %f", node, importance);
+			//BWAPI::Broodwar->printf("Temp goal Node: %d %f", node, importance);
 			
 		}
 	}
@@ -55,11 +55,16 @@ int FrontierAdvisor::getNextNodeId()
 	return id;
 }
 
+std::set<int> FrontierAdvisor::getFrontier()
+{
+	return std::set<int>(frontier);
+}
+
 void FrontierAdvisor::addNodeToFrontier(int id)
 {
 	if (std::find(frontier.begin(), frontier.end(), id) == controlled.end())
 	{
-		frontier.push_back(id);
+		frontier.insert(id);
 	}
 }
 
@@ -84,7 +89,7 @@ void FrontierAdvisor::recalculateFrontier()
 	//	}
 	//}
 
-	BWAPI::Broodwar->printf("Recalculating Frontier");
+	//BWAPI::Broodwar->printf("Recalculating Frontier");
 	controlled.clear();
 	frontier.clear();
 
@@ -92,7 +97,7 @@ void FrontierAdvisor::recalculateFrontier()
 	{
 		if (ColorGraph::Instance().getNodeColor(i) == GREEN)
 		{
-			controlled.push_back(i);
+			controlled.insert(i);
 		}
 	}
 
@@ -102,7 +107,7 @@ void FrontierAdvisor::recalculateFrontier()
 		{
 			if (ColorGraph::Instance().getNodeColor(neighbor) != GREEN)	
 			{
-				frontier.push_back(neighbor);
+				frontier.insert(neighbor);
 			}
 		}
 	}
