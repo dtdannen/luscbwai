@@ -62,7 +62,7 @@ void ColorNode::updateAge()
 void ColorNode::setImportance(double imp)
 {
 	importance = imp;
-	updateAge();
+	//updateAge();
 }
 
 ColorNode::~ColorNode(void)
