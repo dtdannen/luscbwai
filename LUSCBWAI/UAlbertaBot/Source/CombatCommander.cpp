@@ -66,10 +66,10 @@ void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign
 		int goliathCount = 0;
 		int marineCount = 0;
 
-		std::vector<Squad> tankSquads;
-		std::vector<Squad> vultureSquads;
-		std::vector<Squad> goliathSquads;
-		std::vector<Squad> marineSquads;
+		std::vector<UnitVector> tankSquads;
+		std::vector<UnitVector> vultureSquads;
+		std::vector<UnitVector> goliathSquads;
+		std::vector<UnitVector> marineSquads;
 
 		for each (BWAPI::Unit * unit in units)
 		{
@@ -95,111 +95,111 @@ void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign
 			}
 		}
 
-		UnitVector temp;
+		UnitVector * temp = new UnitVector;
 		int count = 0;
 		for each (BWAPI::Unit * unit in tanks)
 		{
 			if (count < 6)
 			{
-				temp.push_back(unit);
+				temp->push_back(unit);
 				count++;
 			}
 			else
 			{
 				count = 0;
-				Squad s = Squad(temp, SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks"));
-				squadData.addSquad(s);
-				tankSquads.push_back(s);
-				temp.clear();
+				//Squad s = Squad(temp, SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks"));
+				//squadData.addSquad(s);
+				tankSquads.push_back(*temp);
+				temp = new UnitVector;
 			}
 		}
 
 		if (count != 0)
 		{
-			Squad s = Squad(temp, SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks"));
-			squadData.addSquad(s);
-			tankSquads.push_back(s);
+			//Squad s = Squad(temp, SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(goal), 1000,  "Tanks"));
+			//squadData.addSquad(s);
+			tankSquads.push_back(*temp);
 		}
 
 		count = 0;
-		temp.clear();
+		temp = new UnitVector;
 
 		for each (BWAPI::Unit * unit in vultures)
 		{
 			if (count < 6)
 			{
-				temp.push_back(unit);
+				temp->push_back(unit);
 				count++;
 			}
 			else
 			{
 				count = 0;
-				Squad s = Squad(temp, SquadOrder(SquadOrder::Vultures, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures"));
-				squadData.addSquad(s);
-				vultureSquads.push_back(s);
-				temp.clear();
+				//Squad s = Squad(temp, SquadOrder(SquadOrder::Vultures, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures"));
+				//squadData.addSquad(s);
+				vultureSquads.push_back(*temp);
+				temp = new UnitVector;
 			}
 		}
 
 		if (count != 0)
 		{
-			Squad s = Squad(temp, SquadOrder(SquadOrder::Vultures, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures"));
-			squadData.addSquad(s);
-			vultureSquads.push_back(s);
+			//Squad s = Squad(temp, SquadOrder(SquadOrder::Vultures, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Vultures"));
+			//squadData.addSquad(s);
+			vultureSquads.push_back(*temp);
 		}
 
 		count = 0;
-		temp.clear();
+		temp = new UnitVector;
 
 		for each (BWAPI::Unit * unit in goliaths)
 		{
 			if (count < 6)
 			{
-				temp.push_back(unit);
+				temp->push_back(unit);
 				count++;
 			}
 			else
 			{
 				count = 0;
-				Squad s = Squad(temp, SquadOrder(SquadOrder::Goliaths, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths"));
-				squadData.addSquad(s);
-				goliathSquads.push_back(s);
-				temp.clear();
+				//Squad s = Squad(temp, SquadOrder(SquadOrder::Goliaths, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths"));
+				//squadData.addSquad(s);
+				goliathSquads.push_back(*temp);
+				temp = new UnitVector;
 			}
 		}
 
 		if (count != 0)
 		{
-			Squad s = Squad(temp, SquadOrder(SquadOrder::Goliaths, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths"));
-			squadData.addSquad(s);
-			goliathSquads.push_back(s);
+			//Squad s = Squad(temp, SquadOrder(SquadOrder::Goliaths, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Goliaths"));
+			//squadData.addSquad(s);
+			goliathSquads.push_back(*temp);
 		}
 
 		count = 0;
-		temp.clear();
+		temp = new UnitVector;
 
 		for each (BWAPI::Unit * unit in marines)
 		{
 			if (count < 6)
 			{
-				temp.push_back(unit);
+				temp->push_back(unit);
 				count++;
 			}
 			else
 			{
 				count = 0;
-				Squad s = Squad(temp, SquadOrder(SquadOrder::Marines, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines"));
-				squadData.addSquad(s);
-				marineSquads.push_back(s);
-				temp.clear();
+				//Squad s = Squad(temp, SquadOrder(SquadOrder::Marines, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines"));
+				//squadData.addSquad(s);
+				marineSquads.push_back(*temp);
+				temp = new UnitVector;
 			}
 		}
 
 		if (count != 0)
 		{
-			Squad s = Squad(temp, SquadOrder(SquadOrder::Marines, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines"));
-			squadData.addSquad(s);
-			marineSquads.push_back(s);
+			//Squad s = Squad(temp, SquadOrder(SquadOrder::Marines, ColorGraph::Instance().getNodeCenter(goal), 1000,  "Marines"));
+			//squadData.addSquad(s);
+			marineSquads.push_back(*temp);
 		}
 
 		//squadData.addSquad(Squad(units, SquadOrder(SquadOrder::Attack,  
@@ -273,28 +273,32 @@ void CombatCommander::assignAttackSquads(std::set<BWAPI::Unit *> & unitsToAssign
 		{
 			while (tankMap[id] > 0)
 			{
-				tankSquads.front().setSquadOrder(SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Tanks"));
+				squadData.addSquad(Squad(tankSquads.front(), SquadOrder(SquadOrder::Tanks, ColorGraph::Instance().getNodeCenter(id), 1000,  "Tanks")));
+				//tankSquads.front().setSquadOrder(SquadOrder(SquadOrder::Tanks,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Tanks"));
 				tankSquads.erase(tankSquads.begin());
 				tankMap[id]--;
 			}
 
 			while (vultureMap[id] > 0)
 			{
-				vultureSquads.front().setSquadOrder(SquadOrder(SquadOrder::Vultures,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Vultures"));
+				squadData.addSquad(Squad(vultureSquads.front(), SquadOrder(SquadOrder::Tanks, ColorGraph::Instance().getNodeCenter(id), 1000,  "Vultures")));
+				//vultureSquads.front().setSquadOrder(SquadOrder(SquadOrder::Vultures,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Vultures"));
 				vultureSquads.erase(vultureSquads.begin());
 				vultureMap[id]--;
 			}
 
 			while (goliathMap[id] > 0)
 			{
-				goliathSquads.front().setSquadOrder(SquadOrder(SquadOrder::Goliaths,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Goliaths"));
+				squadData.addSquad(Squad(goliathSquads.front(), SquadOrder(SquadOrder::Tanks, ColorGraph::Instance().getNodeCenter(id), 1000,  "Goliaths")));
+				//goliathSquads.front().setSquadOrder(SquadOrder(SquadOrder::Goliaths,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Goliaths"));
 				goliathSquads.erase(goliathSquads.begin());
 				goliathMap[id]--;
 			}
 
 			while (marineMap[id] > 0)
 			{
-				marineSquads.front().setSquadOrder(SquadOrder(SquadOrder::Marines,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Marines"));
+				squadData.addSquad(Squad(marineSquads.front(), SquadOrder(SquadOrder::Tanks, ColorGraph::Instance().getNodeCenter(id), 1000,  "Marines")));
+				//marineSquads.front().setSquadOrder(SquadOrder(SquadOrder::Marines,	ColorGraph::Instance().getNodeCenter(id), 1000,  "Marines"));
 				marineSquads.erase(marineSquads.begin());
 				marineMap[id]--;
 			}
