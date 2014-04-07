@@ -43,14 +43,19 @@ void RangedManager::executeMicro(const UnitVector & targets)
 				if (rangedUnit->getDistance(order.position) > rangedUnit->getInitialType().groundWeapon().maxRange())
 				{
 					//unsiege tanks if they're sieged
-					if (order.type = order.Tanks && rangedUnit->isSieged()) {
+					if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode) {
 						rangedUnit->unsiege();
 					}
 					// move to it
-					smartPositionAndDefend(rangedUnit, order.position);
+					if (! (order.type == order.Defend)) {
+						smartAttackMove(rangedUnit, order.position);
+					}
+					else {
+						smartPositionAndDefend(rangedUnit,order.position);
+					}
 				}
 				//else if we're in range and we're supposed to s
-				else if (order.type = order.Tanks) {
+				else if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) {
 					rangedUnit->siege();
 				}
 			}
