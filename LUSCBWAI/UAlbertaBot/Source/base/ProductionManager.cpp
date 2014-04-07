@@ -170,7 +170,29 @@ void ProductionManager::manageBuildOrderQueue()
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
 	{
-		
+		// if this is an add on and there is no possible unit to add the unit on to, remove this from the queue		
+		if(currentItem.metaType.isAddOn())
+		{
+			bool addOnPossible = false;
+			BWAPI::UnitType addedOnto = currentItem.metaType.whatBuilds();
+
+			BOOST_FOREACH (BWAPI::Unit * u, BWAPI::Broodwar->self()->getUnits()) 
+			{
+				if (u->getType() == addedOnto && u->getAddon() == NULL) 
+				{
+					addOnPossible = true;
+					break;
+				}			
+			}
+
+			if(!addOnPossible)
+			{
+				BWAPI::Broodwar->printf("Add on detected with nothing to add on to, removing from the build order.");
+				queue.removeCurrentHighestPriorityItem();
+				break;
+			}
+		}
+
 		// this is the unit which can produce the currentItem
 		BWAPI::Unit * producer;
 		// special case for units that are created by buildings with add ons, so the correct building (with the add on) can be specified

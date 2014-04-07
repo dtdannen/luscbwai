@@ -671,39 +671,38 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	numTanks += unitCounts.count(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode] : 0;
 
 	int numVultures = unitCounts.count(BWAPI::UnitTypes::Terran_Vulture) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Vulture] : 0;	
-	int vulturesWanted = numVultures + (numTanks / 5);
+	int vulturesWanted = numVultures + (numTanks / 4);
 	if(vulturesWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture,	vulturesWanted));
 
 	int numGoliaths = unitCounts.count(BWAPI::UnitTypes::Terran_Goliath) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Goliath] : 0;
-	int goliathsWanted = numGoliaths + (numTanks / 5);
+	int goliathsWanted = numGoliaths + (numTanks / 4);
 	if(goliathsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
 
-	int tanksWanted = numTanks == 0 ? 2 : numTanks + numTanks / 3 + 5;
-	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));	
-
-	// we don't want the tree to be too much to compute, so if our goal units add up to more than 30, just do a hard coded distribution
-	if(vulturesWanted + tanksWanted + goliathsWanted > 25)
-	{
-		vulturesWanted = numVultures + 3;
-		goliathsWanted = numGoliaths + 8;
-		tanksWanted = numTanks + 15;
-	}
+	int tanksWanted = numTanks == 0 ? 2 : numTanks + numTanks / 3 + 6;
+	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));			
 
 	//==========================================
 	//     BUILDINGS
 	//==========================================
 
 	int machineShops = unitCounts.count(BWAPI::UnitTypes::Terran_Machine_Shop) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Machine_Shop] : 0;
-	int machineShopsWanted = tanksWanted < 5 ? 0 : 2;
-	if(machineShopsWanted > 0 && machineShops < 2)
+	int machineShopsWanted;
+	// we want to have two machine shops, but only to build one at a time, otherwise the build order takes too long to calculate
+	if(machineShops < 2)
+		machineShopsWanted = machineShops + 1;
+	// after that we don't need to force anymore
+	else
+		machineShopsWanted = 0;
+	if(machineShopsWanted > 0)
+	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
+	}
 
 	int numCommSat = unitCounts.count(BWAPI::UnitTypes::Terran_Comsat_Station) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Comsat_Station] : 0;
 	if(numTanks >= 5 && numCommSat < 1)
 	{
-		BWAPI::Broodwar->printf("Trying to build a comsat!");
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
 	}
 
@@ -715,11 +714,40 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	if(turretsWanted > numTurrets)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
 
+	// we don't want the tree to be too much to compute, so if our goal units add up to more than 25, just do a hard coded distribution
+	int numberOfThingsToBuild = vulturesWanted - numVultures + tanksWanted - numTanks + goliathsWanted - numGoliaths + turretsWanted - numTurrets;
+	if(numberOfThingsToBuild > 25)
+	{
+		if(turretsWanted - numTurrets > 0)
+		{
+			vulturesWanted = numVultures + 3;
+			goliathsWanted = numGoliaths + 8;
+			tanksWanted = numTanks + 15;
+		}
+		else
+		{
+			vulturesWanted = numVultures + 2;
+			goliathsWanted = numGoliaths + 6;
+			tanksWanted = numTanks + 13;
+			turretsWanted = numTurrets + 5;
+		}
+	}
+
+	// if our total units are over 200, just make it 200
+	int totalUnitGoal = vulturesWanted + tanksWanted + goliathsWanted;
+	if(totalUnitGoal > 200)
+	{
+		int totalWantedPerType = (totalUnitGoal - 200) / 3;
+		vulturesWanted = numVultures + totalWantedPerType;
+		goliathsWanted = numGoliaths + totalWantedPerType;
+		tanksWanted = numTanks + totalWantedPerType;
+	}
+
 	//==========================================
 	//     RESEARCH
 	//==========================================
 
-	if(numTanks >= 5 && !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
+	if(numTanks > 0 && !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
 		BWAPI::Broodwar->printf("Trying to research siege mode!");

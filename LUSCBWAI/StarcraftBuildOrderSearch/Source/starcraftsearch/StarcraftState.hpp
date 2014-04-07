@@ -1518,6 +1518,11 @@ public:
 		#endif
 		return true;
 	}
+
+	bool canAddOn(Action building)
+	{
+		return buildings.canAddOn(building);
+	}
 	
 
 	// does the current state meet the goal requirements
