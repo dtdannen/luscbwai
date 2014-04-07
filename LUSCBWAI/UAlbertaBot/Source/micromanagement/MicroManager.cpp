@@ -249,6 +249,10 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 
 	attacker->move(defTarget);
 
+	if (attacker->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode && attacker->getDistance(defTarget) < attacker->getType().groundWeapon().maxRange()) {
+		attacker->siege();
+	}
+
 	if (Options::Debug::DRAW_UALBERTABOT_DEBUG) 
 	{
 		BWAPI::Broodwar->drawLineMap(attacker->getPosition().x(), attacker->getPosition().y(),
