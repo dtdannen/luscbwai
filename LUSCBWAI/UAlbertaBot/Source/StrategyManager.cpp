@@ -680,7 +680,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 	if(goliathsWanted > 0)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath,	goliathsWanted));
 
-	int tanksWanted = numTanks == 0 ? 2 : numTanks + numTanks / 3 + 6;
+	int tanksWanted = numTanks == 0 ? 2 : numTanks + numTanks / 3 + 7;
 	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode,	tanksWanted));			
 
 	//==========================================
