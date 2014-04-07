@@ -451,7 +451,7 @@ public:
 				int numBuildings = s.getNumUnits(building);
 
 				// if we have as many producers as we want, do not build another building of this type
-				if(numBuildings >= producersWanted)
+				if(numBuildings >= producersWanted)// && !neededForAddOn(building, s))
 					excessiveBuildings.add(building);
 			}
 		}
@@ -477,6 +477,36 @@ public:
 
 
 		return excessiveBuildings;
+	}
+
+	bool neededForAddOn(Action building, BuildOrderSearch::StarcraftState & s)
+	{
+		// figure out if we need any add ons for this goal
+		for(Action a(0); a < DATA.size(); ++a)
+		{
+			// if this add on is part of our goal
+			if(params.goal.get(a) > 0 && DATA[a].isAddOn())
+			{
+				BWAPI::UnitType whatBuilds = DATA[a].whatBuilds();
+				Action buildingAddedOn = 255;
+
+				// find the action number of the building to add on to
+				for(Action a(0); a < DATA.size(); ++a)
+				{
+					if(DATA[a].getUnitType() == whatBuilds)
+					{
+						buildingAddedOn = a;
+						break;
+					}
+				}
+				// we need this building if we are trying to build an addon that adds onto it
+				// and there is not already a place for it to add onto
+				if(buildingAddedOn == building && !s.canAddOn(a))
+					return true;
+			}
+		}
+
+		return false;
 	}
 };
 }

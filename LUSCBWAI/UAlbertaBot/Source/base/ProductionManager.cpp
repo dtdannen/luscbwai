@@ -170,7 +170,29 @@ void ProductionManager::manageBuildOrderQueue()
 	// while there is still something left in the queue
 	while (!queue.isEmpty()) 
 	{
-		
+		// if this is an add on and there is no possible unit to add the unit on to, remove this from the queue		
+		if(currentItem.metaType.isAddOn())
+		{
+			bool addOnPossible = false;
+			BWAPI::UnitType addedOnto = currentItem.metaType.whatBuilds();
+
+			BOOST_FOREACH (BWAPI::Unit * u, BWAPI::Broodwar->self()->getUnits()) 
+			{
+				if (u->getType() == addedOnto && u->getAddon() == NULL) 
+				{
+					addOnPossible = true;
+					break;
+				}			
+			}
+
+			if(!addOnPossible)
+			{
+				BWAPI::Broodwar->printf("Add on detected with nothing to add on to, removing from the build order.");
+				queue.removeCurrentHighestPriorityItem();
+				break;
+			}
+		}
+
 		// this is the unit which can produce the currentItem
 		BWAPI::Unit * producer;
 		// special case for units that are created by buildings with add ons, so the correct building (with the add on) can be specified
@@ -405,7 +427,7 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 			producer->morph(t.unitType);
 
 		// if not, train the unit
-		} else {
+		} else {			
 			producer->train(t.unitType);
 		}
 	}
@@ -470,7 +492,7 @@ BWAPI::Unit * ProductionManager::selectUnitOfType(BWAPI::UnitType type, bool lea
 				// special case for tanks and other units that require add ons to buildings. we will make sure we choose
 				// a building with the add on that is required
 				if((produced == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) // || others that require add ons)
-					&& u->getAddon() == NULL) 
+					&& (u->getAddon() == NULL || u->getAddon()->isBeingConstructed())) 
 					continue;
 
 				// special case for the add ons themselves. we have to find a building that doesn't already have an add on on it
