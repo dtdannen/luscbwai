@@ -107,9 +107,40 @@ BuildOrderSearch::StarcraftState StarcraftBuildOrderSearchManager::getCurrentSta
 			// if it is a building
 			if (unit->getType().isBuilding())
 			{
+				std::vector<int> unitsTrainingTime;
+				// if the building is training units, add those units to the "in progress"
+				if(unit->isTraining())
+				{
+					std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = unit->getTrainingQueue();					
+
+					bool first = true;
+					int trainingTime = 0;
+					BOOST_FOREACH(BWAPI::UnitType u, queue)
+					{
+						int currentUnitTimeRemaining;
+						// the first unit in the queue is the unit currently being trained
+						if(first)
+						{
+							currentUnitTimeRemaining = unit->getRemainingTrainTime();
+							trainingTime += currentUnitTimeRemaining;
+							s.addActionInProgress(DATA.getAction(u), BWAPI::Broodwar->getFrameCount() + trainingTime);
+						}
+						else
+						{
+							currentUnitTimeRemaining = u.buildTime();
+							trainingTime += currentUnitTimeRemaining;
+							s.addActionInProgress(DATA.getAction(u), BWAPI::Broodwar->getFrameCount() + trainingTime);							
+						}
+
+						// store this unit's training time so we can use it in our simulation
+						unitsTrainingTime.push_back(currentUnitTimeRemaining);
+						first = false;
+					}
+				}
+
 				// add the building data accordingly				
 				FrameCountType trainTime = unit->getType() == BWAPI::UnitTypes::Zerg_Hatchery ? 0 : unit->getRemainingTrainTime();
-				s.addBuilding(action, (FrameCountType)(trainTime + unit->getRemainingResearchTime() + unit->getRemainingUpgradeTime()), unit->getAddon() != NULL);
+				s.addBuilding(action, (FrameCountType)(trainTime + unit->getRemainingResearchTime() + unit->getRemainingUpgradeTime()), unitsTrainingTime, unit->getAddon() != NULL);
 
 				if (unit->getRemainingResearchTime() > 0)
 				{
@@ -124,20 +155,7 @@ BuildOrderSearch::StarcraftState StarcraftBuildOrderSearchManager::getCurrentSta
 				{
 					// TODO: fix the timing
 					s.addHatchery(unit->getLarva().size(), BWAPI::Broodwar->getFrameCount());//unit->getRemainingTrainTime());
-				}
-
-				// if the building is training units, add those units to the "in progress"
-				if(unit->isTraining())
-				{
-					std::list<BWAPI::UnitType, std::allocator<BWAPI::UnitType>> queue = unit->getTrainingQueue();
-					int trainingTime = unit->getRemainingTrainTime();
-					
-					BOOST_FOREACH(BWAPI::UnitType u, queue)
-					{
-						s.addActionInProgress(DATA.getAction(u), BWAPI::Broodwar->getFrameCount() + trainingTime);
-						trainingTime += unit->getRemainingTrainTime();
-					}
-				}
+				}				
 			}
 		}
 
