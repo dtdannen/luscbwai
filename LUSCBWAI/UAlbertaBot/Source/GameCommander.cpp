@@ -57,6 +57,12 @@ void GameCommander::update()
 		
 	timerManager.stopTimer(TimerManager::All);
 
+	if (BWAPI::Broodwar->self()->supplyUsed() > 140)
+	{
+		FrontierAdvisor::Instance().frozen = false;
+		//BWAPI::Broodwar->printf("AUTOBOTS, ROLL OUT!");
+	}
+
 	drawDebugInterface();
 }
 
@@ -291,6 +297,10 @@ void GameCommander::onUnitShow(BWAPI::Unit * unit)
 { 
 	InformationManager::Instance().onUnitShow(unit); 
 	WorkerManager::Instance().onUnitShow(unit);
+	if (FrontierAdvisor::Instance().frozen && unit->getType() == BWAPI::UnitTypes::Terran_Command_Center && unit->getPlayer() == BWAPI::Broodwar->self())
+	{
+		FrontierAdvisor::Instance().addNodeToFrontier(ColorGraph::Instance().getNodeAtPosition(unit->getPosition()));
+	}
 }
 
 void GameCommander::onUnitHide(BWAPI::Unit * unit)			

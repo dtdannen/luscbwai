@@ -4,6 +4,7 @@
 FrontierAdvisor::FrontierAdvisor(void)
 {
 	//frontier.push_back(ColorGraph::Instance().getNodeAtPosition(BWTA::getStartLocation(BWAPI::Broodwar->self())->getPosition()));
+	frozen = true;
 }
 
 
@@ -62,52 +63,33 @@ std::set<int> FrontierAdvisor::getFrontier()
 
 void FrontierAdvisor::addNodeToFrontier(int id)
 {
-	if (std::find(frontier.begin(), frontier.end(), id) == controlled.end())
-	{
-		frontier.insert(id);
-	}
+	frontier.insert(id);
 }
 
 
 void FrontierAdvisor::recalculateFrontier()
 {
-	//for each (int id in frontier)
-	//{
-	//	bool contained = true;
-	//	for each (int neighbor in ColorGraph::Instance().getNodeNeighbors(id))
-	//	{
-	//		if (std::find(controlled.begin(), controlled.end(), neighbor) == controlled.end() && std::find(frontier.begin(), frontier.end(), neighbor) == frontier.end())
-	//		{
-	//			contained = false;
-	//		}
-	//	}
-
-	//	if (contained)
-	//	{
-	//		frontier.erase(std::find(frontier.begin(), frontier.end(), id));
-	//		controlled.push_back(id);
-	//	}
-	//}
-
-	//BWAPI::Broodwar->printf("Recalculating Frontier");
-	controlled.clear();
-	frontier.clear();
-
-	for (int i = 0; i < ColorGraph::Instance().size(); i++)
+	if (!frozen)
 	{
-		if (ColorGraph::Instance().getNodeColor(i) == GREEN)
-		{
-			controlled.insert(i);
-		}
-	}
+		controlled.clear();
+		frontier.clear();
 
-	for each (int id in controlled)
-	{
-		for each (int neighbor in ColorGraph::Instance().getNodeNeighbors(id))
+		for (int i = 0; i < ColorGraph::Instance().size(); i++)
 		{
-			if (ColorGraph::Instance().getNodeColor(neighbor) != GREEN)	
+			if (ColorGraph::Instance().getNodeColor(i) == GREEN)
 			{
-				frontier.insert(neighbor);
+				controlled.insert(i);
+			}
+		}
+
+		for each (int id in controlled)
+		{
+			for each (int neighbor in ColorGraph::Instance().getNodeNeighbors(id))
+			{
+				if (ColorGraph::Instance().getNodeColor(neighbor) != GREEN)	
+				{
+					frontier.insert(neighbor);
+				}
 			}
 		}
 	}
