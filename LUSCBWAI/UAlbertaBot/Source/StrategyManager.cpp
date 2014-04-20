@@ -749,8 +749,15 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 	if(numTanks > 0 && !BWAPI::Broodwar->self()->hasResearched(BWAPI::TechTypes::Tank_Siege_Mode))
 	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));		
 		BWAPI::Broodwar->printf("Trying to research siege mode!");
+	}
+
+	
+	if(BWAPI::Broodwar->self()->getUpgradeLevel(BWAPI::UpgradeTypes::Charon_Boosters) == 0 && numGoliaths > 0)
+	{
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UpgradeTypes::Charon_Boosters, 1));
+		BWAPI::Broodwar->printf("Trying to get charon boosters!");
 	}
 
 

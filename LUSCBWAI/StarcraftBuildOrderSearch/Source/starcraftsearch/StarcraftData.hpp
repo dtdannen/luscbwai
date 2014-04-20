@@ -106,6 +106,7 @@ class StarcraftData {
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Goliath, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::UnitTypes::Terran_Comsat_Station, actions.size()));
 			actions.push_back(StarcraftAction(BWAPI::TechTypes::Tank_Siege_Mode, actions.size()));
+			actions.push_back(StarcraftAction(BWAPI::UpgradeTypes::Charon_Boosters, actions.size()));
 		}
 		else if (r == BWAPI::Races::Zerg)
 		{
@@ -226,6 +227,13 @@ class StarcraftData {
 		// if it's an UpgradeType
 		if (action.getType() == StarcraftAction::UpgradeType)
 		{
+			BWAPI::UnitType requiredUnit = action.getUpgradeType().whatsRequired();
+
+			if(requiredUnit != BWAPI::UnitTypes::None)
+			{
+				// add the units that are required to upgrade
+				pre.add(getAction(requiredUnit));
+			}
 			if (action.getUpgradeType().whatUpgrades() != BWAPI::UnitTypes::None)
 			{
 				if (DEBUG_StarcraftData) printf("\tPRE: %s\n", action.getUpgradeType().whatUpgrades().getName().c_str());

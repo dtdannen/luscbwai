@@ -438,6 +438,7 @@ void ProductionManager::createMetaType(BWAPI::Unit * producer, MetaType t)
 	}
 	else if (t.isUpgrade())
 	{
+		BWAPI::Broodwar->printf("I'm actually getting charon boosters!");
 		//Logger::Instance().log("Produce Upgrade: " + t.getName() + "\n");
 		producer->upgrade(t.upgradeType);
 	}
