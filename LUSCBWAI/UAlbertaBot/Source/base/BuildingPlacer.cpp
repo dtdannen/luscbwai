@@ -182,9 +182,28 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationInNeighbor(const Building &b
 {
 	BWTA::Region * myRegion = BWTA::getRegion(BWTA::getStartLocation(BWAPI::Broodwar->self())->getTilePosition());
 	BWAPI::Position regionPos = myRegion->getCenter();
+	BWAPI::TilePosition regionTile(regionPos);
 	int nodeId = ColorGraph::Instance().getNodeAtPosition(regionPos);
 	std::list<int> neighbors = ColorGraph::Instance().getNodeNeighbors(nodeId);
-	BWAPI::Position neighborPos = ColorGraph::Instance().getNodeCenter(neighbors.front());
+
+	int closestNode = -1;
+	double distance = 100000000;
+	// find the closest neighbor
+	BOOST_FOREACH(int n, neighbors)
+	{
+		// get the tile position of this node
+		BWAPI::TilePosition t(ColorGraph::Instance().getNodeCenter(n));
+
+		// if this node is closer to the start than the closest so far, save it
+		double distanceToNode = BWTA::getGroundDistance(t, regionTile);
+		if(distanceToNode < distance)
+		{
+			closestNode = n;
+			distance = distanceToNode;
+		}
+	}
+
+	BWAPI::Position neighborPos = ColorGraph::Instance().getNodeCenter(closestNode);
 	BWTA::Region * neighborRegion = BWTA::getRegion(neighborPos);
 	BWAPI::TilePosition neighbor(neighborPos);
 

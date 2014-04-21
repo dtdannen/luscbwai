@@ -657,7 +657,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		- One goliath for every 5 tanks we are creating.
 		- 5 more tanks + 33% more tanks.
 		- At least 2 machine shops.
-		- 5 missile turrets / command center.
+		- 3 missile turrets / command center.
 
 	*/
 
@@ -708,8 +708,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 	int numBases = unitCounts.count(BWAPI::UnitTypes::Terran_Command_Center) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Command_Center] : 0;
 	int numTurrets = unitCounts.count(BWAPI::UnitTypes::Terran_Missile_Turret) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Missile_Turret] : 0;
-	int turretsWanted = numTanks >= 0 ? numBases * 3 : 0;
-	// make sure we don't try to make more than 3 at a time
+	int turretsWanted = numTanks > 0 ? numBases * 3 : 0;
+	// make sure we don't try to make more than 2 at a time
 	turretsWanted = turretsWanted - numTurrets > 3 ? numTurrets + 3 : turretsWanted;
 	if(turretsWanted > numTurrets)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
