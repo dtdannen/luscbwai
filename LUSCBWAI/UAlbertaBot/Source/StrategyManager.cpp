@@ -700,15 +700,15 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Machine_Shop,	machineShopsWanted));
 	}
 
-	int numCommSat = unitCounts.count(BWAPI::UnitTypes::Terran_Comsat_Station) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Comsat_Station] : 0;
+	/*int numCommSat = unitCounts.count(BWAPI::UnitTypes::Terran_Comsat_Station) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Comsat_Station] : 0;
 	if(numTanks >= 5 && numCommSat < 1)
 	{
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Comsat_Station, 1));
-	}
+	}*/
 
 	int numBases = unitCounts.count(BWAPI::UnitTypes::Terran_Command_Center) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Command_Center] : 0;
 	int numTurrets = unitCounts.count(BWAPI::UnitTypes::Terran_Missile_Turret) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Missile_Turret] : 0;
-	int turretsWanted = numTanks > 0 ? numBases * 3 : 0;
+	int turretsWanted = numTanks > 5 ? numBases * 3 : 0;
 	// make sure we don't try to make more than 2 at a time
 	turretsWanted = turretsWanted - numTurrets > 3 ? numTurrets + 3 : turretsWanted;
 	if(turretsWanted > numTurrets)
@@ -722,14 +722,14 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		{
 			vulturesWanted = numVultures + 3;
 			goliathsWanted = numGoliaths + 8;
-			tanksWanted = numTanks + 15;
+			tanksWanted = numTanks + 13;
 		}
 		else
 		{
 			vulturesWanted = numVultures + 2;
 			goliathsWanted = numGoliaths + 6;
-			tanksWanted = numTanks + 13;
-			turretsWanted = numTurrets + 5;
+			tanksWanted = numTanks + 11;
+			turretsWanted = numTurrets + 3;
 		}
 	}
 

@@ -27,5 +27,7 @@ public:
 
 	void drawGraphColors();
 	void processColorExpiration();
+
+	void invalidateOrangeAndGreen();
 };
 
