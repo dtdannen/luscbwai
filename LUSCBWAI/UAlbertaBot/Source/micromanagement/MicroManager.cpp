@@ -219,16 +219,17 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 
 	assert(attacker);
 
-	BWTA::Region * reg = BWTA::getRegion(targetPosition);
-	std::set<BWTA::Chokepoint*> chokepoints = reg->getChokepoints();
+	int reg = ColorGraph::Instance().getNodeAtPosition(targetPosition);
+	std::set<BWTA::Chokepoint*> chokepoints = BWTA::getRegion(ColorGraph::Instance().getNodeCenter(reg))->getChokepoints();
 
-	double minDist = DBL_MAX;
+	double maxImp = 0;
 	BWTA::Chokepoint * minChoke = NULL;
 
 	for (std::set<BWTA::Chokepoint *>::iterator it = chokepoints.begin(); it!=chokepoints.end(); ++it) {
-		if ( (*it)->getCenter().getDistance(targetPosition) < minDist)  {
+		double dist = ColorGraph::Instance().getNodeImportance(ColorGraph::Instance().getNodeAtPosition((*it)->getCenter()));
+		if ( maxImp < dist)  {
 			minChoke = *it;
-			minDist = (*it)->getCenter().getDistance(targetPosition);
+			maxImp = dist;
 		}
 	}
 
