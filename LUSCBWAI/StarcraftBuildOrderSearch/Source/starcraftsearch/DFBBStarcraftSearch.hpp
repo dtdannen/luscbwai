@@ -456,8 +456,11 @@ public:
 			}
 		}
 
-		// if we have less than 10 units per command center, do not build another command center yet
-		if(numGoalUnits < 20 * s.getNumUnits(2))
+		// we want 24 scvs per command center
+		int numScvs = s.getNumUnits(0);
+		int numBases = s.getNumUnits(2);
+		int commandCentersWanted = numScvs / 24 + 1;
+		if(numBases >= commandCentersWanted)
 			excessiveBuildings.add(2);
 
 		// make sure we only ever have one armory, engineering bay, or comsat station
