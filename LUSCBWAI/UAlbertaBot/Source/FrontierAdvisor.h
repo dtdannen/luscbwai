@@ -1,6 +1,7 @@
 #include <list>
 #include <BWTA.h>
 #include "ColorGraph.h"
+#include <algorithm>
 
 #pragma once
 
@@ -20,5 +21,6 @@ public:
 	void addNodeToFrontier(int id);
 	void recalculateFrontier();
 	std::set<int> getFrontier();
+	bool frozen;
 };
 
