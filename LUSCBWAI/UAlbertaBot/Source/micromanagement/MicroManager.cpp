@@ -219,6 +219,21 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 
 	assert(attacker);
 
+	BWTA::Region * reg = BWTA::getRegion(targetPosition);
+	std::set<BWTA::Chokepoint*> chokepoints = reg->getChokepoints();
+
+	double minDist = DBL_MAX;
+	BWTA::Chokepoint * minChoke = NULL;
+
+	for (std::set<BWTA::Chokepoint *>::iterator it = chokepoints.begin(); it!=chokepoints.end(); ++it) {
+		if ( (*it)->getCenter().getDistance(targetPosition) < minDist)  {
+			minChoke = *it;
+			minDist = (*it)->getCenter().getDistance(targetPosition);
+		}
+	}
+
+	targetPosition = minChoke->getCenter();
+
 	// if we have issued a command to this unit already this frame, ignore this one
 	if (attacker->getLastCommandFrame() >= BWAPI::Broodwar->getFrameCount() || attacker->isAttackFrame())
 	{
@@ -293,4 +308,8 @@ void MicroManager::drawOrderText() {
 	BOOST_FOREACH (BWAPI::Unit * unit, units) {
 		if (Options::Debug::DRAW_UALBERTABOT_DEBUG) BWAPI::Broodwar->drawTextMap(unit->getPosition().x(), unit->getPosition().y(), "%s", order.getStatus().c_str());
 	}
+}
+
+double distance(BWAPI::Position a, BWAPI::Position b) {
+
 }
