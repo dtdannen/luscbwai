@@ -186,6 +186,21 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 
 			return tile;
 		}
+		// place missile turrets just outside of our base
+		else if(b.type == BWAPI::UnitTypes::Terran_Missile_Turret)
+		{
+			int distance = 0;
+
+			bool horizontalOnly = true;
+
+			BWAPI::TilePosition buildingLocation = BuildingPlacer::Instance().getBuildLocationInNeighbor(b, distance, horizontalOnly);
+
+			testLocation = buildingLocation;
+
+			if(buildingLocation == BWAPI::TilePositions::None)
+				BWAPI::Broodwar->printf("Could not find a location to build a missile turret!");
+				
+		}
 		// any other building
 		else
 		{
@@ -219,8 +234,6 @@ void BuildingManager::constructAssignedBuildings()
 	{
 		// get a handy reference to the worker
 		Building & b = buildingData.getNextBuilding(ConstructionData::Assigned);
-		if(b.type.isAddon())
-			b = b;
 
 		// if that worker is not currently constructing
 		if (!b.builderUnit->isConstructing()) 

@@ -178,6 +178,84 @@ bool BuildingPlacer::canBuildHereWithSpace(BWAPI::TilePosition position, const B
 	return true;
 }
 
+BWAPI::TilePosition BuildingPlacer::getBuildLocationInNeighbor(const Building &b, int buildDist, bool horizontalOnly) const
+{
+	BWTA::Region * myRegion = BWTA::getRegion(BWTA::getStartLocation(BWAPI::Broodwar->self())->getTilePosition());
+	BWAPI::Position regionPos = myRegion->getCenter();
+	int nodeId = ColorGraph::Instance().getNodeAtPosition(regionPos);
+	std::list<int> neighbors = ColorGraph::Instance().getNodeNeighbors(nodeId);
+	BWAPI::Position neighborPos = ColorGraph::Instance().getNodeCenter(neighbors.front());
+	BWTA::Region * neighborRegion = BWTA::getRegion(neighborPos);
+	BWAPI::TilePosition neighbor(neighborPos);
+
+	//returns a valid build location near the specified tile position.
+	//searches outward in a spiral.
+	int x = neighbor.x();
+	int y = neighbor.y();
+	int length = 1;
+	int j      = 0;
+	bool first = true;
+	int dx     = 0;
+	int dy     = 1;
+
+	while (length < BWAPI::Broodwar->mapWidth()) //We'll ride the spiral to the end
+	{
+		//if we can build here, return this tile position
+		if (x >= 0 && x < BWAPI::Broodwar->mapWidth() && y >= 0 && y < BWAPI::Broodwar->mapHeight())
+		{
+			// can we build this building at this location
+			bool canBuild					= this->canBuildHereWithSpace(BWAPI::TilePosition(x, y), b, buildDist, horizontalOnly);
+
+			// the region the build tile is in
+			BWTA::Region * tileRegion		= BWTA::getRegion(BWAPI::TilePosition(x,y));
+
+			// is the proposed tile in the neighbor?
+			bool tileInRegion				= (tileRegion == neighborRegion);
+
+			// if the tile is in region and we can build it there
+			if (tileInRegion && canBuild)
+			{
+				// return that position
+				return BWAPI::TilePosition(x, y);
+			}
+		}
+
+		//otherwise, move to another position
+		x = x + dx;
+		y = y + dy;
+
+		//count how many steps we take in this direction
+		j++;
+		if (j == length) //if we've reached the end, its time to turn
+		{
+			//reset step counter
+			j = 0;
+
+			//Spiral out. Keep going.
+			if (!first)
+				length++; //increment step counter if needed
+
+			//first=true for every other turn so we spiral out at the right rate
+			first =! first;
+
+			//turn counter clockwise 90 degrees:
+			if (dx == 0)
+			{
+				dx = dy;
+				dy = 0;
+			}
+			else
+			{
+				dy = -dx;
+				dx = 0;
+			}
+		}
+		//Spiral out. Keep going.
+	}
+
+	return  BWAPI::TilePositions::None;
+}
+
 BWAPI::TilePosition BuildingPlacer::getBuildLocationNear(const Building & b, int buildDist, bool inRegionPriority, bool horizontalOnly) const
 {
 	//returns a valid build location near the specified tile position.

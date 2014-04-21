@@ -708,9 +708,9 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 	int numBases = unitCounts.count(BWAPI::UnitTypes::Terran_Command_Center) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Command_Center] : 0;
 	int numTurrets = unitCounts.count(BWAPI::UnitTypes::Terran_Missile_Turret) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Missile_Turret] : 0;
-	int turretsWanted = numTanks >= 5 && numCommSat >= 1 ? numBases * 5 : 0;
-	// make sure we don't try to make more than 5 at a time
-	turretsWanted = turretsWanted - numTurrets > 5 ? numTurrets + 5 : turretsWanted;
+	int turretsWanted = numTanks >= 0 ? numBases * 3 : 0;
+	// make sure we don't try to make more than 3 at a time
+	turretsWanted = turretsWanted - numTurrets > 3 ? numTurrets + 3 : turretsWanted;
 	if(turretsWanted > numTurrets)
 		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Missile_Turret,	turretsWanted));
 
@@ -733,14 +733,15 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		}
 	}
 
-	// if our total units are over 200, just make it 200
-	int totalUnitGoal = vulturesWanted + tanksWanted + goliathsWanted;
-	if(totalUnitGoal > 200)
-	{
-		int totalWantedPerType = (totalUnitGoal - 200) / 3;
-		vulturesWanted = numVultures + totalWantedPerType;
-		goliathsWanted = numGoliaths + totalWantedPerType;
-		tanksWanted = numTanks + totalWantedPerType;
+	// if our total units are over 198, just make it 198
+	int numScvs = unitCounts.count(BWAPI::UnitTypes::Terran_SCV) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_SCV] : 0;
+	int totalUnitGoal = vulturesWanted + tanksWanted + goliathsWanted + numScvs;
+	if(totalUnitGoal > 198)
+	{		
+		int totalMoreWanted = 198 - (numVultures + numTanks + numGoliaths + numScvs);
+		vulturesWanted = numVultures + totalMoreWanted/3;
+		goliathsWanted = numGoliaths + totalMoreWanted/3;
+		tanksWanted = numTanks + totalMoreWanted/3;
 	}
 
 	//==========================================
