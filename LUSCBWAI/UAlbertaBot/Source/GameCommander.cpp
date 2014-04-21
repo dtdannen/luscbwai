@@ -62,6 +62,49 @@ void GameCommander::update()
 		FrontierAdvisor::Instance().frozen = false;
 		//BWAPI::Broodwar->printf("AUTOBOTS, ROLL OUT!");
 	}
+	else
+	{
+		ColorGraph::Instance().invalidateOrangeAndGreen();
+
+		UnitData tempData;
+		
+		for each (BWAPI::Unit * unit in BWAPI::Broodwar->self()->getUnits())
+		{
+			tempData.updateUnit(unit);
+		}
+
+		std::map<BWAPI::Unit *, UnitInfo> data = tempData.getUnits();
+
+		for (std::map<BWAPI::Unit *, UnitInfo>::iterator it = data.begin(); it != data.end(); ++it)
+		{
+			//if (it->first->getType() == BWAPI::UnitTypes::Terran_Command_Center)
+			//{
+			BWAPI::Position p = it->first->getPosition();
+			BWTA::Region * r = NULL;
+			try
+			{
+				r = BWTA::getRegion(p);
+			}catch(...)
+			{
+				BWAPI::Broodwar->printf("Error caught");
+			}
+			if (it->first != NULL && it->first->getPosition() != NULL && r != NULL)
+			{
+				int ourBaseLocation = ColorGraph::Instance().getNodeAtPosition(p);
+
+				if (ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::RED
+					&& ColorGraph::Instance().getNodeColor(ourBaseLocation) != NodeColor::ORANGE)
+				{
+					ColorGraph::Instance().setNodeColor(ourBaseLocation, NodeColor::GREEN);
+				}
+			}
+			//}
+		}
+
+
+		FrontierAdvisor::Instance().recalculateFrontier();
+		FrontierAdvisor::Instance().frozen = true;
+	}
 
 	drawDebugInterface();
 }

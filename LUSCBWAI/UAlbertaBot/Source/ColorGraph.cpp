@@ -130,6 +130,21 @@ void ColorGraph::processColorExpiration()
 	}
 }
 
+void ColorGraph::invalidateOrangeAndGreen()
+{
+	for (std::map<int, ColorNode *>::iterator it = nodeMap.begin(); it != nodeMap.end(); ++it)
+	{
+		if (it->second->getColor() == ORANGE)
+		{
+			it->second->setColor(BLACK);
+		}
+		if (it->second->getColor() == GREEN)
+		{
+			it->second->setColor(BLACK);
+		}
+	}
+}
+
 
 ColorGraph & ColorGraph::Instance() 
 {
