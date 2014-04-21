@@ -57,7 +57,7 @@ void GameCommander::update()
 		
 	timerManager.stopTimer(TimerManager::All);
 
-	if (BWAPI::Broodwar->self()->supplyUsed() > 140)
+	if (BWAPI::Broodwar->self()->supplyUsed() > 240)
 	{
 		FrontierAdvisor::Instance().frozen = false;
 		//BWAPI::Broodwar->printf("AUTOBOTS, ROLL OUT!");
