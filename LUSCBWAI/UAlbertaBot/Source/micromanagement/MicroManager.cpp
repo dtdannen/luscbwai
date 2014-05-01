@@ -2,6 +2,8 @@
 #include "MicroManager.h"
 #include "PositionAdvisor.h"
 
+BWAPI::Position getEnemyCentroid();
+
 void MicroManager::setUnits(const UnitVector & u) 
 { 
 	units = u; 
@@ -221,15 +223,16 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 
 	int reg = ColorGraph::Instance().getNodeAtPosition(targetPosition);
 	std::set<BWTA::Chokepoint*> chokepoints = BWTA::getRegion(ColorGraph::Instance().getNodeCenter(reg))->getChokepoints();
+	BWAPI::Position enemyCenter = getEnemyCentroid();
 
-	double maxImp = 0;
+	double minDist = DBL_MAX;
 	BWTA::Chokepoint * minChoke = NULL;
 
 	for (std::set<BWTA::Chokepoint *>::iterator it = chokepoints.begin(); it!=chokepoints.end(); ++it) {
-		double dist = ColorGraph::Instance().getNodeImportance(ColorGraph::Instance().getNodeAtPosition((*it)->getCenter()));
-		if ( maxImp < dist)  {
+		double dist = ColorGraph::Instance().getNodeAtPosition((*it)->getCenter()).getDistance(enemyCenter);
+		if ( minDist > dist)  {
 			minChoke = *it;
-			maxImp = dist;
+			minDist = dist;
 		}
 	}
 
@@ -311,6 +314,21 @@ void MicroManager::drawOrderText() {
 	}
 }
 
-double distance(BWAPI::Position a, BWAPI::Position b) {
+BWAPI::Position getEnemyCentroid() {
+	std::vector<int> bases = *new std::vector<int>();
+	for (int i = 0; i < ColorGraph::Instance().size(); i++) {
+		if (ColorGraph::Instance().getNodeColor(i) == NodeColor::RED) {
+			bases.push_back(i);
+		}
+	}
+	
+	int totalx;
+	int totaly;
 
+	for (std::vector<int>::iterator it=bases.begin(); it != bases.end(); ++it) {
+		totalx += ColorGraph::Instance().getNodeCenter(*it).x();
+		totaly += ColorGraph::Instance().getNodeCenter(*it).y();
+	}
+    
+	return new BWAPI::Position(totalx/bases.size(),totaly/bases.size());
 }
