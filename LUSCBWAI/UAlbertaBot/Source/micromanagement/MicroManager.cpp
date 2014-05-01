@@ -229,7 +229,7 @@ void MicroManager::smartPositionAndDefend(BWAPI::Unit * attacker, BWAPI::Positio
 	BWTA::Chokepoint * minChoke = NULL;
 
 	for (std::set<BWTA::Chokepoint *>::iterator it = chokepoints.begin(); it!=chokepoints.end(); ++it) {
-		double dist = ColorGraph::Instance().getNodeAtPosition((*it)->getCenter()).getDistance(enemyCenter);
+		double dist = (*it)->getCenter().getDistance(enemyCenter);
 		if ( minDist > dist)  {
 			minChoke = *it;
 			minDist = dist;
@@ -330,5 +330,5 @@ BWAPI::Position getEnemyCentroid() {
 		totaly += ColorGraph::Instance().getNodeCenter(*it).y();
 	}
     
-	return new BWAPI::Position(totalx/bases.size(),totaly/bases.size());
+	return *  new BWAPI::Position(totalx/bases.size(),totaly/bases.size());
 }
