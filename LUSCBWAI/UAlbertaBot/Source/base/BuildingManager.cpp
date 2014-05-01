@@ -378,6 +378,11 @@ void BuildingManager::checkForCompletedBuildings() {
 			{
 				WorkerManager::Instance().finishedWithWorker(b.builderUnit);
 			}
+			
+			//lift the engineering bay
+			if ((*(b.buildingUnit)).getType() == BWAPI::UnitTypes::Terran_Engineering_Bay) {
+				(*(b.buildingUnit)).lift();
+			}
 
 			// remove this unit from the under construction vector
 			buildingData.removeCurrentBuilding(ConstructionData::UnderConstruction);
