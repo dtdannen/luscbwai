@@ -275,6 +275,115 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationInNeighbor(const Building &b
 	return  BWAPI::TilePositions::None;
 }
 
+BWAPI::TilePosition BuildingPlacer::getBuildLocationWithTanks(const Building &b, int buildDist, bool horizontalOnly) const
+{
+
+	std::map<BWAPI::TilePosition, int> tileCounts;
+	// determine where all of the tanks are
+	BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
+	{
+
+		// if this unit is a tank
+		if(u->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || 
+			u->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode && u->isCompleted())
+		{
+			BWAPI::TilePosition tankTile(u->getPosition());
+
+			// if the key isn't already in the array, initialize it to 0
+			if(tileCounts.count(tankTile) != 1)
+				tileCounts[tankTile] = 0;
+
+			tileCounts[tankTile]++;	
+		}
+	}
+
+	BWAPI::TilePosition bestTile = BWAPI::TilePositions::None;
+	int numTanks = 0;
+
+	// find the tile with the most tanks
+	for(std::map<BWAPI::TilePosition, int>::iterator iter = tileCounts.begin(); iter != tileCounts.end(); ++iter)
+	{
+		if(iter->second > numTanks)
+		{
+			bestTile = iter->first;
+			numTanks = iter->second;
+		}
+	}
+
+	// if we have no tanks, just build it at the start location
+	if(bestTile == BWAPI::TilePositions::None)
+		bestTile = BWTA::getStartLocation(BWAPI::Broodwar->self())->getTilePosition();
+
+	BWTA::Region *tankRegion = BWTA::getRegion(bestTile);
+
+	//returns a valid build location near the specified tile position.
+	//searches outward in a spiral.
+	int x = bestTile.x();
+	int y = bestTile.y();
+	int length = 1;
+	int j      = 0;
+	bool first = true;
+	int dx     = 0;
+	int dy     = 1;
+
+	while (length < BWAPI::Broodwar->mapWidth()) //We'll ride the spiral to the end
+	{
+		//if we can build here, return this tile position
+		if (x >= 0 && x < BWAPI::Broodwar->mapWidth() && y >= 0 && y < BWAPI::Broodwar->mapHeight())
+		{
+			// can we build this building at this location
+			bool canBuild					= this->canBuildHereWithSpace(BWAPI::TilePosition(x, y), b, buildDist, horizontalOnly);
+
+			// the region the build tile is in
+			BWTA::Region * tileRegion		= BWTA::getRegion(BWAPI::TilePosition(x,y));
+
+			// is the proposed tile in the neighbor?
+			bool tileInRegion				= (tileRegion == tankRegion);
+
+			// if the tile is in region and we can build it there
+			if (tileInRegion && canBuild)
+			{
+				// return that position
+				return BWAPI::TilePosition(x, y);
+			}
+		}
+
+		//otherwise, move to another position
+		x = x + dx;
+		y = y + dy;
+
+		//count how many steps we take in this direction
+		j++;
+		if (j == length) //if we've reached the end, its time to turn
+		{
+			//reset step counter
+			j = 0;
+
+			//Spiral out. Keep going.
+			if (!first)
+				length++; //increment step counter if needed
+
+			//first=true for every other turn so we spiral out at the right rate
+			first =! first;
+
+			//turn counter clockwise 90 degrees:
+			if (dx == 0)
+			{
+				dx = dy;
+				dy = 0;
+			}
+			else
+			{
+				dy = -dx;
+				dx = 0;
+			}
+		}
+		//Spiral out. Keep going.
+	}
+
+	return  BWAPI::TilePositions::None;
+}
+
 BWAPI::TilePosition BuildingPlacer::getBuildLocationNear(const Building & b, int buildDist, bool inRegionPriority, bool horizontalOnly) const
 {
 	//returns a valid build location near the specified tile position.

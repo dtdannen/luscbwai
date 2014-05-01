@@ -708,7 +708,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 	int numBases = unitCounts.count(BWAPI::UnitTypes::Terran_Command_Center) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Command_Center] : 0;
 	int numTurrets = unitCounts.count(BWAPI::UnitTypes::Terran_Missile_Turret) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_Missile_Turret] : 0;
-	int turretsWanted = numTanks > 5 ? numBases * 3 : 0;
+	//int turretsWanted = numTanks > 5 ? numBases * 3 : 0;
+	int turretsWanted = numTanks > 5 ? numTurrets + 2 : 0;
 	// make sure we don't try to make more than 2 at a time
 	turretsWanted = turretsWanted - numTurrets > 3 ? numTurrets + 3 : turretsWanted;
 	if(turretsWanted > numTurrets)

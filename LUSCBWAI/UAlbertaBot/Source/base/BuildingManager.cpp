@@ -193,7 +193,7 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 
 			bool horizontalOnly = true;
 
-			BWAPI::TilePosition buildingLocation = BuildingPlacer::Instance().getBuildLocationInNeighbor(b, distance, horizontalOnly);
+			BWAPI::TilePosition buildingLocation = BuildingPlacer::Instance().getBuildLocationWithTanks(b, distance, horizontalOnly);
 
 			testLocation = buildingLocation;
 

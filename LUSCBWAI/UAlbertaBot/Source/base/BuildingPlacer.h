@@ -36,6 +36,8 @@ class BuildingPlacer
 	BWAPI::TilePosition		getBuildLocationNear(const Building & b, int buildDist, bool inRegion = false, bool horizontalOnly = false) const;
 
 	BWAPI::TilePosition		getBuildLocationInNeighbor(const Building &b, int buildDist, bool horizontalOnly = false) const;
+
+	BWAPI::TilePosition		getBuildLocationWithTanks(const Building &b, int buildDist, bool horizontalOnly = false) const;
 	
 	void					reserveTiles(BWAPI::TilePosition position, int width, int height);
 	void					freeTiles(BWAPI::TilePosition position, int width, int height);
