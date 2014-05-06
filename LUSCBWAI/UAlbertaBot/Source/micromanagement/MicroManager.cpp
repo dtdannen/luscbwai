@@ -321,6 +321,10 @@ BWAPI::Position getEnemyCentroid() {
 			bases.push_back(i);
 		}
 	}
+
+	if (bases.size() == 0) {
+		return *new BWAPI::Position();
+	}
 	
 	int totalx;
 	int totaly;
