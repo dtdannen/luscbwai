@@ -53,13 +53,18 @@ void ImportanceAdvisor::update(int nodeId){
 int* centroid(std::vector<int> bases) {
 	int totalx;
 	int totaly;
+	int *result = new int[2];
+
+	if (bases.size() == 0) {
+		result[0] = 0;
+		result[1] = 0;
+		return result;
+	}
 
 	for (std::vector<int>::iterator it=bases.begin(); it != bases.end(); ++it) {
 		totalx += ColorGraph::Instance().getNodeCenter(*it).x();
 		totaly += ColorGraph::Instance().getNodeCenter(*it).y();
 	}
-
-	int *result = new int[2];
 	result[0] = totalx/bases.size();
 	result[1] = totaly/bases.size();
 	return result;
