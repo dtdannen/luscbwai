@@ -722,8 +722,8 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		if(turretsWanted - numTurrets > 0)
 		{
 			vulturesWanted = numVultures + 3;
-			goliathsWanted = numGoliaths + 8;
-			tanksWanted = numTanks + 13;
+			goliathsWanted = numGoliaths + 7;
+			tanksWanted = numTanks + 12;
 		}
 		else
 		{
@@ -736,13 +736,13 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 
 	// if our total units are over 198, just make it 198
 	int numScvs = unitCounts.count(BWAPI::UnitTypes::Terran_SCV) == 1 ? unitCounts[BWAPI::UnitTypes::Terran_SCV] : 0;
-	int totalUnitGoal = vulturesWanted + tanksWanted + goliathsWanted + numScvs;
+	int totalUnitGoal = vulturesWanted*2 + tanksWanted*2 + goliathsWanted*2 + numScvs;
 	if(totalUnitGoal > 198)
 	{		
-		int totalMoreWanted = 198 - (numVultures + numTanks + numGoliaths + numScvs);
-		vulturesWanted = numVultures + totalMoreWanted/3;
-		goliathsWanted = numGoliaths + totalMoreWanted/3;
-		tanksWanted = numTanks + totalMoreWanted/3;
+		int totalMoreWanted = 198 - (numVultures*2 + numTanks*2 + numGoliaths*2 + numScvs);
+		vulturesWanted = numVultures + totalMoreWanted/4/2;
+		goliathsWanted = numGoliaths + totalMoreWanted/4/2;
+		tanksWanted = numTanks + totalMoreWanted/4/2;
 	}
 
 	//==========================================
