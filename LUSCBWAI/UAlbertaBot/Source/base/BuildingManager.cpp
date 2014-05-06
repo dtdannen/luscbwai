@@ -196,9 +196,6 @@ BWAPI::TilePosition BuildingManager::getBuildingLocation(const Building & b)
 			BWAPI::TilePosition buildingLocation = BuildingPlacer::Instance().getBuildLocationWithTanks(b, distance, horizontalOnly);
 
 			testLocation = buildingLocation;
-
-			if(buildingLocation == BWAPI::TilePositions::None)
-				BWAPI::Broodwar->printf("Could not find a location to build a missile turret!");
 				
 		}
 		// any other building

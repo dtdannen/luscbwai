@@ -278,8 +278,9 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationInNeighbor(const Building &b
 BWAPI::TilePosition BuildingPlacer::getBuildLocationWithTanks(const Building &b, int buildDist, bool horizontalOnly) const
 {
 
-	std::map<BWAPI::TilePosition, int> tileCounts;
-	// determine where all of the tanks are
+	std::map<BWTA::Region*, int> tankCounts;
+	std::map<BWTA::Region*, int> turretCounts;
+	// determine where all of the tanks and missile turrets are
 	BOOST_FOREACH(BWAPI::Unit *u, BWAPI::Broodwar->self()->getUnits())
 	{
 
@@ -287,34 +288,54 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationWithTanks(const Building &b,
 		if(u->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode || 
 			u->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode && u->isCompleted())
 		{
-			BWAPI::TilePosition tankTile(u->getPosition());
+			BWTA::Region *tankRegion = BWTA::getRegion(u->getPosition());
 
 			// if the key isn't already in the array, initialize it to 0
-			if(tileCounts.count(tankTile) != 1)
-				tileCounts[tankTile] = 0;
+			if(tankCounts.count(tankRegion) != 1)
+				tankCounts[tankRegion] = 0;
 
-			tileCounts[tankTile]++;	
+			tankCounts[tankRegion]++;	
+		}
+
+		// if this unit is a turret
+		if(u->getType() == BWAPI::UnitTypes::Terran_Missile_Turret)
+		{
+			BWTA::Region *turretRegion = BWTA::getRegion(u->getPosition());
+
+			// if the key isn't already in the array, initialize it to 0
+			if(turretCounts.count(turretRegion) != 1)
+				turretCounts[turretRegion] = 0;
+
+			turretCounts[turretRegion]++;
 		}
 	}
 
-	BWAPI::TilePosition bestTile = BWAPI::TilePositions::None;
+	BWTA::Region *bestRegion = NULL;
 	int numTanks = 0;
 
 	// find the tile with the most tanks
-	for(std::map<BWAPI::TilePosition, int>::iterator iter = tileCounts.begin(); iter != tileCounts.end(); ++iter)
+	for(std::map<BWTA::Region *, int>::iterator iter = tankCounts.begin(); iter != tankCounts.end(); ++iter)
 	{
 		if(iter->second > numTanks)
 		{
-			bestTile = iter->first;
+			bestRegion = iter->first;
 			numTanks = iter->second;
 		}
 	}
 
-	// if we have no tanks, just build it at the start location
-	if(bestTile == BWAPI::TilePositions::None)
-		bestTile = BWTA::getStartLocation(BWAPI::Broodwar->self())->getTilePosition();
+	// if we have no tanks, do not build a turret
+	BWAPI::TilePosition bestTile;
+	if(!bestRegion)
+		bestTile = BWAPI::TilePositions::None;
+	else
+	{
+		BWAPI::TilePosition tile(bestRegion->getCenter());
+		bestTile = tile;
+	}
 
-	BWTA::Region *tankRegion = BWTA::getRegion(bestTile);
+	// make sure we have no more than 3 missile turrets per region
+	if(turretCounts.count(bestRegion) == 1 && turretCounts[bestRegion] >= 3)
+		bestTile = BWAPI::TilePositions::None;
 
 	//returns a valid build location near the specified tile position.
 	//searches outward in a spiral.
@@ -326,7 +347,7 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationWithTanks(const Building &b,
 	int dx     = 0;
 	int dy     = 1;
 
-	while (length < BWAPI::Broodwar->mapWidth()) //We'll ride the spiral to the end
+	while (length < BWAPI::Broodwar->mapWidth() && bestTile != BWAPI::TilePositions::None) //We'll ride the spiral to the end
 	{
 		//if we can build here, return this tile position
 		if (x >= 0 && x < BWAPI::Broodwar->mapWidth() && y >= 0 && y < BWAPI::Broodwar->mapHeight())
@@ -338,7 +359,7 @@ BWAPI::TilePosition BuildingPlacer::getBuildLocationWithTanks(const Building &b,
 			BWTA::Region * tileRegion		= BWTA::getRegion(BWAPI::TilePosition(x,y));
 
 			// is the proposed tile in the neighbor?
-			bool tileInRegion				= (tileRegion == tankRegion);
+			bool tileInRegion				= (tileRegion == bestRegion);
 
 			// if the tile is in region and we can build it there
 			if (tileInRegion && canBuild)
