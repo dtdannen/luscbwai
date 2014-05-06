@@ -78,8 +78,10 @@ public:
 
 			// if we didn't time out, then we're finished the search
 			if (!previousSearchResults.timedOut || ((searchFrames > 500 || lastSearchFrame - myStart > 500) && lastSolvedResults.solved))
+			//if (!previousSearchResults.timedOut || lastSearchFrame - myStart > 500)
 			{
 				searchInProgress = false;
+				//BWAPI::Broodwar->printf("We've been waiting too long, end the search!");
 			}
 			// if we did time out, set the save state
 			else

@@ -34,12 +34,12 @@ void RangedManager::executeMicro(const UnitVector & targets)
 				BWAPI::Unit * target = getTarget(rangedUnit, rangedUnitTargets);
 
 				// attack it
-				if (!rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) {
+				//if (!rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) {
 					kiteTarget(rangedUnit, target);
-				}
-				else {
-					smartPositionAndDefend(rangedUnit,order.position);
-				}
+				//}
+				//else {
+				//	smartPositionAndDefend(rangedUnit,order.position);
+				//}
 			}
 			// if there are no targets
 			else
@@ -60,9 +60,9 @@ void RangedManager::executeMicro(const UnitVector & targets)
 					}
 				}
 				//else if we're in range and we're supposed to s
-				else if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) {
-					rangedUnit->siege();
-				}
+				//else if (rangedUnit->getType() == BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode) {
+				//	rangedUnit->siege();
+				//}
 			}
 		}
 
