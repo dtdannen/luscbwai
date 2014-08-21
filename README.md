@@ -6,14 +6,17 @@ Lehigh University - Starcraft Broodwar (patch 1.16.1) - Artificial Intelligence 
 Contributing Authors
 ====================
 Dustin Dannenhauer <br \>
-Hector Munoz-Avila <br \>
+Pete Biencourt <br \>
+David Pennenga <br \>
 Steven Stinson <br \>
+Casey Conley <br \>
+Seth Denburg <br \>
 Nicholas Wuensch <br \>
 Matthew Kilgore <br \>
-Pete Biencourt <br \>
-Seth Denburg <br \>
-Casey Conley <br \>
 
+Faculty Advisor
+===============
+Hector Munoz-Avila <br \>
 
 Possible Names of Bot for Competition
 =====================================
